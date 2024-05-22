@@ -1,0 +1,18 @@
+{
+    "name": "Deno",
+    "dockerFile": "Dockerfile",
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash"
+            },
+            "extensions": ["denoland.vscode-deno"]
+        }
+    },
+    "forwardPorts": [80, 8080],
+    "remoteUser": "vscode",
+    "remoteEnv": {
+        "PATH": "${containerEnv:PATH}:/home/vscode/.deno",
+        "ENDPOINT": "@${localEnv:UserName}${localEnv:USER}.uix-base-project"
+    }
+}

@@ -1,2 +1,3 @@
 deno.lock
 .datex-cache
+node_modules

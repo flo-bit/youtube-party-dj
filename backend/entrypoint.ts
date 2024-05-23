@@ -5,6 +5,8 @@
  */
 import { provideRedirect } from "uix/html/entrypoint-providers.tsx"
 
+import "../common/theme.tsx"
+
 export default {
 	// show backend (hybrid) rendered page on /backend
 	'/backend': import("../common/page.tsx"), 

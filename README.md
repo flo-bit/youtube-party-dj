@@ -1,5 +1,41 @@
 # Youtube Party DJ
 
+## Development
+
+1. Clone the repository
+
+```bash
+git clone https://github.com/flo-bit/youtube-party-dj.git
+```
+
+2. Install [deno](https://docs.deno.com/runtime/manual/getting_started/installation)
+
+3. Install UIX
+
+```bash
+deno install --import-map https://cdn.unyt.org/uix/importmap.json -Aq -n uix https://cdn.unyt.org/uix/run.ts
+```
+
+4. Install [node.js and npm](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm) if you haven't already
+
+5. Install node modules, run this in the root directory of the project:
+
+```bash
+npm install
+```
+
+6. Run development server, run this in the root directory of the project:
+
+```bash
+npm run dev
+```
+
+7. Open the browser and navigate to `http://localhost`
+
+
+
+
+
 
 ## UIX Base Project
 

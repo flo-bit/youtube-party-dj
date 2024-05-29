@@ -9,8 +9,8 @@ import "../common/theme.tsx"
 
 export default {
 	// show backend (hybrid) rendered page on /backend
-	'/backend': import("../common/page.tsx"), 
+	//'/backend': import("../common/page.tsx"), 
 	
 	// redirect / to /backend
-	'/': provideRedirect("/backend")
+	//'/': provideRedirect("/backend")
 }

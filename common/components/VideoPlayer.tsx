@@ -7,3 +7,32 @@ return (<div class="relative aspect-video bg-white/5 border border-white/10 w-fu
 </div>);
 
 }
+
+/*
+let player;
+let videoList = [];
+	
+        function play(videoId) {
+            if (player) {
+                player.loadVideoById(videoId);
+            } else {
+                player = new YT.Player('player', {
+                    height: '315',
+                    width: '560',
+                    videoId: videoId,
+                    events: {
+                        'onStateChange': StateChange
+                    }
+                });
+            }
+        }
+
+        function StateChange(event) {
+            if (event.data === YT.PlayerState.ENDED) {
+                videoList.shift();
+                if (videoList.length > 0) {
+                    play(videoList[0].videoId);
+                }
+            }
+        }
+*/

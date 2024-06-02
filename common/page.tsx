@@ -16,7 +16,8 @@ export default function App() {
 			class="flex flex-col overflow-y-hidden h-screen bg-white/5 border border-white/10 rounded-xl"
 		>
 			<div class="flex px-8 mx-0 my-8 ">
-				<VideoPlayer />
+				<VideoPlayer videoList={['k1BneeJTDcU', 'dQw4w9WgXcQ', '-eohHwsplvY']}/>
+
 			</div>
 			<div class="px-4 py-4 border-t border-white/20 mx-0 overflow-y-scroll flex-grow">
 				<Queue />

@@ -4,6 +4,8 @@ import Queue from "./components/Queue.tsx";
 import QRCodeOverlay from "./components/QRCodeOverlay.tsx";
 
 export default function App() {
+	const videoIds = $$(['k1BneeJTDcU', 'dQw4w9WgXcQ', '-eohHwsplvY']);
+
 	return (
 <main class="w-screen h-screen relative">
 	<div class="mx-auto grid md:grid-cols-2 h-screen">
@@ -16,7 +18,7 @@ export default function App() {
 			class="flex flex-col overflow-y-hidden h-screen bg-white/5 border border-white/10 rounded-xl"
 		>
 			<div class="flex px-8 mx-0 my-8 ">
-				<VideoPlayer videoList={['k1BneeJTDcU', 'dQw4w9WgXcQ', '-eohHwsplvY']}/>
+				<VideoPlayer videoList={videoIds}/>
 
 			</div>
 			<div class="px-4 py-4 border-t border-white/20 mx-0 overflow-y-scroll flex-grow">

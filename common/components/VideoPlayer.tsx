@@ -1,16 +1,6 @@
-export default function VideoPlayer() {
+export default function VideoPlayer({ videoList }) {
 
-return (<div class="relative aspect-video bg-white/5 border border-white/10 w-full overflow-hidden object-cover rounded-xl">
-
-	<div class="w-full h-full flex items-center justify-center text-white"> CURRENT YOUTUBE VIDEO </div>
-
-</div>);
-
-}
-
-/*
-let player;
-let videoList = [];
+	let player;
 	
         function play(videoId) {
             if (player) {
@@ -36,15 +26,23 @@ let videoList = [];
             }
         }
 
- 	var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
 	function onYouTubeIframeAPIReady() {
             if (videoList.length > 0) {
                 play(videoList[0].videoId);
             }
         }
+
+ 	var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 	
-*/
+
+return (<div class="relative aspect-video bg-white/5 border border-white/10 w-full overflow-hidden object-cover rounded-xl">
+
+	<div id="player" class="w-full h-full flex items-center justify-center text-white"> CURRENT YOUTUBE VIDEO </div>
+
+</div>);
+
+}
+

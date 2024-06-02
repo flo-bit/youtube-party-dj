@@ -1,12 +1,18 @@
 export default function VideoPlayer({ videoList }: { videoList: string}) {
 
 	let player;
+
+	function startPlaying() {
+            if (videoList.length > 0 && (!player || player.getPlayerState() !== YT.PlayerState.PLAYING)) {
+                play(videoList[0]);
+            }
+        }
 	
         function play(videoId: string) {
             if (player) {
                 player.loadVideoById(videoId);
             } else {
-                player = new YT.Player('player', {
+                player = new window.YT.Player('player', {
                     height: '315',
                     width: '560',
                     videoId: videoId,
@@ -18,19 +24,17 @@ export default function VideoPlayer({ videoList }: { videoList: string}) {
         }
 
         function onStateChange(event) {
-            if (event.data === YT.PlayerState.ENDED) {
+            if (event.data === window.YT.PlayerState.ENDED) {
                 videoList.shift();
                 if (videoList.length > 0) {
-                    play(videoList[0].videoId);
+                    play(videoList[0]);
                 }
             }
         }
 
 	function onYouTubeIframeAPIReady() {
-            if (videoList.length > 0) {
-                play(videoList[0].videoId);
-            }
-        }
+        	startPlaying();
+	}
 
  	let tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";

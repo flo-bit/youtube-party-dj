@@ -11,7 +11,7 @@ export default function VideoPlayer({ videoList }: { videoList: string}) {
                     width: '560',
                     videoId: videoId,
                     events: {
-                        'onStateChange': StateChange
+                        'onStateChange': onStateChange
                     }
                 });
             }

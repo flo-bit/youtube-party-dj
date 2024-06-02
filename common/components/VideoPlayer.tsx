@@ -1,8 +1,8 @@
-export default function VideoPlayer({ videoList }) {
+export default function VideoPlayer({ videoList }: { videoList: string}) {
 
 	let player;
 	
-        function play(videoId) {
+        function play(videoId: string) {
             if (player) {
                 player.loadVideoById(videoId);
             } else {
@@ -17,7 +17,7 @@ export default function VideoPlayer({ videoList }) {
             }
         }
 
-        function StateChange(event) {
+        function onStateChange(event) {
             if (event.data === YT.PlayerState.ENDED) {
                 videoList.shift();
                 if (videoList.length > 0) {
@@ -32,11 +32,12 @@ export default function VideoPlayer({ videoList }) {
             }
         }
 
- 	var tag = document.createElement('script');
+ 	let tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
+        let firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-	
+
+	window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady
 
 return (<div class="relative aspect-video bg-white/5 border border-white/10 w-full overflow-hidden object-cover rounded-xl">
 

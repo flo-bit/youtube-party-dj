@@ -1,7 +1,8 @@
 import QRCode from "./components/QR.tsx";
 import VideoPlayer from "./components/VideoPlayer.tsx";
-import Queue from "./components/Queue.tsx";
+import {Queue} from "./components/Queue.tsx";
 import QRCodeOverlay from "./components/QRCodeOverlay.tsx";
+import { samplePlayerQueue } from "backend/data.tsx";
 
 export default function App() {
 	const videoIds = $$(['k1BneeJTDcU', 'dQw4w9WgXcQ', '-eohHwsplvY']);
@@ -22,7 +23,7 @@ export default function App() {
 
 			</div>
 			<div class="px-4 py-4 border-t border-white/20 mx-0 overflow-y-scroll flex-grow">
-				<Queue />
+				<Queue {...samplePlayerQueue}/>
 			</div>
 		</div>
 	</div>

@@ -1,4 +1,5 @@
-import Queue from "common/components/Queue.tsx";
+import {Queue} from "common/components/Queue.tsx";
+import { sampleClientQueue } from "backend/data.tsx";
 
 export default function AddVideoOverlay() {
 	const showOverlay = $$(false);
@@ -41,7 +42,7 @@ export default function AddVideoOverlay() {
   				</div>
 			</div>
 			<div class="px-4 py-4 border-t border-white/20 mx-0 overflow-y-scroll flex-grow">
-					<Queue />
+					<Queue {...sampleClientQueue} />
 			</div>
 		</div>
 	</div>

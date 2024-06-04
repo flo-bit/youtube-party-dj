@@ -1,6 +1,22 @@
-export default function QueueItem() {
-	return (
-<div class="w-full rounded-xl bg-white/5 border border-white/10 h-20">
-	<div class="text-white flex items-center justify-center h-full">VIDEO ITEM</div>
-</div>);
+import { Component } from "uix/components/Component.ts";
+
+
+type Item = {
+    title: string;
+    thumbnail: string;
+    duration: string;
+    url : string;
+    likes: number;
 }
+
+@template<Item>((item) => {     
+ 
+  return <>
+    <img src={item.thumbnail} alt=" " style={"display:inline"} />
+    <p>{item.title} </p>
+    <p>{item.duration} minutes</p>
+    </>
+})
+
+export class  QueueItem extends Component<Item>{};
+

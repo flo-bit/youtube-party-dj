@@ -1,5 +1,6 @@
 import { UIX } from "uix";
 import Queue from "common/components/Queue.tsx";
+import SearchBar from "common/components/SearchBar.tsx";  // Den korrekten Pfad zu SearchBar.tsx verwenden
 
 export default function AddVideoOverlay() {
     const showOverlay = $$(false);
@@ -15,6 +16,7 @@ export default function AddVideoOverlay() {
             </button>
 
             <div style={{ display: showOverlay }} class="absolute inset-0 z-20 bg-black">
+           
                 <button onclick={() => {
                     showOverlay.val = false;
                 }} class="absolute bottom-2 right-2 w-20 h-20 bg-white/5 border border-white/10 rounded-full flex items-center justify-center backdrop-blur-md">
@@ -22,10 +24,11 @@ export default function AddVideoOverlay() {
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
                     </svg>
                 </button>
-				
+                <SearchBar /> 
                 <div class="flex flex-col overflow-y-hidden h-screen rounded-xl mx-auto max-w-2xl">
-                    
+                
                     <div class="px-4 py-4 border-t border-white/20 mx-0 overflow-y-scroll flex-grow">
+                        
                         <Queue />
                     </div>
                 </div>

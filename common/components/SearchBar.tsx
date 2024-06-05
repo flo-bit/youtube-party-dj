@@ -1,6 +1,6 @@
 import { UIX } from "uix";
 
-const suggestions = [
+const results = [
     {
         cover: "https://img.youtube.com/vi/3JZ_D3ELwOQ/0.jpg",
         song: "Shape of You",
@@ -248,51 +248,83 @@ const suggestions = [
         length: "2:52"
     }
 ];
-
-const getSuggestions = (query: string) => {
+const getResults = (query) => {
     if (!query) return [];
-    return suggestions.filter(suggestion => 
-        suggestion.song.toLowerCase().includes(query.toLowerCase()) ||
-        suggestion.artist.toLowerCase().includes(query.toLowerCase())
+    return results.filter(result =>
+        result.song.toLowerCase().includes(query.toLowerCase()) ||
+        result.artist.toLowerCase().includes(query.toLowerCase())
     );
-}
+};
 
-const handleInputChange = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    const query = target.value;
-    const filteredSuggestions = getSuggestions(query);
-    updateSuggestions(filteredSuggestions);
-}
-
-const updateSuggestions = (suggestions: typeof suggestions) => {
-    const suggestionList = document.getElementById('suggestions');
-    const searchBar = document.getElementById('search') as HTMLInputElement;
-    if (suggestionList && searchBar) {
-        if (searchBar.value.trim() && suggestions.length > 0) {
-            suggestionList.classList.add('border', 'border-gray-300', 'mt-2');
-        } else {
-            suggestionList.classList.remove('border', 'border-gray-300', 'mt-2');
+const handleInputChange = (event) => {
+    if (event.key === 'Enter') {
+        performSearch();
+    } else {
+        const query = event.target.value;
+        if (!query.trim()) {
+            updateResults([]);
         }
-        suggestionList.innerHTML = '';
-        if (suggestions.length > 0) {
-            suggestions.forEach(suggestion => {
-                
+    }
+};
+
+const performSearch = () => {
+    const searchBar = document.getElementById('search');
+    const query = searchBar.value;
+    const filteredResults = getResults(query);
+    updateResults(filteredResults);
+};
+
+const handleSearchIconClick = () => {
+    const searchIcon = document.getElementById('searchicon');
+    searchIcon.classList.add('transform', 'scale-90', 'transition-transform', 'duration-200');
+    setTimeout(() => {
+        searchIcon.classList.remove('scale-90');
+        toggleSearchResults();
+    }, 200);
+};
+
+const toggleSearchResults = () => {
+    const searchBar = document.getElementById('search');
+    const resultsList = document.getElementById('results');
+    if (resultsList.classList.contains('hidden') || !searchBar.value.trim()) {
+        performSearch();
+        resultsList.classList.remove('hidden');
+    } else {
+        updateResults([]);
+        resultsList.classList.add('hidden');
+    }
+};
+
+const updateResults = (results) => {
+    const resultList = document.getElementById('results');
+    const searchBar = document.getElementById('search');
+    if (resultList && searchBar) {
+        if (searchBar.value.trim() && results.length > 0) {
+            resultList.classList.add('border', 'border-gray-300', 'mt-2');
+            resultList.classList.remove('hidden');
+        } else {
+            resultList.classList.remove('border', 'border-gray-300', 'mt-2');
+            resultList.classList.add('hidden');
+        }
+        resultList.innerHTML = '';
+        if (results.length > 0) {
+            results.forEach(result => {
                 const listItem = document.createElement('li');
                 listItem.className = 'p-2 cursor-pointer hover:bg-zinc-900 flex items-center justify-between text-white';
 
                 const coverImage = document.createElement('img');
-                coverImage.src = suggestion.cover;
-                coverImage.alt = suggestion.song;
+                coverImage.src = result.cover;
+                coverImage.alt = result.song;
                 coverImage.className = 'w-12 h-12 rounded-sm mr-4';
 
                 const textContainer = document.createElement('div');
                 const songName = document.createElement('p');
-                songName.innerHTML = `${suggestion.song} <span class="text-xs text-gray-600">by ${suggestion.artist}</span>`;
+                songName.innerHTML = `${result.song} <span class="text-xs text-gray-500">by ${result.artist}</span>`;
                 songName.className = 'text-sm font-semibold';
 
                 const videoLength = document.createElement('p');
-                videoLength.textContent = suggestion.length + " minutes";
-                videoLength.className = 'text-xs text-gray-500';
+                videoLength.textContent = result.length + " minutes";
+                videoLength.className = 'text-xs text-gray-600';
 
                 textContainer.className = 'flex-1';
 
@@ -308,7 +340,7 @@ const updateSuggestions = (suggestions: typeof suggestions) => {
                 addButton.classList.add("unselectable");
                 addButtonContainer.appendChild(addButton);
                 addButton.onclick = () => {
-                    addToQueue(suggestion);
+                    addToQueue(result);
                     toggleHeart(addButton);
                 };
 
@@ -316,20 +348,19 @@ const updateSuggestions = (suggestions: typeof suggestions) => {
                 listItem.appendChild(textContainer);
                 listItem.appendChild(addButton);
 
-                suggestionList.appendChild(listItem);
+                resultList.appendChild(listItem);
             });
-            
         }
     } else {
-        console.error('Suggestion list or search bar element not found.');
+        console.error('Result list or search bar element not found.');
     }
-}
+};
 
-const addToQueue = (suggestion: typeof suggestions[0]) => {
-    console.log(`Added "${suggestion.song}" by ${suggestion.artist} to queue.`);
-}
+const addToQueue = (result) => {
+    console.log(`Added "${result.song}" by ${result.artist} to queue.`);
+};
 
-const toggleHeart = (button: HTMLButtonElement) => {
+const toggleHeart = (button) => {
     const span = button.querySelector('span');
     if (span) {
         if (span.textContent === '+') {
@@ -344,7 +375,7 @@ const toggleHeart = (button: HTMLButtonElement) => {
             span.style.top = '-1.5px';
         }
     }
-}
+};
 
 export default function SearchBar() {
     return (
@@ -355,15 +386,17 @@ export default function SearchBar() {
                     type="text"
                     id="search"
                     placeholder="Find your song..."
-                    oninput={handleInputChange} />
-                <div id="searchicon" class="absolute left-0 top-0 h-full w-12 flex items-center justify-center">
+                    onkeypress={handleInputChange}
+                    oninput={handleInputChange}
+                />
+                <div id="searchicon" class="absolute left-0 top-0 h-full w-12 flex items-center justify-center cursor-pointer" onclick={handleSearchIconClick}>
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-300" fill="none" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"  stroke="white" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" stroke="white" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
             </div>
             <br />
-            <ul id="suggestions" class="max-h-20 overflow-y-auto bg-black rounded-lg"></ul>
+            <ul id="results" class="max-h-20 overflow-y-auto bg-black rounded-lg hidden"></ul>
             <style>{`
                 .add-button-container {
                     height: 20px;
@@ -377,18 +410,17 @@ export default function SearchBar() {
                     outline: none;
                     border: 1px solid white;
                 }
-                #suggestions::-webkit-scrollbar {
+                #results::-webkit-scrollbar {
                     width: 8px;
                 }
-                #suggestions {
+                #results {
                     max-height: calc(118vh - 12rem);
                     overflow-y: auto;
                 }
-                #suggestions::-webkit-scrollbar-thumb {
+                #results::-webkit-scrollbar-thumb {
                     background: white;
                     border-radius: 8px;
                     width: 3px;
-                    
                 }
                 .unselectable {
                     -webkit-user-select: none;

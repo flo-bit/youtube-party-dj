@@ -10,7 +10,7 @@ export default function App() {
 <main class="w-screen h-screen relative">
 	<div class="mx-auto grid md:grid-cols-2 h-screen">
 		<div class="h-screen hidden md:flex items-center flex-col justify-center p-8">
-				<QRCode />
+				<QRCode url="https://status.unyt.org/" /> {/* url sets the destination of the qr code; onUndefined=rickroll() */}
 				
 				<div class="text-white text-3xl font-semibold mt-4">Party code: XXXX</div>
 		</div>

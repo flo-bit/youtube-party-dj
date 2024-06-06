@@ -19,7 +19,7 @@ export default function QRCodeOverlay() {
 			showQR.val = false;
 		}}></button>
 
-		<QRCode />
+		<QRCode url={undefined} /> {/* url sets the destination of the qr code; onUndefined=rickroll() */}
 
 		<button class="absolute top-2 right-2 stroke-white" onclick={() => {
 			showQR.val = false;

@@ -1,4 +1,4 @@
-import { Item } from "backend/data.tsx";
+import { Item, removePlayedVideo } from "backend/data.tsx";
 
 export default function VideoPlayer({ queue }: Readonly<{ queue: Item[] }>) {
 	// @ts-ignore - YouTube API
@@ -33,9 +33,13 @@ export default function VideoPlayer({ queue }: Readonly<{ queue: Item[] }>) {
 		// @ts-ignore - YouTube API
 		if (event.data === window.YT.PlayerState.ENDED) {
 			// TODO: remove just played video from queue
-			if (queue.length > 0) {
-				play(queue[0].id);
-			}
+			removePlayedVideo();
+
+			setTimeout(() => {
+				if (queue.length > 0) {
+					play(queue[0].id);
+				}
+			}, 200);
 		}
 	}
 

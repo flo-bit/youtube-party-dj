@@ -4,6 +4,14 @@ export default function VideoPlayer({ queue }: Readonly<{ queue: Item[] }>) {
 	// @ts-ignore - YouTube API
 	let player;
 
+	observe(queue, () => {
+		// if not playing and queue is not empty, start playing
+		if(queue.length > 0) {
+			console.log('startPlaying');
+			startPlaying();
+		}
+	});
+
 	function startPlaying() {
 		// @ts-ignore - YouTube API
 		if (queue.length > 0 && (!player || player.getPlayerState() !== YT.PlayerState.PLAYING)) {

@@ -1,6 +1,6 @@
 import QRCode from "./QR.tsx";
 
-export default function QRCodeOverlay() {
+export default function QRCodeOverlay({code}: {code: string}) {
 	const showQR = $$(false);
 
 	return (
@@ -19,7 +19,7 @@ export default function QRCodeOverlay() {
 			showQR.val = false;
 		}}></button>
 
-		<QRCode />
+		<QRCode code={code} />
 
 		<button class="absolute top-2 right-2 stroke-white" onclick={() => {
 			showQR.val = false;

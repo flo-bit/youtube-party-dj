@@ -1,4 +1,4 @@
-import Queue from "common/components/Queue.tsx";
+import Queue from "./Queue.tsx";
 
 export default function AddVideoOverlay() {
 	const showOverlay = $$(false);

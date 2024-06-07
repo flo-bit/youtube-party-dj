@@ -1,54 +1,47 @@
-import { Datex } from "datex-core-legacy/datex.ts";
-import { UIX } from "uix";
-
-/**
- * Version information on the backend
- */
-
-type Item = {
+export type Item = {
     title: string;
     thumbnail: string;
     duration: string;
-    url : string;
+    id: string;
     likes: number;
-  }
-
-  type Queue = {
-    items: Item[],
-    type: 'player' | 'client'
+    liked?: boolean;
+    added: number;
 }
 
-export const sampleQueueItems : Item[] = $$([
+export const sampleQueue: Item[] = $$([
     {
-        title : 'Rick Roll',
-        thumbnail: '',
-        duration: '2:57',
-        likes : $$(69),
-        url  : 'dQw4w9WgXcQ'
-                  
+        title: 'Welcome to the Internet - Bo Burnham (from "Inside" -- ALBUM OUT NOW)',
+        thumbnail: 'https://i.ytimg.com/vi/k1BneeJTDcU/default.jpg',
+        duration: '4:20',
+        likes: 0,
+        id: 'k1BneeJTDcU',
+        added: Date.now()
     },
     {
-        title : 'Epic Sax Guy',
-        thumbnail: '',
-        duration: '4:20',
-        likes : $$(420),           
-        url  : 'pHXDMe6QV-U'
+        title: 'Rick Astley - Never Gonna Give You Up (Video)',
+        thumbnail: 'https://i.ytimg.com/vi/dQw4w9WgXcQ/default.jpg',
+        duration: '3:33',
+        likes: 0,
+        id: 'dQw4w9WgXcQ',
+        added: Date.now() + 100
+    },
+    {
+        title: 'LCD Soundsystem - New York, I Love You But You\'re Bringing Me Down',
+        thumbnail: 'https://i.ytimg.com/vi/-eohHwsplvY/default.jpg',
+        duration: '2:57',
+        likes: 0,
+        id: '-eohHwsplvY',
+        added: Date.now() + 200
     },
 ]);
 
-export const samplePlayerQueue  : Queue = $$({
-    items : sampleQueueItems,
-    type : "player",
-
+effect(() => {
+    // sort by likes, then by time added
+    sampleQueue.sort((a, b) => {
+        if (a.likes > b.likes) return -1;
+        if (a.likes < b.likes) return 1;
+        if (a.added > b.added) return 1;
+        if (a.added < b.added) return -1;
+        return 0;
+    });
 })
-
-export const sampleClientQueue : Queue = $$({
-    items : sampleQueueItems,
-    type : "client",
-})
-
-
-
-export const denoVersion = Deno.version.deno;
-export const datexVersion = Datex.Runtime.VERSION;
-export const uixVersion = UIX.version;

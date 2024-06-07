@@ -9,6 +9,8 @@ export default function App() {
 	const showSearch = $$(false);
 
 	const onSearch = async (value: string) => {
+		showSearch.val = true;
+
 		searchResults.splice(0, searchResults.length);
 		searchResults.push(...await search(value));
 	};
@@ -25,6 +27,12 @@ export default function App() {
 			</button>,
 			<button onclick={() => {
 				showSearch.val = true;
+
+				// set focus to search bar
+				const input = document.querySelector('input');
+				if (input) {
+					input.focus();
+				}
 			}} class="absolute bottom-2 right-2 w-20 h-20 bg-white/5 border border-white/10 rounded-full flex items-center justify-center backdrop-blur-md">
 
 				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="size-16 stroke-white">

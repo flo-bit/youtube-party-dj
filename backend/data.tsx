@@ -39,6 +39,10 @@ export const sampleQueue: Item[] = $$([
     },
 ]);
 
+export function removePlayedVideo() {
+    sampleQueue.shift();
+}
+
 effect(() => {
     // sort by likes, then by time added
     sampleQueue.sort((a, b) => {

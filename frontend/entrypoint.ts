@@ -8,9 +8,9 @@ import "../common/theme.tsx"
 import { provideRedirect } from "uix/html/entrypoint-providers.tsx"
 
 export default {
-	'/player': async (ctx: Context) => {
+	'/player': async () => {
 		const App = await import("../common/page.tsx");
-		return App.default(ctx);
+		return App.default();
 	},
 	'/client/([A-Z0-9]{4})': async (ctx: Context) => {
 		const App = await import("../common/client.tsx");

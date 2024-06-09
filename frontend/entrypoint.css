@@ -889,10 +889,6 @@ select {
   height: 2.5rem;
 }
 
-.h-12 {
-  height: 3rem;
-}
-
 .h-20 {
   height: 5rem;
 }
@@ -1021,6 +1017,8 @@ select {
 
 .place-items-center {
   place-items: center;
+.flex-col {
+  flex-direction: column;
 }
 
 .items-center {

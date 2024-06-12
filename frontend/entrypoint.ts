@@ -17,5 +17,5 @@ export default {
 		return App.default(ctx);
 	},
 
-	'/': provideRedirect("/player")
+	"/": import("../common/home.tsx"),
 }

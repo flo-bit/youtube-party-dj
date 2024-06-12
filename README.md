@@ -1,6 +1,14 @@
 # Youtube Party DJ
 
-Play a youtube queue on one device and other devices can add songs to the queue, as well as vote on songs. Highest voted song plays next.
+Play a youtube queue on one device and other devices can add songs to the queue, as well as vote on songs. Highest voted song plays next. WIP.
+
+## demo
+
+short demo video (left player, right a client)
+
+
+https://github.com/flo-bit/youtube-party-dj/assets/45694132/ac43fc09-d47f-4611-9991-0aa098f1105a
+
 
 ## Development
 

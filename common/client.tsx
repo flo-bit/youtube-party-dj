@@ -1,9 +1,14 @@
 import { Queue } from "./components/Queue.tsx";
-import QRCodeOverlay from "common/components/QRCodeOverlay.tsx";
-import SearchBar from "common/components/SearchBar.tsx";
+import QRCodeOverlay from "./components/QRCodeOverlay.tsx";
+import SearchBar from "./components/SearchBar.tsx";
 import { Item, sampleQueue, search } from "backend/data.tsx";
+import { addClient } from "backend/sessions.ts";
+import { Context } from "uix/routing/context.ts";
 
-export default function App() {
+export default function App(ctx: Context) {
+	const code = (ctx.urlPattern?.pathname.groups[0] ?? "XXXX");
+	addClient(code);
+
 	const searchResults: Item[] = $$([]);
 
 	const showSearch = $$(false);
@@ -55,7 +60,8 @@ export default function App() {
 
 				{renderToggle()}
 
-				<QRCodeOverlay />
+				<QRCodeOverlay code={code} />
 			</div>
-		</main>);
+		</main>
+	);
 }

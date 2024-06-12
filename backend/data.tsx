@@ -1,4 +1,5 @@
 import { load } from "https://deno.land/std@0.224.0/dotenv/mod.ts";
+import { SessionData } from "../common/helpers/sessions.ts";
 
 const env = await load();
 
@@ -94,3 +95,5 @@ export async function search(q: string) {
     console.error(error);
   }
 }
+
+export const sessionS = eternalVar('sessions') ?? $$(Array<SessionData>());

@@ -5,7 +5,6 @@
  */
 import { Context } from "uix/routing/context.ts";
 import "../common/theme.tsx"
-import { provideRedirect } from "uix/html/entrypoint-providers.tsx"
 
 export default {
 	'/player': async () => {

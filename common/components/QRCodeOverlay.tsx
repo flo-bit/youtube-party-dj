@@ -1,6 +1,7 @@
+import { Pointer } from "unyt_core/runtime/pointers.ts";
 import QRCode from "./QR.tsx";
 
-export default function QRCodeOverlay({code}: {code: string}) {
+export default function QRCodeOverlay({code}: {code: Pointer<string> & string}) {
 	const showQR = $$(false);
 
 	return (

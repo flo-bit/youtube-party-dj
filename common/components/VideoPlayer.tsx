@@ -1,4 +1,5 @@
 import { Item, removePlayedVideo } from "backend/data.tsx";
+import { nowPlaying } from "backend/data.tsx"
 
 export default function VideoPlayer({ queue }: Readonly<{ queue: Item[] }>) {
   // @ts-ignore - YouTube API
@@ -11,6 +12,8 @@ export default function VideoPlayer({ queue }: Readonly<{ queue: Item[] }>) {
       (!player || player.getPlayerState() !== YT.PlayerState.PLAYING)
     ) {
       play(queue[0].id);
+      nowPlaying.val = removePlayedVideo();
+
     }
   }
 
@@ -18,6 +21,8 @@ export default function VideoPlayer({ queue }: Readonly<{ queue: Item[] }>) {
     // @ts-ignore - YouTube API
     if (player) {
       player.loadVideoById(videoId);
+      nowPlaying.val = removePlayedVideo();
+
     } else {
       // @ts-ignore - YouTube API
       player = new window.YT.Player("player", {

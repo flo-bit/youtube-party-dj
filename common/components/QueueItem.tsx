@@ -22,7 +22,10 @@ export function QueueItem({ item, type }: Readonly<{ item: Item, type: QueueType
           </div>
           <button onclick={() => {
             // @ts-ignore - uix fuckery
-            item.likes.val += 1;
+            if(liked.val)  item.likes.val -= 1;
+            if(!liked.val) item.likes.val += 1;
+              
+            liked.val = !liked.val;
           }}>
 
             {toggle(liked,
@@ -37,8 +40,11 @@ export function QueueItem({ item, type }: Readonly<{ item: Item, type: QueueType
     } else if (type === 'search') {
       return (
         <button onclick={() => {
-          //if (!sampleQueue.find(v => v.id === item.id))
-          sampleQueue.push(item);
+
+          if(!sampleQueue.find(v=>v.id === item.id)) sampleQueue.push(item);
+          //else alert user 
+          
+          
         }} class="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="size-6 stroke-white">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />

@@ -79,3 +79,55 @@ export default function VideoPlayer({ queue }: Readonly<{ queue: Item[] }>) {
     </div>
   );
 }
+
+
+/*
+  let ytplayer;
+  let spotplayer;
+  const script = document.createElement("script");
+  script.src = "https://sdk.scdn.co/spotify-player.js";
+  script.async = true;
+  document.body.appendChild(script);
+  function play2(id: string, type: string) {
+    if (type === "youtube") {
+      if (ytplayer) {
+        player.loadVideoById(id);
+      } else {
+        player = new window.YT.Player("ytplayer", {
+          height: "315",
+          width: "560",
+          videoId: id,
+          events: {
+            onStateChange: onStateChange,
+          },
+          playerVars: {
+            autoplay: 1,
+            color: "white",
+            controls: 0,
+            disablekb: 1,
+            iv_load_policy: 3,
+            modestbranding: 1,
+            rel: 0,
+            showinfo: 0,
+          },
+        });
+      }
+    } else if (type === "spotify") {
+      if (spotplayer) {
+        fetch(`https://api.spotify.com/v1/me/player/play`, {
+          method: "PUT",
+          body: JSON.stringify({ uris: [`spotify:track:${id}`] }),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }) else {
+            player = new Spotify.Player({
+                name: 'Web Playback SDK',
+                getOAuthToken: cb => { cb(accessToken); },
+                volume: 0.5
+            })
+        }};
+      }
+    } 
+*/

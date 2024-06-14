@@ -1,9 +1,10 @@
 import { Item, removePlayedVideo } from "backend/data.tsx";
-import { nowPlaying } from "backend/data.tsx"
+import {nowPlaying} from "backend/data.tsx";
 
 export default function VideoPlayer({ queue }: Readonly<{ queue: Item[] }>) {
   // @ts-ignore - YouTube API
   let player;
+
 
   function startPlaying() {
     // @ts-ignore - YouTube API
@@ -12,8 +13,8 @@ export default function VideoPlayer({ queue }: Readonly<{ queue: Item[] }>) {
       (!player || player.getPlayerState() !== YT.PlayerState.PLAYING)
     ) {
       play(queue[0].id);
-      nowPlaying.val = removePlayedVideo();
-
+      nowPlaying.val  = removePlayedVideo();
+      
     }
   }
 
@@ -21,8 +22,7 @@ export default function VideoPlayer({ queue }: Readonly<{ queue: Item[] }>) {
     // @ts-ignore - YouTube API
     if (player) {
       player.loadVideoById(videoId);
-      nowPlaying.val = removePlayedVideo();
-
+      nowPlaying.val =  removePlayedVideo();
     } else {
       // @ts-ignore - YouTube API
       player = new window.YT.Player("player", {
@@ -50,14 +50,14 @@ export default function VideoPlayer({ queue }: Readonly<{ queue: Item[] }>) {
   function onStateChange(event) {
     // @ts-ignore - YouTube API
     if (event.data === window.YT.PlayerState.ENDED) {
-      // TODO: remove just played video from queue
-      removePlayedVideo();
-
+      
       setTimeout(() => {
         if (queue.length > 0) {
           play(queue[0].id);
         }
       }, 200);
+
+
     }
   }
 

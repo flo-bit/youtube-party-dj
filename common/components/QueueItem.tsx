@@ -37,6 +37,7 @@ export function QueueItem({ item, type }: Readonly<{ item: Item, type: QueueType
     } else if (type === 'search') {
       return (
         <button onclick={() => {
+          //if (!sampleQueue.find(v => v.id === item.id))
           sampleQueue.push(item);
         }} class="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="size-6 stroke-white">

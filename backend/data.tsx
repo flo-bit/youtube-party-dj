@@ -97,3 +97,5 @@ export async function search(q: string) {
 }
 
 export const sessionS = eternalVar('sessions') ?? $$(Array<SessionData>());
+
+export const nowPlaying = $$(sampleQueue[0]);

@@ -4,11 +4,14 @@ import { Queue } from "./components/Queue.tsx";
 import QRCodeOverlay from "./components/QRCodeOverlay.tsx";
 import { sampleQueue } from "backend/data.tsx";
 import { getPlayerSession } from "backend/sessions.ts";
-import { nowPlaying } from "components/NowPlaying.tsx";
+import { NowPlaying } from "common/components/NowPlaying.tsx";
+import { nowPlaying } from "backend/data.tsx";
+
 
 
 export default function App() {
 	const code = $$("XXXX");
+	
 	const queue = $$(sampleQueue);
 
 	getPlayerSession().then((session) => {
@@ -34,7 +37,7 @@ export default function App() {
 						})} />
 					</div>
 					<div class="px-4 py-4 border-t border-white/20 mx-0 overflow-y-scroll flex-grow">
-						<NowPlaying item={nowPlaying} />
+						<NowPlaying item={nowPlaying}/> 
 						<Queue items={queue} type={'player'} />
 					</div>
 				</div>

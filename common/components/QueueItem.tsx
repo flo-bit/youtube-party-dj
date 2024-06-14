@@ -1,5 +1,5 @@
 import { Item, sampleQueue } from "backend/data.tsx";
-import { QueueType } from "common/components/Queue.tsx";
+import { QueueType } from "./Queue.tsx";
 
 export function QueueItem({ item, type }: Readonly<{ item: Item, type: QueueType }>) {
   const liked = $$(false);

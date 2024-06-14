@@ -50,7 +50,7 @@ export const sampleQueue: Item[] = $$([
 ]);
 
 export function removePlayedVideo() {
-  sampleQueue.shift();
+  return sampleQueue.shift();
 }
 
 effect(() => {

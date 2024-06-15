@@ -1,20 +1,18 @@
-import { Item, removePlayedVideo } from "backend/data.tsx";
-import {nowPlaying} from "backend/data.tsx";
+import { getAndRemoveNextVideoFromSession, Item } from "backend/sessions.ts";
 
-export default function VideoPlayer({ queue }: Readonly<{ queue: Item[] }>) {
+export default function VideoPlayer({ queue, code }: Readonly<{ queue: Item[], code: string }>) {
   // @ts-ignore - YouTube API
   let player;
 
-
-  function startPlaying() {
+  async function playNext() {
     // @ts-ignore - YouTube API
     if (
-      queue.length > 0 &&
       (!player || player.getPlayerState() !== YT.PlayerState.PLAYING)
     ) {
-      play(queue[0].id);
-      nowPlaying.val  = removePlayedVideo();
-      
+      const video = await getAndRemoveNextVideoFromSession(code.val);
+      if (video) {
+        play(video.id);
+      }
     }
   }
 
@@ -22,7 +20,6 @@ export default function VideoPlayer({ queue }: Readonly<{ queue: Item[] }>) {
     // @ts-ignore - YouTube API
     if (player) {
       player.loadVideoById(videoId);
-      nowPlaying.val =  removePlayedVideo();
     } else {
       // @ts-ignore - YouTube API
       player = new window.YT.Player("player", {
@@ -50,19 +47,14 @@ export default function VideoPlayer({ queue }: Readonly<{ queue: Item[] }>) {
   function onStateChange(event) {
     // @ts-ignore - YouTube API
     if (event.data === window.YT.PlayerState.ENDED) {
-      
       setTimeout(() => {
-        if (queue.length > 0) {
-          play(queue[0].id);
-        }
+        playNext();
       }, 200);
-
-
     }
   }
 
   function onYouTubeIframeAPIReady() {
-    startPlaying();
+    playNext();
   }
 
   const tag = document.createElement("script");
@@ -72,14 +64,20 @@ export default function VideoPlayer({ queue }: Readonly<{ queue: Item[] }>) {
   // @ts-ignore - YouTube API
   globalThis.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
 
+  const text = always(() => {
+    if (queue.length === 0) {
+      return "Add a video to the queue!";
+    }
+    return "Loading video...";
+  })
+
   return (
     <div class="relative aspect-video bg-white/5 border border-white/10 w-full overflow-hidden object-cover rounded-xl">
       <div
         id="player"
         class="w-full h-full flex items-center justify-center text-white font-semibold"
       >
-        {" "}
-        Loading video...{" "}
+        {text}
       </div>
     </div>
   );

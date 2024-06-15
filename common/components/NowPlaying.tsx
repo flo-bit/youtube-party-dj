@@ -10,9 +10,6 @@ export function NowPlaying({item} : Readonly<{item:Item}>)
                 <p class="line-clamp-2 font-bold text-md leading-6">{item.title} </p>
                 <p class="text-xs">{item.duration} minutes</p>
               </div>
-              <div class="flex h-full justify-center items-center px-2">
-                <p class="text-red-600">Now Playing</p>
-              </div>
             </div>
           </div>
         </div>

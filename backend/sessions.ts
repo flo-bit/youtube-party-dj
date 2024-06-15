@@ -1,89 +1,125 @@
 import { Context } from "uix/routing/context.ts";
-import { PrivateSessionData, SessionData } from "../common/helpers/sessions.ts";
 import { ObjectRef } from "unyt_core/runtime/pointers.ts";
-import { sampleQueue, sessionS } from "backend/data.tsx";
 
-class PlayerSession {
+export type Item = {
+  title: string;
+  thumbnail: string;
+  duration: string;
   id: string;
-  sessionData: ObjectRef<SessionData>;
+  likes: ObjectRef<Set<string>>;
+  liked?: boolean;
+  added: number;
+};
 
-  constructor(session: ObjectRef<SessionData>, sessions: PlayerSessionManager, generate: boolean = false) {
-    this.id = crypto.randomUUID();
-    this.sessionData = session;
-    if (generate) {
-      let code = null;
-      // check if the code is already in use
-      while (!code || sessions.get(code)) {
-        // generate a random 4 character code consisting of uppercase letters and numbers
-        code = Array.from({ length: 4 }, () => Math.floor(Math.random() * 36).toString(36).toUpperCase()).join('');
-      }
-      this.sessionData.$.code.val = code;
-    }
-  }
+export interface SessionData {
+  code: string;
+  hostId: string;
+  clientIds: Set<string>;
+  queue: ObjectRef<Item[]>;
+  currentlyPlaying: ObjectRef<Item | null>;
+};
 
-  addClient(userId: string) {
-    this.sessionData.$.clients.val.push(userId);
-  }
+// map of session codes to session data
+export const sessions = eternalVar('sessions-50') ?? $$(new Map<string, ObjectRef<SessionData>>());
 
-  removeClient(userId: string) {
-    this.sessionData.$.clients.val = this.sessionData.$.clients.val.filter(client => client !== userId);
-  }
-}
-
-export class PlayerSessionManager {
-  sessions: ObjectRef<Array<PlayerSession>>;
-
-  constructor() {
-    console.log(sessionS)
-    this.sessions = sessionS.$.map(session => new PlayerSession(session, this)) as unknown as ObjectRef<Array<PlayerSession>>;
-  }
-
-  create(userId: string) {
-    console.log("Creating new session with host", userId, "...");
-    const sessionData = $$({ code: "", host: userId, clients: [], queue: $$(sampleQueue) });
-    const session = new PlayerSession(sessionData, this, true);
-    sessionS.push(session.sessionData);
-    this.sessions.push(session);
-    console.log(session);
-    return session;
-  }
-
-  getByUserId(userId: string) {
-    return this.sessions.find(session => session.sessionData.host === userId);
-  }
-
-  get(code: string) {
-    return this.sessions.find(session => session.sessionData.code === code);
-  }
-}
-
-const playerSessionManager = new PlayerSessionManager();
-
-const getUserSession = async () => {
-  const privateData = (await Context.getPrivateData(datex.meta)) as PrivateSessionData;
-  if (!privateData.userSession) {
-    privateData.userSession = {
-      userId: crypto.randomUUID(),
-    };
-  }
-  return privateData.userSession;
-}
-
-export const getPlayerSession = async () => {
-  const userSession = await getUserSession();
-  if (!userSession.playerSession) {
-    userSession.playerSession = playerSessionManager.getByUserId(userSession.userId);
-    if (!userSession.playerSession) {
-      userSession.playerSession = playerSessionManager.create(userSession.userId);
-    }
-  }
-  return userSession.playerSession;
-}
-
-export const addClient = async (code: string) => {
-  const session = playerSessionManager.get(code);
+export const getAndRemoveNextVideoFromSession = (code: string) => {
+  const session = sessions.get(code);
+  console.log(session);
   if (!session) {
     return;
   }
-  session.addClient((await getUserSession()).userId);
+  console.log(session.queue);
+  const video = session.queue.shift();
+  if (video) {
+    session.currentlyPlaying = video;
+  }
+  return video;
+}
+
+export const getSessionWithCode = (code: string) => {
+  return sessions.get(code);
+}
+
+export const getSessionUserHosts = async () => {
+  const user = await getUserId();
+  for (const [_code, session] of sessions.entries()) {
+    if (session.hostId === user.userId) {
+      return session;
+    }
+  }
+
+  // create new
+  const session = await createSession(user.userId);
+
+  return session;
+}
+
+export const addClientToSession = async (code: string) => {
+  const client = await getUserId();
+  const session = sessions.get(code);
+  if (!session) {
+    return;
+  }
+  session.clientIds.add(client.userId);
+
+  console.log(session);
+
+  return session;
+}
+
+export const toggleLike = async (code: string, videoId: string) => {
+  console.log(code, videoId);
+  try {
+    const user = await getUserId();
+
+    const session = sessions.get(code);
+    console.log(session);
+    if (!session) {
+      return;
+    }
+    const video = session.queue.find((video) => video.id == videoId);
+    console.log(video);
+    if (!video) {
+      return;
+    }
+    if (video.likes.has(user.userId)) {
+      console.log('deleting like');
+      video.likes.delete(user.userId);
+    } else {
+      console.log('adding like');
+      video.likes.add(user.userId);
+    }
+    return video;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+const getUserId = async () => {
+  const privateData = (await Context.getPrivateData(datex.meta)) as { userId: string };
+  if (!privateData.userId) {
+    privateData.userId = crypto.randomUUID()
+  }
+  return privateData;
+}
+
+const createSession = (userId: string) => {
+  // create random code that is not already in use
+  let code = null;
+
+  // check if the code is already in use
+  while (!code || sessions.get(code)) {
+    // generate a random 4 character code consisting of uppercase letters and numbers
+    code = Array.from({ length: 4 }, () => Math.floor(Math.random() * 36).toString(36).toUpperCase()).join('');
+  }
+  const session = {
+    code,
+    hostId: userId,
+    clientIds: new Set() as Set<string>,
+    queue: $$([] as Item[]),
+    currentlyPlaying: $$(null as Item | null),
+  };
+  sessions.set(code, $$(session));
+
+  return session;
 }

@@ -1,16 +1,18 @@
-import { Item, sampleQueue } from "backend/data.tsx";
+import { ObjectRef } from "unyt_core/runtime/pointers.ts";
 import { QueueType } from "./Queue.tsx";
+import { getSessionWithCode, Item, toggleLike } from "backend/sessions.ts";
 
 export function QueueItem({
   item,
   type,
-}: Readonly<{ item: Item; type: QueueType }>) {
+  code
+}: Readonly<{ item: ObjectRef<Item>; type: QueueType, code: string }>) {
   const liked = $$(false);
   function getAction() {
     if (type === "player") {
       return (
         <>
-          <div class="font-semibold">{item.likes}</div>
+          <div class="font-semibold">{item.likes.val.size}</div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -24,11 +26,11 @@ export function QueueItem({
     } else if (type === "client") {
       return (
         <>
-          <div class="font-semibold">{item.likes}</div>
+          <div class="font-semibold">{item.likes.val.size}</div>
           <button
-            onclick={() => {
-              // @ts-ignore - uix fuckery
-              item.likes.val += 1;
+            onclick={async () => {
+              const newitem = await toggleLike(code, item.id);
+              console.log("liked", newitem);
             }}
           >
             {toggle(
@@ -61,14 +63,19 @@ export function QueueItem({
     } else if (type === "search") {
       return (
         <button
-          onclick={() => {
-            if (
-              !sampleQueue.some(
-                (existingItem) => existingItem.id === item.id.val
-              )
-            ) {
-              sampleQueue.push(item);
+          onclick={async () => {
+            const session = await getSessionWithCode(code);
+            // check if session is null
+            if (!session) {
+              return;
             }
+            
+            // check if queue already contains the video
+            if (session.queue.some((v) => v.id == item.id)) {
+              return;
+            }
+
+            session?.$.queue.val.push(item);
           }}
           class="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center"
         >

@@ -2,23 +2,24 @@ import QRCode from "./components/QR.tsx";
 import VideoPlayer from "./components/VideoPlayer.tsx";
 import { Queue } from "./components/Queue.tsx";
 import QRCodeOverlay from "./components/QRCodeOverlay.tsx";
-import { sampleQueue } from "backend/data.tsx";
-import { getPlayerSession } from "backend/sessions.ts";
+import { Item, getSessionUserHosts } from "backend/sessions.ts";
 import { NowPlaying } from "common/components/NowPlaying.tsx";
-import { nowPlaying } from "backend/data.tsx";
 
+export default async function App() {
+	const session = await getSessionUserHosts()
 
-
-export default function App() {
-	const code = $$("XXXX");
+	const code = $$(session.code as string);
 	
-	const queue = $$(sampleQueue);
-
-	getPlayerSession().then((session) => {
-		code.val = session.sessionData.code;
-		/* @ts-ignore - cannot assign new value to ObjectRef through val? */
-		queue.val = session.sessionData.queue.$;
-	});
+	const current = always(() => {
+		if(session.currentlyPlaying) {
+			return <div class="px-4 mx-0">
+			<div class="text-red-500 font-semibold text-sm mb-2">currently playing</div>
+			<NowPlaying item={session.currentlyPlaying.$} />
+		</div>
+		} else {
+			return null;
+		}
+	})
 
 	return (
 		<main class="w-screen h-screen relative">
@@ -30,19 +31,17 @@ export default function App() {
 				<div
 					class="flex flex-col overflow-y-hidden h-screen bg-white/5 border border-white/10 rounded-xl"
 				>
-					<div class="flex px-8 mx-0 my-8 ">
+					<div class="flex px-8 mx-0 mt-8 mb-4">
 						{/* @ts-ignore - uix doesn't support types? */}
-						<VideoPlayer queue={queue.$.map((item) => {
-							return item.$;
-						})} />
+						<VideoPlayer queue={session.queue} code={code} />
 					</div>
+					{current}
 					<div class="px-4 py-4 border-t border-white/20 mx-0 overflow-y-scroll flex-grow">
-						<NowPlaying item={nowPlaying}/> 
-						<Queue items={queue} type={'player'} />
+						<Queue items={session.queue} type={'player'} code={code} />
 					</div>
 				</div>
 			</div>
 
-	<QRCodeOverlay code={code} />
-</main>);
+			<QRCodeOverlay code={code} />
+		</main>);
 }

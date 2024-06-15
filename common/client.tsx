@@ -1,13 +1,18 @@
 import { Queue } from "./components/Queue.tsx";
 import QRCodeOverlay from "./components/QRCodeOverlay.tsx";
 import SearchBar from "./components/SearchBar.tsx";
-import { Item, sampleQueue, search } from "backend/data.tsx";
-import { addClient } from "backend/sessions.ts";
+import { search } from "backend/data.tsx";
+import { addClientToSession, getSessionWithCode, Item } from "backend/sessions.ts";
 import { Context } from "uix/routing/context.ts";
 
-export default function App(ctx: Context) {
+export default async function App(ctx: Context) {
 	const code = (ctx.urlPattern?.pathname.groups[0] ?? "XXXX");
-	addClient(code);
+
+	const session = await addClientToSession(code);
+
+	if(!session) {
+		return;
+	}
 
 	const searchResults: Item[] = $$([]);
 
@@ -55,7 +60,7 @@ export default function App(ctx: Context) {
 					<SearchBar onSearch={onSearch} />
 				</div>
 				<div class="px-4 py-4 border-t border-white/20 mx-0 overflow-y-scroll flex-grow">
-					{toggle(showSearch, <Queue items={searchResults} type={'search'} />, <Queue items={sampleQueue} type={'client'} />)}
+					{toggle(showSearch, <Queue items={searchResults} type={'search'} code={code} />, <Queue items={session.queue} type={'client'} code={code} />)}
 				</div>
 
 				{renderToggle()}

@@ -18,7 +18,7 @@ export async function search(q: string) {
         thumbnail: item.thumbnails?.[0].url,
         // @ts-ignore - no type for id
         id: item.id,
-        likes: $$(new Set<string>()),
+        likes: new Set<string>(),
         added: Date.now(),
         // @ts-ignore - no type for duration
         duration: item.duration?.text ?? '-',
@@ -29,14 +29,3 @@ export async function search(q: string) {
     return [];
   }
 }
-
-// effect(() => {
-//   // sort by likes, then by time added
-//   sampleQueue.sort((a, b) => {
-//     if (a.likes > b.likes) return -1;
-//     if (a.likes < b.likes) return 1;
-//     if (a.added > b.added) return 1;
-//     if (a.added < b.added) return -1;
-//     return 0;
-//   });
-// });

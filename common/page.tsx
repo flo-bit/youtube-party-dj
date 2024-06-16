@@ -13,7 +13,7 @@ export default async function App() {
 	const current = always(() => {
 		if(session.currentlyPlaying) {
 			return <div class="px-4 mx-0">
-			<div class="text-red-500 font-semibold text-sm mb-2">currently playing</div>
+			<div class="text-accent-500 font-semibold text-sm mb-2">currently playing</div>
 			<NowPlaying item={session.currentlyPlaying.$} />
 		</div>
 		} else {
@@ -37,7 +37,7 @@ export default async function App() {
 					</div>
 					{current}
 					<div class="px-4 py-4 border-t border-white/20 mx-0 overflow-y-scroll flex-grow">
-						<Queue items={session.queue} type={'player'} code={code} />
+						<Queue items={session.$.queue} type={'player'} code={code} />
 					</div>
 				</div>
 			</div>

@@ -1089,6 +1089,14 @@ select {
   background-color: rgb(255 255 255 / 0.05);
 }
 
+.fill-accent-500 {
+  fill: #f43f5e;
+}
+
+.stroke-accent-500 {
+  stroke: #f43f5e;
+}
+
 .stroke-white {
   stroke: #fff;
 }
@@ -1238,9 +1246,9 @@ select {
   line-height: 1.25;
 }
 
-.text-red-500 {
+.text-accent-500 {
   --tw-text-opacity: 1;
-  color: rgb(239 68 68 / var(--tw-text-opacity));
+  color: rgb(244 63 94 / var(--tw-text-opacity));
 }
 
 .text-rose-200 {
@@ -1322,9 +1330,9 @@ body {
   --tw-ring-inset: inset;
 }
 
-.focus\:ring-red-600:focus {
+.focus\:ring-accent-600:focus {
   --tw-ring-opacity: 1;
-  --tw-ring-color: rgb(220 38 38 / var(--tw-ring-opacity));
+  --tw-ring-color: rgb(225 29 72 / var(--tw-ring-opacity));
 }
 
 @media (min-width: 640px) {

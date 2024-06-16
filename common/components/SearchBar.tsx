@@ -22,7 +22,7 @@ export default function SearchBar({ onSearch }: { onSearch: (value: string) => v
                 if (event.key === 'Enter') {
                     onSearch(value);
                 }
-            }} name="search" id="search" class="block w-full font-semibold rounded-xl border-0 outline-none py-4 pr-14 text-white bg-white/5 shadow-sm ring-1 ring-inset ring-white/10 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-red-600 text-xl sm:leading-6" />
+            }} name="search" id="search" class="block w-full font-semibold rounded-xl border-0 outline-none py-4 pr-14 text-white bg-white/5 shadow-sm ring-1 ring-inset ring-white/10 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-accent-600 text-xl sm:leading-6" />
             <div class="absolute inset-y-0 right-0 flex py-1.5 pr-1.5">
                 <button class="inline-flex items-center px-1 stroke-white" onclick={() => {
                     onSearch(value);

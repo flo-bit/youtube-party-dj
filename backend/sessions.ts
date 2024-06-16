@@ -6,7 +6,7 @@ export type Item = {
   thumbnail: string;
   duration: string;
   id: string;
-  likes: ObjectRef<Set<string>>;
+  likes: Set<string>;
   liked?: boolean;
   added: number;
 };
@@ -15,12 +15,12 @@ export interface SessionData {
   code: string;
   hostId: string;
   clientIds: Set<string>;
-  queue: ObjectRef<Item[]>;
-  currentlyPlaying: ObjectRef<Item | null>;
+  queue: Item[];
+  currentlyPlaying: Item | null;
 };
 
 // map of session codes to session data
-export const sessions = eternalVar('sessions-50') ?? $$(new Map<string, ObjectRef<SessionData>>());
+export const sessions = eternalVar('sessions') ?? $$(new Map<string, SessionData>());
 
 export const getAndRemoveNextVideoFromSession = (code: string) => {
   const session = sessions.get(code);
@@ -49,7 +49,7 @@ export const getSessionUserHosts = async () => {
   }
 
   // create new
-  const session = await createSession(user.userId);
+  const session = createSession(user.userId);
 
   return session;
 }
@@ -89,13 +89,17 @@ export const toggleLike = async (code: string, videoId: string) => {
       console.log('adding like');
       video.likes.add(user.userId);
     }
+    
+    // this breaks shit
+    //sortVideos(session.queue);
+
     return video;
   } catch (error) {
     console.error(error);
   }
 }
 
-const getUserId = async () => {
+export const getUserId = async () => {
   const privateData = (await Context.getPrivateData(datex.meta)) as { userId: string };
   if (!privateData.userId) {
     privateData.userId = crypto.randomUUID()
@@ -116,10 +120,22 @@ const createSession = (userId: string) => {
     code,
     hostId: userId,
     clientIds: new Set() as Set<string>,
-    queue: $$([] as Item[]),
-    currentlyPlaying: $$(null as Item | null),
+    queue: [] as Item[],
+    currentlyPlaying: null as Item | null,
   };
-  sessions.set(code, $$(session));
+  sessions.set(code, session);
 
   return session;
+}
+
+const sortVideos = (videos: ObjectRef<Item[]>) => {
+  console.log("sorting", videos);
+  videos.sort((a, b) => {
+    if (a.likes.size > b.likes.size) return -1;
+    if (a.likes.size < b.likes.size) return 1;
+    if (a.added > b.added) return 1;
+    if (a.added < b.added) return -1;
+    return 0;
+  });
+  console.log("sorted", videos);
 }

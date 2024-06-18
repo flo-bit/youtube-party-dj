@@ -1,0 +1,6 @@
+deno.lock
+.datex-cache
+node_modules
+.deno_lsp
+.env
+.DS_Store

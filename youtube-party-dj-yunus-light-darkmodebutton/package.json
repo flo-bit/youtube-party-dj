@@ -1,0 +1,18 @@
+{
+  "scripts": {
+    "dev": "concurrently \"uix -l\" \"npx tailwindcss -i ./frontend/main.css -o ./frontend/entrypoint.css --watch\""
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.7",
+    "autoprefixer": "^10.4.19",
+    "concurrently": "^8.2.2",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.3"
+  },
+  "dependencies": {
+    "tailwindcss": "^3.4.3",
+    "node": "^20.14.0",
+    "tailwind-scrollbar": "^3.1.0",
+    "typescript": "^5.4.5"
+  }
+}

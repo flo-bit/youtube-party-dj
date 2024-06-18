@@ -1,0 +1,16 @@
+{
+	"version": "0.2.0",
+	"configurations": [ 
+		{
+			"request": "launch",
+			"name": "Launch Endpoint",
+			"type": "node",
+			"cwd": "${workspaceFolder}",
+			"runtimeExecutable": "/home/vscode/.deno/bin/uix",
+			"attachSimplePort": 9229,
+			"args": [
+			],
+			"console": "integratedTerminal"
+		}
+	]
+}

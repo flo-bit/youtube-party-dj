@@ -1,0 +1,12 @@
+{
+    "imports": {
+        "datex-core-legacy": "https://cdn.unyt.org/datex-core-js-legacy@0.1.x/datex.ts",
+        "datex-core-legacy/": "https://cdn.unyt.org/datex-core-js-legacy@0.1.x/",
+        "unyt_core": "https://cdn.unyt.org/datex-core-js-legacy@0.1.x/datex.ts",
+        "unyt_core/": "https://cdn.unyt.org/datex-core-js-legacy@0.1.x/",
+        "uix": "https://cdn.unyt.org/uix@0.2.x/uix.ts",
+        "uix/": "https://cdn.unyt.org/uix@0.2.x/src/",
+        "uix/jsx-runtime": "https://cdn.unyt.org/uix@0.2.x/src/jsx-runtime/jsx.ts",
+        "unyt-tests/": "https://cdn.unyt.org/unyt_tests/"
+    }
+}

@@ -2,8 +2,8 @@ import { Item } from "backend/data.tsx"
 
 export function NowPlaying({item} : Readonly<{item:Item}>)
 {
-    return <div class="w-full rounded-xl bg-white/5 border border-white/10 h-20 overflow-hidden mb-2">
-          <div class="text-white flex items-left h-full">
+    return <div class="queueframe w-full rounded-xl bg-white/5 border border-white/10 h-20 overflow-hidden mb-2">
+          <div class="queueitem text-white flex items-left h-full">
             <img src={item.thumbnail} class="h-20 w-32 object-cover" alt=" " />
             <div class="flex flex-1 flex-grow justify-between">
               <div class="pl-4 justify-center flex flex-col h-full">

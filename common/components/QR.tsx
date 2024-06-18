@@ -26,8 +26,8 @@ export default function QRCode({ code }: { code: Pointer<string> & string}) {
   });
 
   return (
-    <div class="aspect-square w-3/4 md:w-full border border-white/10 rounded-xl z-10 overflow-hidden bg-white p-4">
-      <div class="w-full h-full flex items-center justify-center text-white">
+    <div id="qr" class="aspect-square w-3/4 md:w-full border border-white/10 rounded-xl z-10 overflow-hidden bg-white p-4">
+      <div id="qr-text" class="w-full h-full flex items-center justify-center text-white">
         {qrCode}
       </div>
     </div>

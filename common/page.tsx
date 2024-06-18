@@ -37,7 +37,7 @@ export default async function App() {
 						{/* @ts-ignore - uix doesn't support types? */}
 						<VideoPlayer queue={session.queue} code={code} />
 					</div>
-					<div class="ml-2 flex items-center justify-center">
+					<div class="flex items-center justify-end mr-12 h-10 mb-4">
 						<ToggleThemeButton/>
 					</div>
 					

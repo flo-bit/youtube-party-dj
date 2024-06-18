@@ -1406,7 +1406,7 @@ select {
   --tw-ring-inset: inset;
 }
 
-.focus\:ring-red-600:focus {
+.focus\:ring-accent-600:focus {
   --tw-ring-opacity: 1;
   --tw-ring-color: rgb(220 38 38 / var(--tw-ring-opacity));
 }

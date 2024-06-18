@@ -14,9 +14,9 @@ export default async function App() {
 	const current = always(() => {
 		if (session.currentlyPlaying) {
 			return <div class="px-4 mx-0">
-				<div class="text-blue-500 dark:text-red-500 font-semibold text-sm mb-2">currently playing</div>
-				<NowPlaying item={session.currentlyPlaying.$} />
-			</div>
+			<div class="text-accent-500 font-semibold text-sm mb-2">currently playing</div>
+			<NowPlaying item={session.currentlyPlaying.$} />
+		</div>
 		} else {
 			return null;
 		}
@@ -43,7 +43,7 @@ export default async function App() {
 					{current}
 					<div
 						class="px-4 py-4 border-t border-black dark:border-white/20 mx-0 overflow-y-scroll flex-grow">
-						<Queue items={session.queue} type={'player'} code={code} />
+						<Queue items={session.$.queue} type={'player'} code={code} />
 					</div>
 				</div>
 			</div>

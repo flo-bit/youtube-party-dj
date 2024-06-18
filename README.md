@@ -36,19 +36,13 @@ deno install --import-map https://cdn.unyt.org/uix/importmap.json -Aq -n uix htt
 npm install
 ```
 
-6. get a youtube api key and add a `.env` file in the root directory of the project with the following content:
-
-```env
-YOUTUBE_API_KEY=<your api key>
-```
-
-7. run development server, run this in the root directory of the project:
+6. run development server, run this in the root directory of the project:
 
 ```bash
 npm run dev
 ```
 
-8. open the browser and navigate to `http://localhost`
+7. open the browser and navigate to `http://localhost`
 
 ## license
 

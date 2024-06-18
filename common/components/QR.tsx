@@ -1,9 +1,9 @@
 import { Pointer } from "unyt_core/runtime/pointers.ts";
 
-export default function QRCode({ code }: { code: Pointer<string> & string}) {
+export default function QRCode({ code }: { code: Pointer<string> & string }) {
   const qrCode = always(() => {
     if (code == "XXXX") {
-      const text = "Loading QR Code ";
+      const text = "Loading QR Code";
       const loadingText = $$(text);
 
       let i = 0;
@@ -17,16 +17,16 @@ export default function QRCode({ code }: { code: Pointer<string> & string}) {
         }
       }, 500);
 
-      return <span style={{color: "black"}}>{loadingText}</span>;
+      return <span style={{ color: "black" }}>{loadingText}</span>;
     } else {
       const qrCodeSrc = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent([new URL(window.location.href).origin, "/client/", code].join(""))}&format=svg`
-  
+
       return <img class="h-full" src={qrCodeSrc} alt="QR code" />;
     }
   });
 
   return (
-    <div class="aspect-square w-3/4 md:w-full border border-white/10 rounded-xl z-10 overflow-hidden bg-white p-4">
+    <div class="aspect-square w-3/4 md:w-full border dark:border-white/10 border-black rounded-xl z-10 overflow-hidden bg-white p-4">
       <div class="w-full h-full flex items-center justify-center text-white">
         {qrCode}
       </div>

@@ -68,6 +68,7 @@ export async function QueueItem({
       return (
         <button
           onclick={async () => {
+
             const session = await getSessionWithCode(code);
             // check if session is null
             if (!session) {
@@ -81,14 +82,14 @@ export async function QueueItem({
 
             session?.$.queue.val.push(item);
           }}
-          class="bg-white/5 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center"
+          class="queueframe bg-white dark:bg-white/5 border border-black dark:border-white/10 rounded-full w-10 h-10 flex items-center justify-center"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             stroke-width="1.5"
-            class="size-6 stroke-white"
+            class="size-6 dark:stroke-white stroke-black queueicon2"
           >
             <path
               stroke-linecap="round"
@@ -102,21 +103,19 @@ export async function QueueItem({
   }
 
   return (
-    <div class="w-full rounded-xl bg-white/5 border border-white/10 h-20 overflow-hidden mb-2">
-      <div class="text-white flex items-left h-full">
+    <div class="queueframe w-full rounded-xl bg-white dark:bg-white/5 border border-black dark:border-white/10 h-20 overflow-hidden mb-2">
+      <div class="queueitem text-black dark:text-white flex items-left h-full">
         <img src={item.thumbnail} class="h-20 w-32 object-cover" alt=" " />
         <div class="flex flex-1 flex-grow justify-between">
           <div class="pl-4 justify-center flex flex-col h-full">
-            <p class="line-clamp-2 font-bold text-md leading-6">
-              {item.title}{" "}
-            </p>
+            <p class="line-clamp-2 font-bold text-md leading-6">{item.title} </p>
             <p class="text-xs">{item.duration} minutes</p>
           </div>
-          <div class="flex h-full justify-center items-center px-2 stroke-white">
+          <div class="queueicon2 flex h-full justify-center items-center px-2 dark:stroke-white stroke-black">
             {getAction()}
           </div>
         </div>
       </div>
-    </div>
-  );
-}
+    </div>)
+};
+

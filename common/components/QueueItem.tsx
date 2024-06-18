@@ -1,10 +1,7 @@
 import { ObjectRef } from "unyt_core/runtime/pointers.ts";
 import { QueueType } from "./Queue.tsx";
 import { getSessionWithCode, Item, toggleLike } from "backend/sessions.ts";
-import { currentTheme } from ".//ToggleThemeButton.tsx";
-import { toggleTheme } from "./ToggleThemeButton.tsx";
 
-const theme = currentTheme;
 export function QueueItem({
   item,
   type,
@@ -67,13 +64,13 @@ export function QueueItem({
       return (
         <button
           onclick={async () => {
-            
+
             const session = await getSessionWithCode(code);
             // check if session is null
             if (!session) {
               return;
             }
-            
+
             // check if queue already contains the video
             if (session.queue.some((v) => v.id == item.id)) {
               return;
@@ -101,9 +98,7 @@ export function QueueItem({
     }
   }
 
-  
-
-     return (
+  return (
     <div class="queueframe w-full rounded-xl bg-white dark:bg-white/5 border border-black dark:border-white/10 h-20 overflow-hidden mb-2">
       <div class="queueitem text-black dark:text-white flex items-left h-full">
         <img src={item.thumbnail} class="h-20 w-32 object-cover" alt=" " />

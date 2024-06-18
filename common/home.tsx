@@ -1,6 +1,6 @@
 export default function App() {
   return (
-    <main class="w-screen h-screen relative text-white">
+    <main class="w-screen h-screen relative text-white bg-gray-950">
       <div class="absolute w-full bg-[#1f1f26] py-8 px-12">
         <img src="./rsc/logo_white.svg" alt="Logo" class="h-12"></img>
       </div>

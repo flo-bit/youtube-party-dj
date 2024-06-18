@@ -6,9 +6,7 @@ export default function VideoPlayer({ queue, code }: Readonly<{ queue: Item[], c
 
   async function playNext() {
     // @ts-ignore - YouTube API
-    if (
-      (!player || player.getPlayerState() !== YT.PlayerState.PLAYING)
-    ) {
+    if (!player || player.getPlayerState() !== YT.PlayerState.PLAYING) {
       const video = await getAndRemoveNextVideoFromSession(code.val);
       if (video) {
         play(video.id);
@@ -72,7 +70,7 @@ export default function VideoPlayer({ queue, code }: Readonly<{ queue: Item[], c
   })
 
   return (
-    <div id="playerframe" class="relative aspect-video bg-white dark:bg-white/5 border border-black dark:border-white/10 w-full overflow-hidden object-cover rounded-xl">
+    <div class="relative aspect-video bg-white dark:bg-white/5 border border-black dark:border-white/10 w-full overflow-hidden object-cover rounded-xl">
       <div
         id="player"
         class="w-full h-full flex items-center justify-center dark:text-white text-black font-semibold"

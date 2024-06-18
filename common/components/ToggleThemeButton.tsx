@@ -1,11 +1,15 @@
 
+let darkMode = false;
 
-export let currentTheme = 'dark';
+export function toggleTheme(){
+    darkMode = !darkMode
+    if(darkMode) {
+        document.body.classList.add('dark');
+    } else {
+        document.body.classList.remove('dark');
+    }
+    localStorage.setItem('theme', darkMode ? 'dark' : 'light');
 
-export function toggleTheme(theme:string){
-    currentTheme = theme
-    const searchBar = document.getElementById('search');
-    const searchButton = document.getElementById('searchbutton');
     const qricon = document.getElementById('qricon');
     const qrButton = document.getElementById('qrButton');
     const qrCloseButton = document.getElementById('qrCloseButton');
@@ -29,18 +33,10 @@ export function toggleTheme(theme:string){
     const queueiconclient = document.getElementById("queueiconclient");
     
 
-    if (theme === "light") {
-        
+    if (!darkMode) {
         document.documentElement.setAttribute('data-theme', 'light');
         document.body.style.backgroundColor = "white";
-        if (searchBar) {
-            searchBar.classList.remove('placeholder:text-gray-400', 'text-white', 'bg-white/5', 'ring-white/10', "placeholder:text-gray-400");
-            searchBar.classList.add('placeholder:text-black', 'text-black', 'bg-white', 'ring-black', "placeholder:text-gray-600");
-        }
-        if (searchButton){
-            searchButton.classList.remove('stroke-white');
-            searchButton.classList.add('stroke-black');
-        }
+        
         if(toggleThemeButton){
             toggleThemeButton.classList.remove('border-white/20');
             toggleThemeButton.classList.add('border-black');
@@ -136,16 +132,8 @@ export function toggleTheme(theme:string){
         
 
     } else {
-        currentTheme = "dark";
         document.body.style.backgroundColor = "#1a191f";
-        if (searchBar) {
-            searchBar.classList.add('placeholder:text-gray-400', 'text-white', 'bg-white/5', 'ring-white/10', 'focus:ring-red-600', "placeholder:text-gray-400");
-            searchBar.classList.remove('placeholder:text-black', 'text-black', 'bg-white', 'ring-black', "placeholder:text-gray-600");
-        }
-        if(searchButton){
-            searchButton.classList.add('stroke-white');
-            searchButton.classList.remove('stroke-black');
-        }
+       
         if(toggleThemeButton){
             toggleThemeButton.classList.add('border-white/20');
             toggleThemeButton.classList.remove('border-black');
@@ -239,54 +227,18 @@ export function toggleTheme(theme:string){
         }
     
     }
-    localStorage.setItem('theme', theme);
 };
 
 // Load the saved theme on initial load
 export default function ToggleThemeButton(){
-    const toggleIcon = () => {
-        const darkIcon = document.getElementById('darkIcon');
-        const lightIcon = document.getElementById('lightIcon');
-        
-            if(darkIcon){
-                darkIcon.classList.remove('size-8');
-                darkIcon.classList.add('size-6');
-            }
-            if(lightIcon){
-                lightIcon.classList.remove('size-8');
-                lightIcon.classList.add('size-6');
-            }
-                setTimeout(() => {
-                    if(darkIcon){
-                        darkIcon.classList.add('size-8');
-                        darkIcon.classList.remove('size-6');
-                    }
-                    if(lightIcon){
-                        lightIcon.classList.add('size-8');
-                        lightIcon.classList.remove('size-6');
-                    }
-            }, 100);
-
-        if (darkIcon?.style.display === 'inline') {
-            darkIcon.style.display = 'none';
-            if (lightIcon){lightIcon.style.display = 'inline';}
-            toggleTheme("light");
-            currentTheme = 'light';
-            
-        } else if (lightIcon?.style.display === 'inline') {
-            if(darkIcon){darkIcon.style.display = 'inline';}
-            lightIcon.style.display = 'none';
-            toggleTheme('dark');
-            currentTheme = 'dark';
-        }
-    };
+    toggleTheme();
 
     return (
-        <div >
-            <button id="toggleThemeButton" onclick={toggleIcon} class="cursor-pointer">
-                <div class="flex-1 items-center justify-center w-10">
-                    <img class="rounded-lg size-8" id="darkIcon" src="./darkSunNew.png" alt="Dark Sun" style="display: inline;" />
-                    <img class="rounded-lg size-8" id="lightIcon" src="./lightMoon-cropped.svg" alt="Light Moon" style="display: none; padding: 0.5rem;" />
+        <div>
+            <button onclick={toggleTheme} class="cursor-pointer border-black dark:border-white/20">
+                <div class="flex items-center justify-center w-10">
+                    <img class="rounded-lg size-8 active:size-6 hidden dark:block" src="./darkSunNew.png" alt="Dark Sun" />
+                    <img class="rounded-lg size-8 active:size-6 p-2 block dark:hidden" src="./lightMoon-cropped.svg" alt="Light Moon" />
                 </div>
             </button>
         </div>

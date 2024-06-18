@@ -5,8 +5,6 @@ import { search } from "backend/data.tsx";
 import { addClientToSession, getSessionWithCode, Item } from "backend/sessions.ts";
 import { Context } from "uix/routing/context.ts";
 import ToggleThemeButton from "./components/ToggleThemeButton.tsx";
-import {currentTheme} from "./components/ToggleThemeButton.tsx";
-import {toggleTheme} from "./components/ToggleThemeButton.tsx";
 
 export default async function App(ctx: Context) {
 	const code = (ctx.urlPattern?.pathname.groups[0] ?? "XXXX");
@@ -32,12 +30,6 @@ export default async function App(ctx: Context) {
 		return toggle(showSearch,
 			<button onclick={() => {
 				showSearch.val = false;
-				if(currentTheme == 'dark'){
-					toggleTheme('dark')
-				} 
-				if(currentTheme == 'light'){
-					toggleTheme('light')
-				}
 				
 			}} id="queueiconframeclient" class="absolute bottom-2 right-2 w-20 h-20 bg-white/5 border border-white/10 rounded-full flex items-center justify-center backdrop-blur-md">
 
@@ -47,13 +39,7 @@ export default async function App(ctx: Context) {
 			</button>,
 			<button onclick={() => {
 				showSearch.val = true;
-				if(currentTheme == 'dark'){
-					toggleTheme('dark')
-				
-				} 
-				if(currentTheme == 'light'){
-					toggleTheme('light')
-				}
+
 				// set focus to search bar
 				const input = document.querySelector('input');
 				if (input) {

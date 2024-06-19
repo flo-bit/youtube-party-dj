@@ -3,7 +3,7 @@ import VideoPlayer from "./components/VideoPlayer.tsx";
 import { Queue } from "./components/Queue.tsx";
 import QRCodeOverlay from "./components/QRCodeOverlay.tsx";
 import { Item, getSessionUserHosts } from "backend/sessions.ts";
-import { NowPlaying } from "common/components/NowPlaying.tsx";
+import { NowPlaying } from "./components/NowPlaying.tsx";
 import ToggleThemeButton from "./components/ToggleThemeButton.tsx";
 
 export default async function App() {

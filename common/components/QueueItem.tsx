@@ -125,7 +125,7 @@ export async function QueueItem({
             document.getElementById(`button-${item.id}`).style.display = 'none';
             document.getElementById(`check-${item.id}`).style.display = 'flex';
             session?.$.queue.val.push(item);
-            
+            toggleLike(code, item.id);
           }}
           id={`button-${item.id}`}
           class="queueframe bg-white dark:bg-white/5 border border-black dark:border-white/10 rounded-full w-10 h-10 flex items-center justify-center"

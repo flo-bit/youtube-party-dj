@@ -11,7 +11,7 @@ function showErrorNotification(message) {
     }
 
     const notification = document.createElement('div');
-    notification.classList.add( 'bg-orange-200','border-r-4','border-l-4', 'border-orange-600', 'text-orange-800', 'p-6', 'fixed', 'top-0', 'right-5','left-5');
+    notification.classList.add( 'bg-orange-200','border-r-4','border-l-4', 'border-orange-600', 'text-orange-800', 'p-6', 'fixed', 'top-0', 'right-4','left-4');
 
     const boldText = document.createElement('p');
     boldText.classList.add('font-bold');

@@ -11,7 +11,7 @@ function showErrorNotification(message) {
     }
 
     const notification = document.createElement('div');
-    notification.classList.add( 'bg-orange-200','border-r-4','border-l-4', 'border-orange-600', 'text-orange-800', 'p-6', 'fixed', 'top-0', 'right-4','left-4');
+    notification.classList.add( 'bg-orange-100','border-r-4','border-l-4', 'border-orange-500', 'text-orange-700', 'p-6', 'fixed', 'top-0', 'right-4','left-4');
 
     const boldText = document.createElement('p');
     boldText.classList.add('font-bold');
@@ -114,11 +114,8 @@ export async function QueueItem({
             if (session.queue.some((v) => v.id == item.id)) {
               const button = document.getElementById(`button-${item.id}`);
               addLike(code, item.id);
-              showErrorNotification("\""+item.title +'\".'); //Still want to add this video to the queue?
-              
-              // Debugging logs
-              console.log("Current user ID:", userId);
-              console.log("Current likes:", item.likes.val);
+              showErrorNotification("\""+item.title +'\".'); //optional Feature: Still want to add this video to the queue?
+
               // Automatically like the video when added to the queue if not already liked
               
               button.classList.remove( 'border-black', 'dark:border-white/10');

@@ -11,13 +11,16 @@ function showErrorNotification(message) {
     }
 
     const notification = document.createElement('div');
-    notification.classList.add('bg-orange-100', 'border-l-4', 'border-orange-500', 'text-orange-700', 'p-6', 'fixed', 'top-0', 'right-5','left-4');
+    notification.classList.add( 'bg-orange-200','border-r-4','border-l-4', 'border-orange-600', 'text-orange-800', 'p-6', 'fixed', 'top-0', 'right-4','left-4');
 
     const boldText = document.createElement('p');
     boldText.classList.add('font-bold');
-    boldText.textContent = message;
+    boldText.textContent = " This video is already in the queue: "
+    const videoTitel = document.createElement('p');
+    videoTitel.textContent = message;
 
     notification.appendChild(boldText);
+    notification.appendChild(videoTitel);
 
     document.body.appendChild(notification);
 
@@ -26,7 +29,7 @@ function showErrorNotification(message) {
     setTimeout(() => {
         notification.remove();
         currentNotification = null;
-    }, 3500);
+    }, 2800);
 }
 
 
@@ -111,7 +114,7 @@ export async function QueueItem({
             if (session.queue.some((v) => v.id == item.id)) {
               const button = document.getElementById(`button-${item.id}`);
               addLike(code, item.id);
-              showErrorNotification(" This video is already in the queue:\""+item.title +'\"!');
+              showErrorNotification("\""+item.title +'\".'); //Still want to add this video to the queue?
               
               // Debugging logs
               console.log("Current user ID:", userId);

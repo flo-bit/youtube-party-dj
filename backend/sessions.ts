@@ -66,7 +66,34 @@ export const addClientToSession = async (code: string) => {
 
   return session;
 }
+export const addLike = async (code: string, videoId: string) => {
+  console.log(code, videoId);
+  try {
+    const user = await getUserId();
 
+    const session = sessions.get(code);
+    console.log(session);
+    if (!session) {
+      return;
+    }
+    const video = session.queue.find((video) => video.id == videoId);
+    console.log(video);
+    if (!video) {
+      return;
+    }
+    if (!video.likes.has(user.userId)) {
+      console.log('adding like');
+      video.likes.add(user.userId);
+    }
+    
+    // this breaks shit
+    //sortVideos(session.queue);
+
+    return video;
+  } catch (error) {
+    console.error(error);
+  }
+}
 export const toggleLike = async (code: string, videoId: string) => {
   console.log(code, videoId);
   try {

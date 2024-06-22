@@ -1,6 +1,6 @@
 import { ObjectRef } from "unyt_core/runtime/pointers.ts";
 import { QueueType } from "./Queue.tsx";
-import { getSessionWithCode, getUserId, Item, toggleLike } from "backend/sessions.ts";
+import { getSessionWithCode, getUserId, Item, toggleLike, addLike} from "backend/sessions.ts";
 
 let currentNotification = null;
 
@@ -11,7 +11,7 @@ function showErrorNotification(message) {
     }
 
     const notification = document.createElement('div');
-    notification.classList.add('bg-orange-100', 'border-l-4', 'border-orange-500', 'text-orange-700', 'p-6', 'fixed', 'top-0', 'right-10','left-10');
+    notification.classList.add('bg-orange-100', 'border-l-4', 'border-orange-500', 'text-orange-700', 'p-6', 'fixed', 'top-0', 'right-5','left-4');
 
     const boldText = document.createElement('p');
     boldText.classList.add('font-bold');
@@ -110,7 +110,14 @@ export async function QueueItem({
             // check if queue already contains the video
             if (session.queue.some((v) => v.id == item.id)) {
               const button = document.getElementById(`button-${item.id}`);
+              addLike(code, item.id);
               showErrorNotification(" This video is already in the queue:\""+item.title +'\"!');
+              
+              // Debugging logs
+              console.log("Current user ID:", userId);
+              console.log("Current likes:", item.likes.val);
+              // Automatically like the video when added to the queue if not already liked
+              
               button.classList.remove( 'border-black', 'dark:border-white/10');
               button.classList.add('shake', 'border-red-500', 'dark:border-red-500');
               setTimeout(() => {
@@ -122,7 +129,7 @@ export async function QueueItem({
             document.getElementById(`button-${item.id}`).style.display = 'none';
             document.getElementById(`check-${item.id}`).style.display = 'flex';
             session?.$.queue.val.push(item);
-            
+            toggleLike(code, item.id);
           }}
           id={`button-${item.id}`}
           class="queueframe bg-white dark:bg-white/5 border border-black dark:border-white/10 rounded-full w-10 h-10 flex items-center justify-center"

@@ -12,6 +12,7 @@ export default function VideoPlayer({ queue, code }: Readonly<{ queue: Item[], c
     if (!player || player.getPlayerState() !== YT.PlayerState.PLAYING) {
       const video = await getAndRemoveNextVideoFromSession(code.val);
       if (video) {
+        playedVideos.push(video);
         play(video.id);
       }
     }

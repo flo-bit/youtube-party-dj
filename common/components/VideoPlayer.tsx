@@ -1,9 +1,12 @@
 import { getAndRemoveNextVideoFromSession, Item } from "backend/sessions.ts";
+//showing history
+import {playedVideos} from "common/client.tsx"
 
 export default function VideoPlayer({ queue, code }: Readonly<{ queue: Item[], code: string }>) {
   // @ts-ignore - YouTube API
   let player;
-
+  //let skipVotes = 0  (get from NowPlaying, need skip button/count);
+  //let skipVoteMax = 10 (example when it gets skipped); 
   async function playNext() {
     // @ts-ignore - YouTube API
     if (!player || player.getPlayerState() !== YT.PlayerState.PLAYING) {
@@ -13,7 +16,16 @@ export default function VideoPlayer({ queue, code }: Readonly<{ queue: Item[], c
       }
     }
   }
-
+  //Idea: Skipping 
+  function handleSkip(){
+    if (skipVotes == skipVoteMax) {
+      if (player.getPlayerState() == YT.PlayerState.PLAYING) {
+        const video = await getAndRemoveNextVideoFromSession(code);
+        if (video) {
+          play(video.id);
+      }
+    }
+  }
   function play(videoId: string) {
     // @ts-ignore - YouTube API
     if (player) {

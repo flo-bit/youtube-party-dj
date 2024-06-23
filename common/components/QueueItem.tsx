@@ -15,7 +15,7 @@ function showErrorNotification(message) {
 
     const boldText = document.createElement('p');
     boldText.classList.add('font-bold');
-    boldText.textContent = " This video is already in the queue: "
+    boldText.textContent = " This video is already in the queue or currently playing: "
     const videoTitel = document.createElement('p');
     videoTitel.textContent = message;
 
@@ -111,7 +111,7 @@ export async function QueueItem({
             }
 
             // check if queue already contains the video
-            if (session.queue.some((v) => v.id == item.id)) {
+            if (session.queue.some((v) => v.id == item.id) || session.currentlyPlaying.id == item.id) {
               const button = document.getElementById(`button-${item.id}`);
               addLike(code, item.id);
               showErrorNotification("\""+item.title +'\".'); //optional Feature: Still want to add this video to the queue?

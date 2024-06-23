@@ -2,9 +2,9 @@ import QRCode from "./components/QR.tsx";
 import VideoPlayer from "./components/VideoPlayer.tsx";
 import { Queue } from "./components/Queue.tsx";
 import QRCodeOverlay from "./components/QRCodeOverlay.tsx";
-import { Item, getSessionUserHosts } from "backend/sessions.ts";
+import { getSessionUserHosts } from "backend/sessions.ts";
 import { NowPlaying } from "./components/NowPlaying.tsx";
-import ToggleThemeButton from "./components/ToggleThemeButton.tsx";
+import ToggleThemeButton, { loadInitialTheme } from "./components/ToggleThemeButton.tsx";
 
 export default async function App() {
 	const session = await getSessionUserHosts()
@@ -21,6 +21,8 @@ export default async function App() {
 			return null;
 		}
 	})
+
+	loadInitialTheme();
 
 	return (
 		<main class="w-screen h-screen relative bg-gray-50 dark:bg-gray-950">

@@ -1,6 +1,6 @@
 let darkMode = false;
 
-function loadInitialTheme() {
+export function loadInitialTheme() {
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         toggleTheme();
@@ -25,8 +25,6 @@ export function toggleTheme() {
 
 // Load the saved theme on initial load
 export default function ToggleThemeButton() {
-    loadInitialTheme();
-
     return (
         <div>
             <button onclick={toggleTheme} class="cursor-pointer border-black dark:border-white/20">

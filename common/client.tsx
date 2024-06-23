@@ -6,6 +6,8 @@ import { addClientToSession, getSessionWithCode, Item } from "backend/sessions.t
 import { Context } from "uix/routing/context.ts";
 import ToggleThemeButton from "./components/ToggleThemeButton.tsx";
 
+export const playedVideos :Item[] = $$([]);
+
 export default async function App(ctx: Context) {
 	const code = (ctx.urlPattern?.pathname.groups[0] ?? "XXXX");
 
@@ -72,6 +74,10 @@ export default async function App(ctx: Context) {
 				{renderToggle()}
 
 				<QRCodeOverlay code={code} />
+				<button onclick={()=>toggleHistory.val = !toggleHistory.val} class="absolute bottom-4 right-2 w-20 h-20 bg-white dark:bg-white/2 border border-black dark:border-white/10 rounded-full flex items-center justify-center backdrop-blur-md">
+                    		PLAYING HISTORY
+                		</button>
+				{toggle(toggleHistory, <Queue items={playedVideos} type={'history'} code={code}/>)}
 			</div>
 		</main>
 	);

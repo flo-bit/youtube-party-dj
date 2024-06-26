@@ -29,7 +29,7 @@
 
   @keyframes fly-in {
     from {
-      transform: translateY(-20px);
+      transform: translateY(-40px);
       opacity: 0;
     }
     to {
@@ -39,19 +39,29 @@
   }
 
   .fly-in-animation {
-    animation: fly-in 0.2s ease-out forwards;
-  }
-  @keyframes fly-out {
-    0% {
-      transform: translateY(0);
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(100%);
-      opacity: 0;
-    }
+    animation: fly-in 0.22s ease-out forwards;
   }
 
+ @keyframes fly-out {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  25% {
+    transform: translateY(10px);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(20px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+}
+
+
   .fly-out-animation {
-    animation: fly-out 0.2 forwards;
+    animation: fly-out 0.22s ease-out forwards;
   }

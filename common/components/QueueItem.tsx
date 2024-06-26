@@ -76,13 +76,13 @@ export async function QueueItem({
 
     if (button && plusIcon) {
       plusIcon.classList.add("fly-out-animation");
-      await sleep(250);
+      await sleep(220);
       plusIcon.classList.remove("fly-out-animation");
       button.innerHTML = hookIcon;
       const hookElement = button.querySelector('.hook');
       if (hookElement) {
         hookElement.classList.add("fly-in-animation");
-        await sleep(250);
+        await sleep(220);
         hookElement.classList.remove("fly-in-animation");
       }
     }

@@ -22,3 +22,36 @@
 .bounce-animation {
   animation: bounce 0.4s;
 }
+
+.size-6 path {
+    transition: d 0.3s ease-in-out;
+  }
+
+  @keyframes fly-in {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .fly-in-animation {
+    animation: fly-in 0.2s ease-out forwards;
+  }
+  @keyframes fly-out {
+    0% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    100% {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+  }
+
+  .fly-out-animation {
+    animation: fly-out 0.2 forwards;
+  }

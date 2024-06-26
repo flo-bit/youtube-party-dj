@@ -2,6 +2,10 @@ export default function App() {
 
   const typed_code = $$("");
 
+  const navigateToWelcome = () => {
+    const code = typed_code.val.trim() === "" ? "XXXX" : typed_code.val;
+    window.location.href = `/welcome?code=${encodeURIComponent(code)}`;
+  };
 
   return (
     <main class="w-screen h-screen absolute inset-0 text-white bg-gray-950">
@@ -61,13 +65,13 @@ export default function App() {
                 value={typed_code}
                 onchange={() => {
                   typed_code.val = typed_code;
-                  console.log(typed_code.val);
                 }}
                 class="text-black font-bold rounded-lg py-3 w-full text-center text-2xl"
               />
-              <a href="/client" rel="noopener noreferrer">
-                <button class="bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-full py-6 px-10 w-full text-2xl"
-                        // TO-DO: onclick, navigate to the screen to enter your nick name but with the typed_code
+              <a rel="noopener noreferrer">
+                <button 
+                  class="bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-full py-6 px-10 w-full text-2xl"
+                  onclick={navigateToWelcome} 
                 >
                   Join the party 
                 </button>

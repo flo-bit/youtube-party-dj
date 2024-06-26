@@ -15,6 +15,7 @@ export default {
 		const App = await import("../common/client.tsx");
 		return App.default(ctx);
 	},
-
+	"/welcome": import("../common/welcome.tsx"),
+	
 	"/": import("../common/home.tsx"),
 }

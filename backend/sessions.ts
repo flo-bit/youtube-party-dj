@@ -11,6 +11,8 @@ export type Item = {
   added: number;
 };
 
+// TO ADD: In the session, clientName should also be saved together with clientId
+
 export interface SessionData {
   code: string;
   hostId: string;
@@ -91,7 +93,7 @@ export const toggleLike = async (code: string, videoId: string) => {
     }
     
     // this breaks shit
-    //sortVideos(session.queue);
+    // sortVideos(session.queue);
 
     return video;
   } catch (error) {

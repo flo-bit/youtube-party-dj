@@ -1,24 +1,32 @@
 import { Context } from "uix/routing/context.ts";
-import { ObjectRef } from "unyt_core/runtime/pointers.ts";
+import { ObjectRef,Pointer } from "unyt_core/runtime/pointers.ts";
 
 export type Item = {
   title: string;
   thumbnail: string;
-  duration: string;
+  duration: number; //total seconds
   id: string;
   likes: Set<string>;
   liked?: boolean;
   added: number;
+  type : 'youtube' | 'spotify';
 };
 
 export interface SessionData {
   code: string;
   hostId: string;
   clientIds: Set<string>;
-  queue: Item[];
+  queue: ObjectRef<Item[]>;
   currentlyPlaying: Item | null;
+  spotifyUnlocked : boolean;
+  spotifyInformation : spotifyInformation;
 };
 
+export type spotifyInformation = {
+  codeVerifier : string;
+  accessToken: string;
+
+}
 // map of session codes to session data
 export const sessions = eternalVar('sessions') ?? $$(new Map<string, SessionData>());
 
@@ -107,6 +115,22 @@ export const getUserId = async () => {
   return privateData;
 }
 
+export const getSortedQueue = (code : string) => {
+  const session = sessions.get(code);
+  const queue : Pointer<ObjectRef<Item[]>> = always(()=>{
+      session?.queue.sort((a, b) => {
+        if (a.likes.size > b.likes.size) return -1;
+        if (a.likes.size < b.likes.size) return 1;
+        if (a.added > b.added) return 1;
+        if (a.added < b.added) return -1;
+        return 0;
+  }); 
+  
+  return queue;
+  });
+  return queue
+}
+
 const createSession = (userId: string) => {
   // create random code that is not already in use
   let code = null;
@@ -116,15 +140,20 @@ const createSession = (userId: string) => {
     // generate a random 4 character code consisting of uppercase letters and numbers
     code = Array.from({ length: 4 }, () => Math.floor(Math.random() * 36).toString(36).toUpperCase()).join('');
   }
-  const session = {
+  const session = $$({
     code,
     hostId: userId,
     clientIds: new Set() as Set<string>,
-    queue: [] as Item[],
+    queue: $$([]) as ObjectRef<Item[]>, 
     currentlyPlaying: null as Item | null,
-  };
+    spotifyUnlocked : $$(false),
+    spotifyInformation : {
+      codeVerifier : '' as string,
+      accessToken: '' as string,
+    }
+  });
   sessions.set(code, session);
-
+  
   return session;
 }
 

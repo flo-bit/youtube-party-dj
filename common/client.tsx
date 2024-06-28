@@ -1,7 +1,7 @@
 import { Queue } from "./components/Queue.tsx";
 import SearchBar from "./components/SearchBar.tsx";
 import Settings from "./components/Settings.tsx";
-import { search } from "backend/data.tsx";
+import { searchYoutube, searchSpotify } from "backend/data.tsx";
 import { addClientToSession, Item } from "backend/sessions.ts";
 import { Context } from "uix/routing/context.ts";
 import { loadInitialTheme } from "./components/ToggleThemeButton.tsx";
@@ -22,9 +22,13 @@ export default async function App(ctx: Context) {
 
 	const onSearch = async (value: string) => {
 		activeView.val = 'search';
-
 		searchResults.splice(0, searchResults.length);
-		searchResults.push(...await search(value));
+
+		if(session.spotifyUnlocked && session.spotifyInformation.accessToken!='') {
+			searchResults.push(...await searchSpotify(value, session.spotifyInformation.accessToken));
+		}
+		searchResults.push(...await searchYoutube(value));
+		//a different sorting of youtube and spotify entries could help break things up here
 	};
 
 	const view = always(() => {

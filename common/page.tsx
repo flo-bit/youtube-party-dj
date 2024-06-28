@@ -5,6 +5,8 @@ import QRCodeOverlay from "./components/QRCodeOverlay.tsx";
 import { getSessionUserHosts } from "backend/sessions.ts";
 import { NowPlaying } from "./components/NowPlaying.tsx";
 import ToggleThemeButton, { loadInitialTheme } from "./components/ToggleThemeButton.tsx";
+import {generateRandomString, sha256, base64encode, loadSpotifySDK, authorizeSpotify, getAccessToken } from "../common/spotifyHelper.tsx"
+
 
 export default async function App() {
 	const session = await getSessionUserHosts()
@@ -24,12 +26,31 @@ export default async function App() {
 
 	loadInitialTheme();
 
+	const CLIENT_ID = '87684034f00b4534b87af30e3b582d09';
+	const CLIENT_REDIRECT = 'http://localhost/player'
+
+	const codeVerifier  = generateRandomString(64);
+	if (session.spotifyInformation?.codeVerifier == '')  session.spotifyInformation.codeVerifier = codeVerifier;
+	
+	const hashed = await sha256(codeVerifier);
+	const codeChallenge = base64encode(hashed);
+
+	loadSpotifySDK();
+	console.log(session);
+	
+
+	const urlParams = new URLSearchParams(window.location.search);
+	const spotify_code  = urlParams.get('code');
+	
+	if (spotify_code && !session.spotifyUnlocked) await getAccessToken(session.code, spotify_code, CLIENT_ID,CLIENT_REDIRECT);
+	
+	
 	return (
 		<main class="w-screen h-screen relative bg-gray-50 dark:bg-gray-950">
 			<div class="mx-auto grid md:grid-cols-2 h-screen">
 				<div class="h-screen hidden md:flex items-center flex-col justify-center p-8">
 					<QRCode code={code} />
-					<div class="text-black dark:text-white text-3xl font-semibold mt-4">Party code: <span>{code}</span></div>
+					<div class="text- dark:text-white text-3xl font-semibold mt-4">Party code: <span>{code}</span></div>
 				</div>
 				<div
 					class="flex flex-col overflow-y-hidden h-screen bg-white dark:bg-white/5 border border-black dark:border-white/10 rounded-xl"
@@ -51,5 +72,10 @@ export default async function App() {
 			</div>
 
 			<QRCodeOverlay code={code} />
+
+			<button class="fo" onclick={()=>authorizeSpotify(CLIENT_ID, CLIENT_REDIRECT, codeChallenge)}>
+					<img src="./rsc/spotify_icon.png" height="50" width="50" alt="" />
+			</button>
+
 		</main>);
 }

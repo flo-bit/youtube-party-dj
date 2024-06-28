@@ -9,6 +9,13 @@ export async function QueueItem({
 }: Readonly<{ item: ObjectRef<Item>; type: QueueType; code: string }>) {
   const userId = (await getUserId()).userId;
 
+  const minutes = Math.floor(item.duration / 60).toString();
+  const seconds = item.duration % 60;
+  let printseconds = seconds.toString();
+  if(seconds < 10) printseconds = "0"+seconds.toString(); 
+  const duration = minutes + ":" + printseconds;
+
+
   async function renderIcon() {
     const session = await getSessionWithCode(code);
     if (!session) return null;
@@ -165,7 +172,8 @@ export async function QueueItem({
         <div class="flex flex-1 flex-grow justify-between">
           <div class="pl-4 justify-center flex flex-col h-full">
             <p class="line-clamp-2 font-bold text-md leading-6">{item.title}</p>
-            <p class="text-xs">{item.duration} minutes</p>
+            <p class="text-xs">{duration} minutes</p>
+            <p class="text-xs">{item.type}</p>
           </div>
           <div class="queueicon2 flex h-full justify-center items-center stroke-black dark:stroke-white px-2">
             {getAction()}

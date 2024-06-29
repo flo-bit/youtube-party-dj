@@ -4,6 +4,8 @@ import { Queue } from "./components/Queue.tsx";
 import QRCodeOverlay from "./components/QRCodeOverlay.tsx";
 import { getSessionUserHosts } from "backend/sessions.ts";
 import { NowPlaying } from "./components/NowPlaying.tsx";
+import addDurations from "./helper.tsx";
+
 import ToggleThemeButton, {
   loadInitialTheme,
 } from "./components/ToggleThemeButton.tsx";
@@ -28,18 +30,6 @@ export default async function App() {
     }
   });
 
-  function addDurations(duration1, duration2) {
-    let duration1Partitions = duration1.split(":").map(Number);
-    let duration2Partitions = duration2.split(":").map(Number);
-    let duration1Seconds = duration1Partitions[0] * 60 + duration1Partitions[1];
-    let duration2Seconds = duration2Partitions[0] * 60 + duration2Partitions[1];
-    let totalSeconds = duration1Seconds + duration2Seconds;
-    let minutes = Math.floor(totalSeconds / 60);
-    let seconds = totalSeconds % 60;
-    seconds = seconds < 10 ? "0" + seconds : seconds;
-    return `${minutes}:${seconds}`;
-  }
-
   const timeLeft = always(() => {
     let timeCounter = "0:00";
     session.queue.forEach((item) => {
@@ -49,8 +39,6 @@ export default async function App() {
   });
 
   loadInitialTheme();
-
-  window.timeLeft = timeLeft;
 
   return (
     <main class="w-screen h-screen relative bg-gray-50 dark:bg-gray-950">
@@ -71,7 +59,7 @@ export default async function App() {
           </div>
 
           {current}
-          <div class="px-4 py-4 border-t border-black dark:border-white/20 mx-0 overflow-y-scroll flex-grow">
+          <div class="px-4 py-4 border-t border-black dark:border-white/20 dark:text-white mx-0 overflow-y-scroll flex-grow">
             {always(() =>
               timeLeft.val !== "0:00" ? (
                 <p class="mb-4"> Queue will last for {timeLeft} </p>

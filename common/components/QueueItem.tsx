@@ -1,6 +1,6 @@
 import { ObjectRef } from "unyt_core/runtime/pointers.ts";
 import { QueueType } from "./Queue.tsx";
-import { getSessionWithCode, getUserId, Item, toggleLike} from "backend/sessions.ts";
+import { getSessionWithCode, getUserId, Item, toggleLike } from "backend/sessions.ts";
 
 export async function QueueItem({
   item,
@@ -8,6 +8,10 @@ export async function QueueItem({
   code
 }: Readonly<{ item: ObjectRef<Item>; type: QueueType; code: string }>) {
   const userId = (await getUserId()).userId;
+
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
   async function renderIcon() {
     const session = await getSessionWithCode(code);
@@ -19,6 +23,7 @@ export async function QueueItem({
           <svg
             viewBox="0 0 24 24"
             class="size-6 items-center justify-center"
+            id={`hook-${item.id}`}
           >
             <path
               fill="none"
@@ -38,7 +43,8 @@ export async function QueueItem({
           fill="none"
           viewBox="0 0 24 24"
           stroke-width="1.5"
-          class="size-6 dark:stroke-white stroke-black queueicon2"
+          class="size-6 dark:stroke-white stroke-black queueicon2 "
+          id={`plus-${item.id}`}
         >
           <path
             stroke-linecap="round"
@@ -49,27 +55,36 @@ export async function QueueItem({
       );
     }
   }
+
   async function handleButtonClick() {
-    const session = await getSessionWithCode(code);
-    if (!session) {
-      return;
-    }
     const button = document.getElementById(`button-${item.id}`);
-    if (button) {
-      button.innerHTML = `
-        <div class="text-black dark:text-green-500 flex items-center justify-center">
-          <svg viewBox="0 0 24 24" class="size-6 items-center justify-center">
-            <path
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M5 12l5 5L20 7"
-            />
-          </svg>
-        </div>
-      `;
+    const plusIcon = document.getElementById(`plus-${item.id}`);
+    const hookIcon = `
+      <div class="hook text-black dark:text-green-500 flex items-center justify-center fly-in-animation">
+        <svg viewBox="0 0 24 24" class="size-6 items-center justify-center">
+          <path
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M5 12l5 5L20 7"
+          />
+        </svg>
+      </div>
+    `;
+
+    if (button && plusIcon) {
+      plusIcon.classList.add("fly-out-animation");
+      await sleep(220);
+      plusIcon.classList.remove("fly-out-animation");
+      button.innerHTML = hookIcon;
+      const hookElement = button.querySelector('.hook');
+      if (hookElement) {
+        hookElement.classList.add("fly-in-animation");
+        await sleep(220);
+        hookElement.classList.remove("fly-in-animation");
+      }
     }
   }
 
@@ -135,22 +150,20 @@ export async function QueueItem({
     } else if (type === "search") {
       return (
         <button
-          onclick= {async () => {
-            handleButtonClick();
+          onclick={async () => {
+            await handleButtonClick();
+            await sleep(250);
             const session = await getSessionWithCode(code);
-            if (!session) { // check if session is null
-              return;
-            }
+            if (!session) return;
 
-            if ((session.queue.some((v) => v.id == item.id) || session.currentlyPlaying?.id == item.id) ) {
-              //addLike(code, item.id);
+            if ((session.queue.some((v) => v.id == item.id) || session.currentlyPlaying?.id == item.id)) {
               return;
             }
             session?.$.queue.val.push(item);
             toggleLike(code, item.id);
           }}
           id={`button-${item.id}`}
-          class="queueframe bg-white dark:bg-white/5 border border-black dark:border-white/10 rounded-full w-10 h-10 flex items-center justify-center"
+          class="queueframe bg-white dark:bg-white/5 border border-black dark:border-white/10 rounded-full w-10 h-10 flex items-center justify-center overflow-hidden "
         >
           {await renderIcon()}
         </button>
@@ -159,7 +172,7 @@ export async function QueueItem({
   }
 
   return (
-    <div class="queueframe w-full rounded-xl bg-white dark:bg-white/5 border border-black dark:border-white/10 h-20 overflow-hidden mb-2">
+    <div class="queueframe w-full rounded-xl bg-white dark:bg-white/5 border border-black dark:border-white/10 h-20 overflow-hidden mb-2 ">
       <div class="queueitem text-black dark:text-white flex items-left h-full">
         <img src={item.thumbnail} class="h-20 w-32 object-cover" alt=" " />
         <div class="flex flex-1 flex-grow justify-between">
@@ -169,7 +182,6 @@ export async function QueueItem({
           </div>
           <div class="queueicon2 flex h-full justify-center items-center stroke-black dark:stroke-white px-2">
             {getAction()}
-            
           </div>
         </div>
       </div>

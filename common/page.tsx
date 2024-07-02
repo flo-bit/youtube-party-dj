@@ -9,6 +9,7 @@ import addDurations from "./helper.tsx";
 import ToggleThemeButton, {
   loadInitialTheme,
 } from "./components/ToggleThemeButton.tsx";
+import { Item } from "../backend/sessions.ts";
 
 export default async function App() {
   const session = await getSessionUserHosts();
@@ -32,7 +33,7 @@ export default async function App() {
 
   const timeLeft = always(() => {
     let timeCounter = "0:00";
-    session.queue.forEach((item) => {
+    session.queue.forEach((item: Item) => {
       timeCounter = addDurations(timeCounter, item.duration);
     });
     return timeCounter;
@@ -46,7 +47,7 @@ export default async function App() {
         <div class="h-screen hidden md:flex items-center flex-col justify-center p-8">
           <QRCode code={code} />
           <div class="text-black dark:text-white text-3xl font-semibold mt-4">
-            Party code: <span>{code}</span>
+            Party code: <a target="_blank" href={window.location.origin + '/client/' + code}>{code}</a>
           </div>
         </div>
         <div class="flex flex-col overflow-y-hidden h-screen bg-white dark:bg-white/5 border border-black dark:border-white/10 rounded-xl">

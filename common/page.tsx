@@ -4,7 +4,7 @@ import { Queue } from "./components/Queue.tsx";
 import { QueueItem } from "./components/QueueItem.tsx";
 
 import QRCodeOverlay from "./components/QRCodeOverlay.tsx";
-import { getSessionUserHosts } from "backend/sessions.ts";
+import { getSessionUserHosts, getSortedQueue } from "backend/sessions.ts";
 import { NowPlaying } from "./components/NowPlaying.tsx";
 import addDurations from "./helper.tsx";
 
@@ -33,10 +33,7 @@ export default async function App() {
     }
   });
 
-
-	const sorted = always(() => {
-		return session.queue.toSorted((a, b) => b.likes.size - a.likes.size)
-	});
+	const sorted = await getSortedQueue(code);
 
   const timeLeft = always(() => {
     let timeCounter = "0:00";

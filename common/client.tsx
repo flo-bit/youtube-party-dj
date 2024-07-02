@@ -1,7 +1,7 @@
 import { QueueItem } from "./components/QueueItem.tsx";
 import SearchBar from "./components/SearchBar.tsx";
 import { search } from "backend/data.tsx";
-import { addClientToSession, Item } from "backend/sessions.ts";
+import { addClientToSession, getSortedQueue, Item } from "backend/sessions.ts";
 import { Context } from "uix/routing/context.ts";
 import { loadInitialTheme } from "./components/ToggleThemeButton.tsx";
 import NavMenu from "./components/nav/NavMenu.tsx";
@@ -15,9 +15,7 @@ export default async function App(ctx: Context) {
     return;
   }
 
-	const sorted = always(() => {
-		return session.queue.toSorted((a, b) => b.likes.size - a.likes.size)
-	});
+	const sorted = await getSortedQueue(code);
 
   const searchResults: Item[] = $$([]);
 

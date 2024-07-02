@@ -43,7 +43,7 @@ export const getSessionWithCode = (code: string) => {
 export const getSessionUserHosts = async () => {
   console.log('sessions', sessions)
   const user = await getUserId();
-  for(const code of Object.keys(sessions)) {
+  for (const code of Object.keys(sessions)) {
     if (sessions[code].hostId === user.userId) {
       console.log('found session', sessions[code]);
       return sessions[code];
@@ -91,7 +91,7 @@ export const toggleLike = async (code: string, videoId: string) => {
       console.log('adding like');
       video.likes.add(user.userId);
     }
-    
+
     // this breaks shit
     //sortVideos(session.queue);
 
@@ -140,4 +140,20 @@ const sortVideos = (videos: ObjectRef<Item[]>) => {
     return 0;
   });
   console.log("sorted", videos);
+}
+
+export const getSortedQueue = (code: string) => {
+  const session = sessions[code];
+  if (!session) {
+    return;
+  }
+  return always(() => {
+    return session.queue.toSorted((a, b) => {
+      if (a.likes.size > b.likes.size) return -1;
+      if (a.likes.size < b.likes.size) return 1;
+      if (a.added > b.added) return 1;
+      if (a.added < b.added) return -1;
+      return 0;
+    });
+  });
 }

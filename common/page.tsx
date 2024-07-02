@@ -1,6 +1,8 @@
 import QRCode from "./components/QR.tsx";
 import VideoPlayer from "./components/VideoPlayer.tsx";
 import { Queue } from "./components/Queue.tsx";
+import { QueueItem } from "./components/QueueItem.tsx";
+
 import QRCodeOverlay from "./components/QRCodeOverlay.tsx";
 import { getSessionUserHosts } from "backend/sessions.ts";
 import { NowPlaying } from "./components/NowPlaying.tsx";
@@ -23,13 +25,18 @@ export default async function App() {
           <div class="text-accent-500 font-semibold text-sm mb-2">
             currently playing
           </div>
-          <NowPlaying item={session.currentlyPlaying.$} />
+          <NowPlaying item={session.currentlyPlaying} />
         </div>
       );
     } else {
       return null;
     }
   });
+
+
+	const sorted = always(() => {
+		return session.queue.toSorted((a, b) => b.likes.size - a.likes.size)
+	});
 
   const timeLeft = always(() => {
     let timeCounter = "0:00";
@@ -74,7 +81,13 @@ export default async function App() {
                 </div>
               )
             )}
-            <Queue items={session.$.queue} type={"player"} code={code} />
+			<div class="space-y-4">{
+        // @ts-ignore - uix stuff that doesn't work with types
+        sorted.$.map((item: Item) => {
+          // @ts-ignore - uix stuff that doesn't work with types
+          return <QueueItem item={item.$} type={'player'} code={code}></QueueItem>
+        })}
+      </div>
           </div>
         </div>
       </div>

@@ -1,11 +1,10 @@
-import { Queue } from "./components/Queue.tsx";
+import { QueueItem } from "./components/QueueItem.tsx";
 import SearchBar from "./components/SearchBar.tsx";
-import Settings from "./components/Settings.tsx";
 import { search } from "backend/data.tsx";
 import { addClientToSession, Item } from "backend/sessions.ts";
 import { Context } from "uix/routing/context.ts";
 import { loadInitialTheme } from "./components/ToggleThemeButton.tsx";
-import NavMenu from "common/components/nav/NavMenu.tsx";
+import NavMenu from "./components/nav/NavMenu.tsx";
 
 export default async function App(ctx: Context) {
   const code = ctx.urlPattern?.pathname.groups[0] ?? "XXXX";
@@ -16,26 +15,24 @@ export default async function App(ctx: Context) {
     return;
   }
 
+	const sorted = always(() => {
+		return session.queue.toSorted((a, b) => b.likes.size - a.likes.size)
+	});
+
   const searchResults: Item[] = $$([]);
 
   const activeView: "queue" | "search" | "settings" = $$("queue");
 
+	const showSearch = $$(false);
+
   const onSearch = async (value: string) => {
     activeView.val = "search";
+
+    showSearch.val = true;
 
     searchResults.splice(0, searchResults.length);
     searchResults.push(...(await search(value)));
   };
-
-  const view = always(() => {
-    if (activeView == "queue") {
-      return <Queue items={session.queue} type={"client"} code={code} />;
-    } else if (activeView == "search") {
-      return <Queue items={searchResults} type={"search"} code={code} />;
-    }
-
-    return <Settings />;
-  });
 
   const menu = always(() => {
     if (!activeView) return;
@@ -51,6 +48,8 @@ export default async function App(ctx: Context) {
             onClick: () => {
               console.log("queue");
               activeView.val = "queue";
+
+              showSearch.val = false;
             },
           },
           {
@@ -58,6 +57,8 @@ export default async function App(ctx: Context) {
             onClick: () => {
               console.log("search");
               activeView.val = "search";
+
+              showSearch.val = true;
             },
           },
           {
@@ -81,7 +82,23 @@ export default async function App(ctx: Context) {
           <SearchBar onSearch={onSearch} />
         </div>
         <div class="px-4 py-4 border-t border-black dark:border-white/20 mx-0 overflow-y-scroll flex-grow">
-          {view}
+        
+        {toggle(showSearch, 
+        <div class="space-y-4">{
+          // @ts-ignore - uix stuff that doesn't work with types
+          searchResults.$.map((item: Item) => {
+            // @ts-ignore - uix stuff that doesn't work with types
+            return <QueueItem item={item.$} type={'search'} code={code}></QueueItem>
+          })}
+        </div>,
+      <div class="space-y-4">{
+        // @ts-ignore - uix stuff that doesn't work with types
+        sorted.$.map((item: Item) => {
+          // @ts-ignore - uix stuff that doesn't work with types
+          return <QueueItem item={item.$} type={'client'} code={code}></QueueItem>
+        })}
+      </div>)}
+       
         </div>
       </div>
       {menu}

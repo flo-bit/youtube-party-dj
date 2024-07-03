@@ -1,4 +1,4 @@
-import { Pointer } from "unyt_core/runtime/pointers.ts";
+import { Pointer } from "datex-core-legacy/runtime/pointers.ts";
 
 export default function QRCode({ code }: { code: Pointer<string> & string }) {
   const qrCode = always(() => {

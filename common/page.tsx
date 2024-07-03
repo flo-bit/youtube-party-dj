@@ -16,7 +16,7 @@ import { Item } from "../backend/sessions.ts";
 export default async function App() {
   const session = await getSessionUserHosts();
 
-  const code = $$(session.code as string);
+  const code = $$(session.code);
 
   const current = always(() => {
     if (session.currentlyPlaying) {
@@ -34,6 +34,7 @@ export default async function App() {
   });
 
 	const sorted = await getSortedQueue(code);
+  console.log("soert",sorted)
 
   const timeLeft = always(() => {
     let timeCounter = "0:00";
@@ -56,7 +57,6 @@ export default async function App() {
         </div>
         <div class="flex flex-col overflow-y-hidden h-screen bg-white dark:bg-white/5 border border-black dark:border-white/10 rounded-xl">
           <div class="flex px-8 mx-0 mt-8 mb-4">
-            {/* @ts-ignore - uix doesn't support types? */}
             <VideoPlayer queue={session.queue} code={code} />
           </div>
           <div class="flex items-center justify-end px-12 h-10 mb-4">
@@ -79,10 +79,8 @@ export default async function App() {
               )
             )}
 			<div class="space-y-4">{
-        // @ts-ignore - uix stuff that doesn't work with types
-        sorted.$.map((item: Item) => {
-          // @ts-ignore - uix stuff that doesn't work with types
-          return <QueueItem item={item.$} type={'player'} code={code}></QueueItem>
+        sorted.$.map(item => {
+          return <QueueItem item={item} type={'player'} code={code}></QueueItem>
         })}
       </div>
           </div>

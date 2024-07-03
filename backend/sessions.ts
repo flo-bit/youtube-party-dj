@@ -1,5 +1,5 @@
 import { Context } from "uix/routing/context.ts";
-import { ObjectRef } from "unyt_core/runtime/pointers.ts";
+import { ObjectRef } from "datex-core-legacy/runtime/pointers.ts";
 
 export type Item = {
   title: string;
@@ -145,7 +145,8 @@ const sortVideos = (videos: ObjectRef<Item[]>) => {
 export const getSortedQueue = (code: string) => {
   const session = sessions[code];
   if (!session) {
-    return;
+    console.log("no session!")
+    return $$([])
   }
   return always(() => {
     return session.queue.toSorted((a, b) => {

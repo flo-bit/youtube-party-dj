@@ -17,9 +17,9 @@ export default async function App(ctx: Context) {
 
 	const sorted = await getSortedQueue(code);
 
-  const searchResults: Item[] = $$([]);
+  const searchResults = $$<Item[]>([]);
 
-  const activeView: "queue" | "search" | "settings" = $$("queue");
+  const activeView = $$<"queue" | "search" | "settings">("queue");
 
 	const showSearch = $$(false);
 
@@ -83,17 +83,14 @@ export default async function App(ctx: Context) {
         
         {toggle(showSearch, 
         <div class="space-y-4">{
-          // @ts-ignore - uix stuff that doesn't work with types
-          searchResults.$.map((item: Item) => {
-            // @ts-ignore - uix stuff that doesn't work with types
-            return <QueueItem item={item.$} type={'search'} code={code}></QueueItem>
+          searchResults.$.map(item => {
+            return <QueueItem item={item} type={'search'} code={code}></QueueItem>
           })}
         </div>,
       <div class="space-y-4">{
-        // @ts-ignore - uix stuff that doesn't work with types
-        sorted.$.map((item: Item) => {
-          // @ts-ignore - uix stuff that doesn't work with types
-          return <QueueItem item={item.$} type={'client'} code={code}></QueueItem>
+        sorted.$.map(item => {
+          console.log("sorterd item",item);
+          return <QueueItem item={item} type={'client'} code={code}></QueueItem>
         })}
       </div>)}
        

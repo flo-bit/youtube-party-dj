@@ -33,7 +33,7 @@ export default async function App() {
     }
   });
 
-	const sorted = await getSortedQueue(code);
+  const sorted = await getSortedQueue(code);
 
   const timeLeft = always(() => {
     let timeCounter = "0:00";
@@ -45,13 +45,33 @@ export default async function App() {
 
   loadInitialTheme();
 
+  const lastCount = always(() => {
+    try {
+      if (lastCount.val == 0 && session.queue.length > 0) {
+        location.reload();
+      }
+      return session.queue.length;
+    } catch {
+      return 0;
+    }
+  });
+
+  window.lastCount = lastCount;
+  window.qlen = session.queue.length;
+
   return (
     <main class="w-screen h-screen relative bg-gray-50 dark:bg-gray-950">
       <div class="mx-auto grid md:grid-cols-2 h-screen">
         <div class="h-screen hidden md:flex items-center flex-col justify-center p-8">
           <QRCode code={code} />
           <div class="text-black dark:text-white text-3xl font-semibold mt-4">
-            Party code: <a target="_blank" href={window.location.origin + '/client/' + code}>{code}</a>
+            Party code:{" "}
+            <a
+              target="_blank"
+              href={window.location.origin + "/client/" + code}
+            >
+              {code}
+            </a>
           </div>
         </div>
         <div class="flex flex-col overflow-y-hidden h-screen bg-white dark:bg-white/5 border border-black dark:border-white/10 rounded-xl">
@@ -78,13 +98,21 @@ export default async function App() {
                 </div>
               )
             )}
-			<div class="space-y-4">{
-        // @ts-ignore - uix stuff that doesn't work with types
-        sorted.$.map((item: Item) => {
-          // @ts-ignore - uix stuff that doesn't work with types
-          return <QueueItem item={item.$} type={'player'} code={code}></QueueItem>
-        })}
-      </div>
+            <div class="space-y-4">
+              {
+                // @ts-ignore - uix stuff that doesn't work with types
+                sorted.$.map((item: Item) => {
+                  // @ts-ignore - uix stuff that doesn't work with types
+                  return (
+                    <QueueItem
+                      item={item.$}
+                      type={"player"}
+                      code={code}
+                    ></QueueItem>
+                  );
+                })
+              }
+            </div>
           </div>
         </div>
       </div>

@@ -64,13 +64,13 @@ export default function VideoPlayer({ queue, code }: Readonly<{ queue: Item[], c
 
   const text = always(() => {
     if (queue.length === 0) {
-      return "Add a video to the queue!";
+      return <img src="../rsc/logo.svg" class="h-28" alt="Logo"></img>;
     }
     return "Loading video...";
   })
 
   return (
-    <div class="relative aspect-video bg-white dark:bg-white/5 border border-black dark:border-white/10 w-full overflow-hidden object-cover rounded-xl">
+    <div class="w-full h-full aspect-video bg-white dark:bg-white/5 border border-black dark:border-white/10 overflow-hidden object-cover rounded-xl">
       <div
         id="player"
         class="w-full h-full flex items-center justify-center dark:text-white text-black font-semibold"

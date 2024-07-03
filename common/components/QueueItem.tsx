@@ -170,21 +170,35 @@ export async function QueueItem({
       );
     }
   }
-
-  return (
-    <div class="queueframe w-full rounded-xl bg-white dark:bg-white/5 border border-black dark:border-white/10 h-20 overflow-hidden mb-2 ">
-      <div class="queueitem text-black dark:text-white flex items-left h-full">
-        <img src={item.thumbnail} class="h-20 w-32 object-cover" alt=" " />
-        <div class="flex flex-1 flex-grow justify-between">
-          <div class="pl-4 justify-center flex flex-col h-full">
-            <p class="line-clamp-2 font-bold text-md leading-6">{item.title}</p>
-            <p class="text-xs">{item.duration} minutes</p>
-          </div>
-          <div class="queueicon2 flex h-full justify-center items-center stroke-black dark:stroke-white px-2">
+    
+    if (type === "player") {
+      return (
+        <div class="w-28 pr-6 bg-white dark:bg-white/5 overflow-hidden mr-4">
+          <img src={item.thumbnail} alt="Video thumbnail" class="w-full object-cover"></img>
+          <p class="mt-2 block truncate text-sm font-medium text-gray-900">{item.title}</p>
+          <p class="block text-sm font-medium text-gray-500">{item.duration} minutes</p>
+          <div>
             {getAction()}
           </div>
         </div>
+
+  )
+    } else {
+      return(
+      <div class="queueframe w-48 rounded-xl bg-white dark:bg-white/5 border border-black dark:border-white/10 h-20 overflow-hidden mb-2 ">
+        <div class="queueitem text-black dark:text-white flex items-left h-full">
+          <img src={item.thumbnail} class="h-20 w-32 object-cover" alt=" " />
+          <div class="flex flex-1 flex-grow justify-between">
+            <div class="pl-4 justify-center flex flex-col h-full">
+              <p class="line-clamp-2 font-bold text-md leading-6">{item.title}</p>
+              <p class="text-xs">{item.duration} minutes</p>
+            </div>
+            <div class="queueicon2 flex h-full justify-center items-center stroke-black dark:stroke-white px-2">
+              {getAction()}
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    )
+    }
 }

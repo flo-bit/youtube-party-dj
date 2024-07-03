@@ -21,7 +21,7 @@ export default function App() {
             </p>
           </div>
           <div class="min-w-full">
-            <a href="/player" rel="noopener noreferrer">
+            <a href="/player">
               <button class="bg-rose-500 hover:bg-rose-600 w-fit text-white font-medium gap-2 rounded-full font-lg py-3 px-6 flex items-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

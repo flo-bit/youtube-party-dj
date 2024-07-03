@@ -1,3 +1,4 @@
+
 export default function App() {
 
   const typed_code = $$("");
@@ -38,13 +39,13 @@ export default function App() {
 
             <div class="w-full h-px bg-gray-400 my-1 md:my-1"></div>
 
-            <a href="/player" rel="noopener noreferrer">
-              <button class="bg-rose-500 hover:bg-rose-600 w-full text-white font-medium rounded-full text-2xl py-6 px-10 flex items-center justify-center">
-                  <svg
+            <a href="/player">
+              <button class="bg-rose-500 hover:bg-rose-600 w-fit text-white font-medium gap-2 rounded-full font-lg py-3 px-6 flex items-center">
+                <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="currentColor"
-                  class="h-8 w-8 mr-2"
+                  class="size-6"
                 >
                   <path
                     fill-rule="evenodd"
@@ -52,7 +53,7 @@ export default function App() {
                     clip-rule="evenodd"
                   />
                 </svg>
-                Start your own party 
+                Start your own party !
               </button>
             </a>
 

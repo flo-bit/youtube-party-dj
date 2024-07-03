@@ -7,12 +7,12 @@ export default function Welcome(ctx: Context) {
 	const code = (ctx.searchParams.get('code') ?? "XXXX");
 
     const handleWithNick = () => {
-		const url = `/client?code=${encodeURIComponent(code)}&name=${encodeURIComponent(user_name)}`;
+		const url = `/client/${encodeURIComponent(code)}?nick=${encodeURIComponent(user_name)}`;
     	redirect(url);
     };
 
 	const handleAnonym = () => {
-        const url = `/client?code=${encodeURIComponent(code)}&name=anon`;  
+        const url = `/client/${encodeURIComponent(code)}?nick=anon`;  
     	redirect(url);
     };
     

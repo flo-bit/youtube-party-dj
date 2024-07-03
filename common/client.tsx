@@ -1,78 +1,108 @@
-import { Queue } from "./components/Queue.tsx";
-import QRCodeOverlay from "./components/QRCodeOverlay.tsx";
+import { QueueItem } from "./components/QueueItem.tsx";
 import SearchBar from "./components/SearchBar.tsx";
 import { search } from "backend/data.tsx";
-import { addClientToSession, getSessionWithCode, Item } from "backend/sessions.ts";
+import { addClientToSession, getSortedQueue, Item } from "backend/sessions.ts";
 import { Context } from "uix/routing/context.ts";
-import ToggleThemeButton from "./components/ToggleThemeButton.tsx";
+import { loadInitialTheme } from "./components/ToggleThemeButton.tsx";
+import NavMenu from "./components/nav/NavMenu.tsx";
 
 export default async function App(ctx: Context) {
-	const code = (ctx.urlPattern?.pathname.groups[0] ?? "XXXX");
+  const code = ctx.urlPattern?.pathname.groups[0] ?? "XXXX";
 
-	const session = await addClientToSession(code);
+  const nick = (ctx.searchParams.get('nick') ?? "anon");
 
-	if (!session) {
-		return;
-	}
+	const session = await addClientToSession(code, nick);
 
-	const searchResults: Item[] = $$([]);
+
+  if (!session) {
+    return;
+  }
+
+	const sorted = await getSortedQueue(code);
+
+  const searchResults: Item[] = $$([]);
+
+  const activeView: "queue" | "search" | "settings" = $$("queue");
 
 	const showSearch = $$(false);
 
-	const onSearch = async (value: string) => {
-		showSearch.val = true;
+  const onSearch = async (value: string) => {
+    activeView.val = "search";
 
-		searchResults.splice(0, searchResults.length);
-		searchResults.push(...await search(value));
-	};
+    showSearch.val = true;
 
-	const renderToggle = () => {
-		return toggle(showSearch,
-			<button onclick={() => {
-				showSearch.val = false;
+    searchResults.splice(0, searchResults.length);
+    searchResults.push(...(await search(value)));
+  };
 
-			}} class="absolute bottom-2 right-2 w-20 h-20 bg-white dark:bg-white/5 border border-black dark:border-white/10 rounded-full flex items-center justify-center backdrop-blur-md">
+  const menu = always(() => {
+    if (!activeView) return;
 
-				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="size-14 stroke-black dark:stroke-white">
-					<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 0 1 0 3.75H5.625a1.875 1.875 0 0 1 0-3.75Z" />
-				</svg>
-			</button>,
-			<button onclick={() => {
-				showSearch.val = true;
+    console.log("activeView", activeView);
 
-				// set focus to search bar
-				const input = document.querySelector('input');
-				if (input) {
-					input.focus();
-				}
-			}} class="absolute bottom-2 right-2 w-20 h-20 bg-white dark:bg-white/5 border border-black dark:border-white/10 rounded-full flex items-center justify-center backdrop-blur-md">
+    return (
+      <NavMenu
+        active={activeView}
+        buttons={[
+          {
+            label: "queue",
+            onClick: () => {
+              console.log("queue");
+              activeView.val = "queue";
 
-				<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="size-16 stroke-black dark:stroke-white">
-					<path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-				</svg>
-			</button>);
-	}
+              showSearch.val = false;
+            },
+          },
+          {
+            label: "search",
+            onClick: () => {
+              console.log("search");
+              activeView.val = "search";
 
-	return (
-		<main class="bg-gray-50 dark:bg-gray-950">
-			<div
-				class="flex flex-col overflow-y-hidden h-screen rounded-xl mx-auto max-w-2xl"
-			>
-				<div class="flex px-4 my-4 ">
-					<SearchBar onSearch={onSearch} />
-					<div class="ml-2 flex items-center justify-center">
-						<ToggleThemeButton />
-					</div>
-				</div>
-				<div class="px-4 py-4 border-t border-black dark:border-white/20 mx-0 overflow-y-scroll flex-grow">
-					{toggle(showSearch, <Queue items={searchResults} type={'search'} code={code} />, <Queue items={session.queue} type={'client'} code={code} />)}
+              showSearch.val = true;
+            },
+          },
+          {
+            label: "settings",
+            onClick: () => {
+              console.log("settings");
+              activeView.val = "settings";
+            },
+          },
+        ]}
+      />
+    );
+  });
 
-				</div>
+  loadInitialTheme();
 
-				{renderToggle()}
-
-				<QRCodeOverlay code={code} />
-			</div>
-		</main>
-	);
+  return (
+    <main class="bg-gray-50 dark:bg-gray-950">
+      <div class="flex flex-col overflow-y-hidden h-[100dvh] rounded-xl mx-auto max-w-2xl">
+        <div class="flex px-4 my-4 ">
+          <SearchBar onSearch={onSearch} />
+        </div>
+        <div class="px-4 py-4 border-t border-black dark:border-white/20 mx-0 overflow-y-scroll flex-grow">
+        
+        {toggle(showSearch, 
+        <div class="space-y-4">{
+          // @ts-ignore - uix stuff that doesn't work with types
+          searchResults.$.map((item: Item) => {
+            // @ts-ignore - uix stuff that doesn't work with types
+            return <QueueItem item={item.$} type={'search'} code={code}></QueueItem>
+          })}
+        </div>,
+      <div class="space-y-4">{
+        // @ts-ignore - uix stuff that doesn't work with types
+        sorted.$.map((item: Item) => {
+          // @ts-ignore - uix stuff that doesn't work with types
+          return <QueueItem item={item.$} type={'client'} code={code}></QueueItem>
+        })}
+      </div>)}
+       
+        </div>
+      </div>
+      {menu}
+    </main>
+  );
 }

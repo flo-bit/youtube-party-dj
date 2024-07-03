@@ -68,6 +68,8 @@ export const addClientToSession = async (code: string, nick: string) => {
   }
   session.clientIds.add(client.userId);
   session.clientIdsWithNick.set(client.userId , nickName);
+
+  console.log(session);
   
   return session;
 }

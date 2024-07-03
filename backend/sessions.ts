@@ -127,7 +127,7 @@ const createSession = (userId: string) => {
     code,
     hostId: userId,
     clientIds: new Set() as Set<string>,
-    clientIdsWithNick: new Map<string, string>(), 
+    clientIdsWithNick: new Map() as Map<string, string>, 
     queue: [] as Item[],
     currentlyPlaying: null as Item | null,
   };

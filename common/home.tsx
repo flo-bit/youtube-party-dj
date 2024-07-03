@@ -40,7 +40,7 @@ export default function App() {
             <div class="w-full h-px bg-gray-400 my-1 md:my-1"></div>
 
             <a href="/player">
-              <button class="bg-rose-500 hover:bg-rose-600 w-fit text-white font-medium gap-2 rounded-full font-lg py-3 px-6 flex items-center">
+              <button class="bg-rose-500 hover:bg-rose-600 w-full text-white font-medium rounded-full text-2xl py-6 px-10 flex items-center justify-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"

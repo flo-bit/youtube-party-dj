@@ -2,16 +2,13 @@ import { ObjectRef } from "datex-core-legacy/runtime/pointers.ts";
 import { QueueType } from "./Queue.tsx";
 import { getSessionWithCode, getUserId, Item, toggleLike } from "backend/sessions.ts";
 
+const userId = (await getUserId()).userId;
+
 export async function QueueItem({
   item,
   type,
   code
 }: Readonly<{ item: ObjectRef<Item>; type: QueueType; code: string }>) {
-  const userId = (await getUserId()).userId;
-
-  function sleep(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
 
   async function renderIcon() {
     const session = await getSessionWithCode(code);

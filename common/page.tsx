@@ -34,7 +34,6 @@ export default async function App() {
   });
 
 	const sorted = await getSortedQueue(code);
-  console.log("soert",sorted)
 
   const timeLeft = always(() => {
     let timeCounter = "0:00";

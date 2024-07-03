@@ -70,7 +70,6 @@ export const addClientToSession = async (code: string) => {
 }
 
 export const toggleLike = async (code: string, videoId: string) => {
-  console.log(code, videoId);
   try {
     const user = await getUserId();
 

@@ -89,7 +89,6 @@ export default async function App(ctx: Context) {
         </div>,
       <div class="space-y-4">{
         sorted.$.map(item => {
-          console.log("sorterd item",item);
           return <QueueItem item={item} type={'client'} code={code}></QueueItem>
         })}
       </div>)}

@@ -1,5 +1,5 @@
 /*
-! tailwindcss v3.4.3 | MIT License | https://tailwindcss.com
+! tailwindcss v3.4.4 | MIT License | https://tailwindcss.com
 */
 
 /*
@@ -858,6 +858,10 @@ select {
   margin-top: 1rem;
 }
 
+.mt-5 {
+  margin-top: 1.25rem;
+}
+
 .mt-8 {
   margin-top: 2rem;
 }
@@ -1035,6 +1039,10 @@ select {
 
 .gap-2 {
   gap: 0.5rem;
+}
+
+.gap-3 {
+  gap: 0.75rem;
 }
 
 .gap-6 {
@@ -1434,78 +1442,6 @@ select {
   transition-duration: 200ms;
 }
 
-@keyframes bounce {
-  0% {
-    transform: scale(0.5);
-  }
-
-  25% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.2);
-  }
-
-  85% {
-    transform: scale(0.9);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
-.bounce-animation {
-  animation: bounce 0.4s;
-}
-
-.size-6 path {
-  transition: d 0.3s ease-in-out;
-}
-
-@keyframes fly-in {
-  from {
-    transform: translateY(-40px);
-    opacity: 0;
-  }
-
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.fly-in-animation {
-  animation: fly-in 0.22s ease-out forwards;
-}
-
-@keyframes fly-out {
-  0% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
-  25% {
-    transform: translateY(10px);
-    opacity: 1;
-  }
-
-  50% {
-    transform: translateY(20px);
-    opacity: 1;
-  }
-
-  100% {
-    transform: translateY(40px);
-    opacity: 0;
-  }
-}
-
-.fly-out-animation {
-  animation: fly-out 0.22s ease-out forwards;
-}
-
 .placeholder\:text-black::-moz-placeholder {
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity));
@@ -1598,11 +1534,6 @@ select {
 .dark\:text-cyan-400:is(.dark *) {
   --tw-text-opacity: 1;
   color: rgb(34 211 238 / var(--tw-text-opacity));
-}
-
-.dark\:text-green-500:is(.dark *) {
-  --tw-text-opacity: 1;
-  color: rgb(34 197 94 / var(--tw-text-opacity));
 }
 
 .dark\:text-white:is(.dark *) {

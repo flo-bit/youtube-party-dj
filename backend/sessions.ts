@@ -16,14 +16,15 @@ export interface SessionData {
   hostId: string;
   clientIds: Set<string>;
   queue: Item[];
+  recommendedQueue: Item[];
   currentlyPlaying: Item | null;
 };
 
 // map of session codes to session data
-export const sessions = eternalVar('sessions-1234') ?? $$({} as Record<string, SessionData>);
+export const sessions = eternalVar('sessions') ?? $$(new Map<string, SessionData>());
 
 export const getAndRemoveNextVideoFromSession = (code: string) => {
-  const session = sessions[code];
+  const session = sessions.get(code);
   console.log(session);
   if (!session) {
     return;
@@ -37,16 +38,14 @@ export const getAndRemoveNextVideoFromSession = (code: string) => {
 }
 
 export const getSessionWithCode = (code: string) => {
-  return sessions[code];
+  return sessions.get(code);
 }
 
 export const getSessionUserHosts = async () => {
-  console.log('sessions', sessions)
   const user = await getUserId();
-  for (const code of Object.keys(sessions)) {
-    if (sessions[code].hostId === user.userId) {
-      console.log('found session', sessions[code]);
-      return sessions[code];
+  for (const [_code, session] of sessions.entries()) {
+    if (session.hostId === user.userId) {
+      return session;
     }
   }
 
@@ -58,7 +57,7 @@ export const getSessionUserHosts = async () => {
 
 export const addClientToSession = async (code: string) => {
   const client = await getUserId();
-  const session = sessions[code];
+  const session = sessions.get(code);
   if (!session) {
     return;
   }
@@ -74,7 +73,7 @@ export const toggleLike = async (code: string, videoId: string) => {
   try {
     const user = await getUserId();
 
-    const session = sessions[code];
+    const session = sessions.get(code);
     console.log(session);
     if (!session) {
       return;
@@ -114,7 +113,7 @@ const createSession = (userId: string) => {
   let code = null;
 
   // check if the code is already in use
-  while (!code || sessions[code]) {
+  while (!code || sessions.get(code)) {
     // generate a random 4 character code consisting of uppercase letters and numbers
     code = Array.from({ length: 4 }, () => Math.floor(Math.random() * 36).toString(36).toUpperCase()).join('');
   }
@@ -124,8 +123,10 @@ const createSession = (userId: string) => {
     clientIds: new Set() as Set<string>,
     queue: [] as Item[],
     currentlyPlaying: null as Item | null,
+    recommendedQueue: [] as Item[]
   };
-  sessions[code] = session;
+
+  sessions.set(code, session);
 
   return session;
 }
@@ -140,20 +141,4 @@ const sortVideos = (videos: ObjectRef<Item[]>) => {
     return 0;
   });
   console.log("sorted", videos);
-}
-
-export const getSortedQueue = (code: string) => {
-  const session = sessions[code];
-  if (!session) {
-    return;
-  }
-  return always(() => {
-    return session.queue.toSorted((a, b) => {
-      if (a.likes.size > b.likes.size) return -1;
-      if (a.likes.size < b.likes.size) return 1;
-      if (a.added > b.added) return 1;
-      if (a.added < b.added) return -1;
-      return 0;
-    });
-  });
 }

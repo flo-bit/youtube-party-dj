@@ -7,7 +7,7 @@ export default function VideoPlayer({ queue, code }: Readonly<{ queue: Item[], c
   async function playNext() {
     // @ts-ignore - YouTube API
     if (!player || player.getPlayerState() !== YT.PlayerState.PLAYING) {
-      const video = await getAndRemoveNextVideoFromSession(code.val);
+      const video = await getAndRemoveNextVideoFromSession(code);
       if (video) {
         play(video.id);
       }

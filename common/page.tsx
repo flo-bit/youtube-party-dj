@@ -85,7 +85,6 @@ export default async function App() {
               )
             )}
 			<div class="space-y-4">{
-        // @ts-ignore - uix stuff that doesn't work with types
         sorted.$.map(item => {
           return <QueueItem item={item} type={'player'} code={code}></QueueItem>
         })}

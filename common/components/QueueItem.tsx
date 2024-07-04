@@ -1,17 +1,14 @@
-import { ObjectRef } from "unyt_core/runtime/pointers.ts";
+import { ObjectRef } from "datex-core-legacy/runtime/pointers.ts";
 import { QueueType } from "./Queue.tsx";
 import { getSessionWithCode, getUserId, Item, toggleLike } from "backend/sessions.ts";
+
+const userId = (await getUserId()).userId;
 
 export async function QueueItem({
   item,
   type,
   code
 }: Readonly<{ item: ObjectRef<Item>; type: QueueType; code: string }>) {
-  const userId = (await getUserId()).userId;
-
-  function sleep(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-  }
 
   async function renderIcon() {
     const session = await getSessionWithCode(code);
@@ -88,11 +85,11 @@ export async function QueueItem({
     }
   }
 
-  function getAction() {
+  async function getAction() {
     if (type === "player") {
       return (
         <>
-          <div class="font-semibold">{always(() => item.likes.val.size)}</div>
+          <div class="font-semibold">{always(() => item.likes.size)}</div>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
@@ -111,10 +108,10 @@ export async function QueueItem({
           }}
         >
           {always(() => {
-            if (item.likes.val.has(userId))
+            if (item.likes.has(userId))
               return (
                 <div class="text-accent-500 fill-accent-500 stroke-accent-500 flex">
-                  <div class="font-semibold">{item.likes.val.size}</div>
+                  <div class="font-semibold">{item.likes.size}</div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
@@ -128,7 +125,7 @@ export async function QueueItem({
             else
               return (
                 <div class="flex">
-                  <div class="font-semibold">{item.likes.val.size}</div>
+                  <div class="font-semibold">{item.likes.size}</div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -159,7 +156,7 @@ export async function QueueItem({
             if ((session.queue.some((v) => v.id == item.id) || session.currentlyPlaying?.id == item.id)) {
               return;
             }
-            session?.$.queue.val.push(item);
+            session?.queue.push(item);
             toggleLike(code, item.id);
           }}
           id={`button-${item.id}`}
@@ -181,7 +178,7 @@ export async function QueueItem({
             <p class="text-xs">{item.duration} minutes</p>
           </div>
           <div class="queueicon2 flex h-full justify-center items-center stroke-black dark:stroke-white px-2">
-            {getAction()}
+            {await getAction()}
           </div>
         </div>
       </div>

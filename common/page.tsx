@@ -20,10 +20,10 @@ export default async function App() {
 
   const arr = Array.from(session.clientIds);
   console.log(arr);
-	const nickArray = Array.from(session.clientIdsWithNick.values());
-	console.log(nickArray);
-	const userNum = nickArray.length;
-	console.log(userNum);
+	//const nickArray = Array.from(session.clientIdsWithNick.values());
+	//console.log(nickArray);
+	//const userNum = nickArray.length;
+	//console.log(userNum);
 
   const current = always(() => {
     if (session.currentlyPlaying) {

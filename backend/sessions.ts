@@ -11,12 +11,17 @@ export type Item = {
   added: number;
 };
 
+export interface Client {
+	id: string
+	name: string
+}
+
 // TO ADD: In the session, clientName should also be saved together with clientId
 export interface SessionData {
   code: string;
   hostId: string;
   clientIds: Set<string>;
-  clientIdsWithNick: Map<string, string>;
+  clients: Record<string, Client>;
   queue: Item[];
   currentlyPlaying: Item | null;
 };
@@ -59,18 +64,31 @@ export const getSessionUserHosts = async () => {
 }
 
 // Added clientIdsWithNick 
-export const addClientToSession = async (code: string, nick: string) => {
+export const addClientToSession = async (code: string) => {
   const client = await getUserId();
-  const nickName = nick;
   const session = sessions[code];
   if (!session) {
     return;
   }
   session.clientIds.add(client.userId);
-  session.clientIdsWithNick.set(client.userId , nickName);
 
   console.log(session);
   
+  return session;
+}
+
+export const addClientsInfo = async (code: string, nick: string) => {
+  const client = await getUserId();
+  const session = sessions[code];
+  if (!session) {
+    return;
+  }
+
+  session.clients[client.userId] = {
+    id: client.userId,
+    name: nick
+  };
+
   return session;
 }
 
@@ -126,7 +144,7 @@ const createSession = (userId: string) => {
     code,
     hostId: userId,
     clientIds: new Set() as Set<string>,
-    clientIdsWithNick: new Map() as Map<string, string>, 
+    clients: {},
     queue: [] as Item[],
     currentlyPlaying: null as Item | null,
   };

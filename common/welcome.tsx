@@ -1,6 +1,6 @@
 import { redirect } from "uix/utils/window-apis.ts"
 import { Context } from "uix/routing/context.ts";
-import { addClientToSession, addClientsInfo} from "backend/sessions.ts";
+import { addClientsInfo} from "backend/sessions.ts";
 
 export default function Welcome(ctx: Context) {
 
@@ -8,13 +8,16 @@ export default function Welcome(ctx: Context) {
 	const code = (ctx.searchParams.get('code') ?? "XXXX");
 
     const handleWithNick = () => {
-		addClientsInfo(code, user_name);
+		if(!user_name.val){
+			return;
+		}
+		addClientsInfo(code, user_name.val);
 		const url = `/client/${encodeURIComponent(code)}`;
     	redirect(url);
     };
 
 	const handleAnonym = () => {
-		addClientsInfo(code, user_name);
+		addClientsInfo(code, "anon");
         const url = `/client/${encodeURIComponent(code)}`;  
     	redirect(url);
     };

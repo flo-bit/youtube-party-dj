@@ -12,8 +12,8 @@ export type Item = {
 };
 
 export interface Client {
-	id: string
-	name: string
+	id: string;
+	name: string;
 }
 
 // TO ADD: In the session, clientName should also be saved together with clientId
@@ -63,8 +63,8 @@ export const getSessionUserHosts = async () => {
   return session;
 }
 
-// Added clientIdsWithNick 
-export const addClientToSession = async (code: string) => {
+
+export const updateUser = async (code: string) => {
   const client = await getUserId();
   const session = sessions[code];
   if (!session) {

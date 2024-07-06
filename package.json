@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "dev": "concurrently \"uix -l\" \"npx tailwindcss -i ./frontend/main.css -o ./frontend/entrypoint.css --watch\""
+    "dev": "concurrently \"uix --reload -l\" \"npx tailwindcss -i ./frontend/main.css -o ./frontend/entrypoint.css --watch\""
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",

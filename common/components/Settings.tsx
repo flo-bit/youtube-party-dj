@@ -1,4 +1,4 @@
-import ToggleThemeButton from "common/components/ToggleThemeButton.tsx";
+import ToggleThemeButton from "./ToggleThemeButton.tsx";
 
 export default function Settings() {
   return (<div class="text-black dark:text-white">

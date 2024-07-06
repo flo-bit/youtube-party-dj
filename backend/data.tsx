@@ -22,6 +22,7 @@ export async function search(q: string) {
 }
 
 const normalizeVideo = (video: any) => {
+  console.log(video);
   return {
     title: video.title.text ?? 'Untitled',
     // @ts-ignore - no type for thumbnails
@@ -66,5 +67,20 @@ export async function getRecommendations(queue: { id: string }[], maxRecommendat
   const shuffledRecommendations = shuffle(uniqueRecommendations);
 
   const finalRecommendations = take(shuffledRecommendations, maxRecommendations);
+
+  console.log("FINDAL RECOMMENDATIONS", finalRecommendations);
   return finalRecommendations;
+}
+
+export async function updateRecommendations(session: any, code: string) {
+  const recommendations = await getRecommendations(session.queue);
+
+  recommendations.forEach(() => {
+    session?.recommendedQueue.pop()
+  })
+  recommendations.forEach((video) => {
+    session?.recommendedQueue.push(video)
+  })
+
+  return session;
 }

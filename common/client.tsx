@@ -1,81 +1,101 @@
-import { Queue } from "./components/Queue.tsx";
+import { QueueItem } from "./components/QueueItem.tsx";
 import SearchBar from "./components/SearchBar.tsx";
-import Settings from "./components/Settings.tsx";
 import { search } from "backend/data.tsx";
-import { addClientToSession, Item } from "backend/sessions.ts";
+import { addClientToSession, getSortedQueue, Item } from "backend/sessions.ts";
 import { Context } from "uix/routing/context.ts";
 import { loadInitialTheme } from "./components/ToggleThemeButton.tsx";
-import NavMenu from "common/components/nav/NavMenu.tsx";
+import NavMenu from "./components/nav/NavMenu.tsx";
 
 export default async function App(ctx: Context) {
-	const code = (ctx.urlPattern?.pathname.groups[0] ?? "XXXX");
+  const code = ctx.urlPattern?.pathname.groups[0] ?? "XXXX";
 
-	const session = await addClientToSession(code);
+  const session = await addClientToSession(code);
 
-	if (!session) {
-		return;
-	}
+  if (!session) {
+    return;
+  }
 
-	const searchResults: Item[] = $$([]);
+	const sorted = await getSortedQueue(code);
 
-	const activeView: ('queue' | 'search' | 'settings') = $$('queue');
+  const searchResults = $$<Item[]>([]);
 
-	const onSearch = async (value: string) => {
-		activeView.val = 'search';
+  const activeView = $$<"queue" | "search" | "settings">("queue");
 
-		searchResults.splice(0, searchResults.length);
-		searchResults.push(...await search(value));
-	};
+	const showSearch = $$(false);
 
-	const view = always(() => {
-		if (activeView == 'queue') {
-			return <Queue items={session.queue} type={'client'} code={code} />;
-		} else if (activeView == 'search') {
-		return <Queue items={searchResults} type={'search'} code={code} />;
-		}
+  const onSearch = async (value: string) => {
+    activeView.val = "search";
 
-		return <Settings />;
-	})
+    showSearch.val = true;
 
-	const menu = always(() => {
-		if(!activeView) return;
+    searchResults.splice(0, searchResults.length);
+    searchResults.push(...(await search(value)));
+  };
 
-		console.log('activeView', activeView);
+  const menu = always(() => {
+    if (!activeView) return;
 
-		return <NavMenu active={activeView} buttons={[{
-			label: 'queue', onClick: () => {
-				console.log('queue');
-				activeView.val = 'queue';
-			}
-		}, {
-			label: 'search', onClick: () => {
-				console.log('search');
-				activeView.val = 'search';
-			}
-		}, {
-			label: 'settings',
-			onClick: () => {
-				console.log('settings');
-				activeView.val = 'settings';
-			}
-		}]} />
-	})
+    console.log("activeView", activeView);
 
-	loadInitialTheme();
+    return (
+      <NavMenu
+        active={activeView}
+        buttons={[
+          {
+            label: "queue",
+            onClick: () => {
+              console.log("queue");
+              activeView.val = "queue";
 
-	return (
-		<main class="bg-gray-50 dark:bg-gray-950">
-			<div
-				class="flex flex-col overflow-y-hidden h-[100dvh] rounded-xl mx-auto max-w-2xl"
-			>
-				<div class="flex px-4 my-4 ">
-					<SearchBar onSearch={onSearch} />
-				</div>
-				<div class="px-4 py-4 border-t border-black dark:border-white/20 mx-0 overflow-y-scroll flex-grow">
-					{view}
-				</div>
-			</div>
-			{menu}
-		</main>
-	);
+              showSearch.val = false;
+            },
+          },
+          {
+            label: "search",
+            onClick: () => {
+              console.log("search");
+              activeView.val = "search";
+
+              showSearch.val = true;
+            },
+          },
+          {
+            label: "settings",
+            onClick: () => {
+              console.log("settings");
+              activeView.val = "settings";
+            },
+          },
+        ]}
+      />
+    );
+  });
+
+  loadInitialTheme();
+
+  return (
+    <main class="bg-gray-50 dark:bg-gray-950">
+      <div class="flex flex-col overflow-y-hidden h-[100dvh] rounded-xl mx-auto max-w-2xl">
+        <div class="flex px-4 my-4 ">
+          <SearchBar onSearch={onSearch} />
+        </div>
+        <div class="px-4 py-4 border-t border-black dark:border-white/20 mx-0 overflow-y-scroll flex-grow">
+        
+        {toggle(showSearch, 
+        <div class="space-y-4">{
+          searchResults.$.map(item => {
+            return <QueueItem item={item} type={'search'} code={code}></QueueItem>
+          })}
+        </div>,
+      <div class="space-y-4">{
+        sorted.$.map(item => {
+          return <QueueItem item={item} type={'client'} code={code}></QueueItem>
+        })}
+      </div>)}
+       
+        </div>
+      </div>
+      {menu}
+    </main>
+  );
 }

@@ -17,4 +17,10 @@ export default {
 	},
 
 	"/": import("../common/home.tsx"),
+
+	// Temporary integration of the Discord component
+	"/integration/discord": async () => {
+		const App = await import("common/components/integrations/discord/Discord.tsx");
+		return App.default();
+	}
 }

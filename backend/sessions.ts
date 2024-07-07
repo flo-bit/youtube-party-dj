@@ -1,5 +1,5 @@
-import { Context } from "uix/routing/context.ts";
 import { ObjectRef } from "datex-core-legacy/runtime/pointers.ts";
+import { GuildData, play, playerInstances } from "backend/integrations/discord/Client.ts";
 
 export type Item = {
   title: string;
@@ -32,7 +32,6 @@ const sorter = (a: Item, b: Item) => {
 
 export const getAndRemoveNextVideoFromSession = (code: string) => {
   const session = sessions[code];
-  console.log(session);
   if (!session) {
     return;
   }
@@ -41,6 +40,14 @@ export const getAndRemoveNextVideoFromSession = (code: string) => {
   const video = session.queue.sort(sorter).shift();
   if (video) {
     session.currentlyPlaying = video;
+    if (playerInstances[session.hostId])
+      play(
+        playerInstances[session.hostId],
+        {
+          track: video.id,
+        },
+        () => getAndRemoveNextVideoFromSession(code)
+      );
   } else {
     session.currentlyPlaying = null;
   }
@@ -56,7 +63,6 @@ export const getSessionUserHosts = () => {
 
   for (const code of Object.keys(sessions)) {
     if (sessions[code].hostId === user.userId) {
-      console.log('found session', sessions[code]);
       return sessions[code];
     }
   }
@@ -75,8 +81,6 @@ export const addClientToSession = (code: string) => {
   }
   session.clientIds.add(client.userId);
 
-  console.log(session);
-
   return session;
 }
 
@@ -85,20 +89,16 @@ export const toggleLike = (code: string, videoId: string) => {
     const user = getUser();
 
     const session = sessions[code];
-    console.log(session);
     if (!session) {
       return;
     }
     const video = session.queue.find((video) => video.id == videoId);
-    console.log(video);
     if (!video) {
       return;
     }
     if (video.likes.has(user.userId)) {
-      console.log('deleting like');
       video.likes.delete(user.userId);
     } else {
-      console.log('adding like');
       video.likes.add(user.userId);
     }
 
@@ -109,6 +109,16 @@ export const toggleLike = (code: string, videoId: string) => {
   } catch (error) {
     console.error(error);
   }
+}
+
+interface Discord {
+  bearer: string;
+  guilds?: GuildData[];
+}
+
+interface UserData {
+  userId: string,
+  discord?: Discord
 }
 
 const users = eternalVar("users") ?? $$({} as Record<string, UserData>)

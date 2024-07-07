@@ -51,9 +51,9 @@ export const getSessionWithCode = (code: string) => {
   return sessions[code];
 }
 
-export const getSessionUserHosts = async () => {
-  console.log('sessions', sessions)
-  const user = await getUserId();
+export const getSessionUserHosts = () => {
+  const user = getUser();
+
   for (const code of Object.keys(sessions)) {
     if (sessions[code].hostId === user.userId) {
       console.log('found session', sessions[code]);
@@ -67,8 +67,8 @@ export const getSessionUserHosts = async () => {
   return session;
 }
 
-export const addClientToSession = async (code: string) => {
-  const client = await getUserId();
+export const addClientToSession = (code: string) => {
+  const client = getUser();
   const session = sessions[code];
   if (!session) {
     return;
@@ -80,9 +80,9 @@ export const addClientToSession = async (code: string) => {
   return session;
 }
 
-export const toggleLike = async (code: string, videoId: string) => {
+export const toggleLike = (code: string, videoId: string) => {
   try {
-    const user = await getUserId();
+    const user = getUser();
 
     const session = sessions[code];
     console.log(session);
@@ -111,12 +111,22 @@ export const toggleLike = async (code: string, videoId: string) => {
   }
 }
 
-export const getUserId = async () => {
-  const privateData = (await Context.getPrivateData(datex.meta)) as { userId: string };
-  if (!privateData.userId) {
-    privateData.userId = crypto.randomUUID()
+const users = eternalVar("users") ?? $$({} as Record<string, UserData>)
+
+export const getUser = (endpoint?: string) => {
+  /**
+   * Returns an existing or a newly created user session.
+   * 
+   * @param endpoint - The endpoint must be passed as a parameter if the function is called from the backend
+   * @returns A new or existing user session
+   */
+  const user = endpoint ? endpoint : datex.meta.caller.main.toString();
+  if (!(user in users)) {
+    users[user] = $$({
+      userId: crypto.randomUUID()
+    })
   }
-  return privateData;
+  return users[user];
 }
 
 const createSession = (userId: string) => {

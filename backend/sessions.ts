@@ -168,3 +168,20 @@ export const getSortedQueue = (code: string) => {
     });
   });
 }
+
+export const addItemToQueue = (code: string, item: Item) => {
+  const session = sessions[code];
+  if (!session) {
+    return;
+  }
+  session.queue.push(item);
+
+  console.log("session", session);
+  if (!session.currentlyPlaying) {
+    if (playerInstances[session.hostId]) {
+      getAndRemoveNextVideoFromSession(code);
+    }
+  }
+
+  return session;
+}

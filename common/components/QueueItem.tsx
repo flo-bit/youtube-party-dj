@@ -1,6 +1,6 @@
 import { ObjectRef } from "datex-core-legacy/runtime/pointers.ts";
 import { QueueType } from "./Queue.tsx";
-import { getSessionWithCode, getUserId, Item, toggleLike } from "backend/sessions.ts";
+import { addItemToQueue, getSessionWithCode, getUser, Item, toggleLike } from "backend/sessions.ts";
 
 const userId = (await getUserId()).userId;
 
@@ -156,7 +156,7 @@ export async function QueueItem({
             if ((session.queue.some((v) => v.id == item.id) || session.currentlyPlaying?.id == item.id)) {
               return;
             }
-            session?.queue.push(item);
+            addItemToQueue(code, item);
             toggleLike(code, item.id);
           }}
           id={`button-${item.id}`}

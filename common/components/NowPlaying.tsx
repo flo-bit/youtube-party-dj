@@ -2,6 +2,9 @@ import { Item } from "backend/sessions.ts"
 
 export function NowPlaying({ item }: Readonly<{ item: Item }>) {
   return <div class="queueframe w-full rounded-xl bg-white dark:bg-white/5 border border-black dark:border-white/10 h-20 overflow-hidden mb-2">
+    <div class="text-sm text-gray-500 dark:text-white-400 px-4 py-1 text-center border-b border-gray-300 dark:border-gray-700">
+        Added by: {item.addedBy}
+    </div>
     <div class="queueitem dark:text-white tex-black flex items-left h-full">
       <img src={item.thumbnail} class="h-20 w-32 object-cover" alt=" " />
       <div class="flex flex-1 flex-grow justify-between">

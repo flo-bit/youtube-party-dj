@@ -2,7 +2,7 @@ import { Innertube } from "https://deno.land/x/youtubei@v10.0.0-deno/deno.ts";
 
 const youtube = await Innertube.create();
 
-export async function search(q: string) {
+export async function search(q: string, userName: string) {
   try {
 
     const result = await youtube.search(q, {type: 'video', sort_by: 'relevance'})
@@ -13,6 +13,7 @@ export async function search(q: string) {
 
     return videos.map((item) => {
       return {
+        addedBy: userName,
         title: item.title.text ?? 'Untitled',
         // @ts-ignore - no type for thumbnails
         thumbnail: item.thumbnails?.[0].url,

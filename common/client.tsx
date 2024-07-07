@@ -1,7 +1,7 @@
 import { QueueItem } from "./components/QueueItem.tsx";
 import SearchBar from "./components/SearchBar.tsx";
 import { search } from "backend/data.tsx";
-import { updateUser, getSortedQueue, Item } from "backend/sessions.ts";
+import { getUserId, updateUser, getSortedQueue, Item } from "backend/sessions.ts";
 import { Context } from "uix/routing/context.ts";
 import { loadInitialTheme } from "./components/ToggleThemeButton.tsx";
 import NavMenu from "./components/nav/NavMenu.tsx";
@@ -13,11 +13,13 @@ export default async function App(ctx: Context) {
   //const nick = (ctx.searchParams.get('nick') ?? "anon");
   
 	const session = await updateUser(code);
-
-
+  
   if (!session) {
     return;
   }
+
+  const client = await getUserId();
+  const clientName = session.clients[client.userId].name;
 
 	const sorted = await getSortedQueue(code);
 
@@ -33,7 +35,7 @@ export default async function App(ctx: Context) {
     showSearch.val = true;
 
     searchResults.splice(0, searchResults.length);
-    searchResults.push(...(await search(value)));
+    searchResults.push(...(await search(value, clientName)));
   };
 
   const menu = always(() => {

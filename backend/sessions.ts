@@ -2,6 +2,7 @@ import { Context } from "uix/routing/context.ts";
 import { ObjectRef } from "datex-core-legacy/runtime/pointers.ts";
 
 export type Item = {
+  addedBy: string, // as Client
   title: string;
   thumbnail: string;
   duration: string;

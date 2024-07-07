@@ -41,10 +41,8 @@ export const init = () => {
     client.shoukaku = shoukaku;
 }
 
-export const auth = async (ctx: Context, code: string) => {
-    const endpoint = ctx.endpoint.main.toString();
-
-    const url = new URL(ctx.request.url);
+export const auth = async (code: string, origin: string) => {
+    const endpoint = datex.meta.caller.main.toString();
     const result = await fetch("https://discord.com/api/oauth2/token",
         {
             method: "POST",
@@ -56,7 +54,7 @@ export const auth = async (ctx: Context, code: string) => {
                 client_secret: config.CLIENT_SECRET,
                 grant_type: "authorization_code",
                 code: code,
-                redirect_uri: url.origin + "/integration/discord/auth",
+                redirect_uri: origin + "/integration/discord/auth",
                 scope: "identify"
             })
         }

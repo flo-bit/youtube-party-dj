@@ -5,6 +5,8 @@
  */
 import { Context } from "uix/routing/context.ts";
 import "../common/theme.tsx"
+import { auth } from "backend/integrations/discord/Client.ts";
+import { provideRedirect } from "uix/html/entrypoint-providers.tsx";
 
 export default {
 	'/player': async () => {
@@ -22,5 +24,14 @@ export default {
 	"/integration/discord": async () => {
 		const App = await import("common/components/integrations/discord/Discord.tsx");
 		return App.default();
+	},
+
+	"/integration/discord/auth": async (ctx: Context) => {
+		if (ctx.searchParams.has("code")) {
+			if (!(await auth(ctx.searchParams.get("code")!, globalThis.location.origin))) {
+				return "Failed to authenticate with Discord. Please try again."
+			}
+		}	
+		return provideRedirect("/player");
 	}
 }

@@ -12,6 +12,7 @@ import ToggleThemeButton, {
   loadInitialTheme,
 } from "./components/ToggleThemeButton.tsx";
 import { Item } from "../backend/sessions.ts";
+import { ToggleDiscordPopupButton } from "common/components/integrations/discord/DiscordPopup.tsx";
 
 export default async function App() {
   const session = await getSessionUserHosts();
@@ -59,6 +60,7 @@ export default async function App() {
             <VideoPlayer queue={session.queue} code={code} />
           </div>
           <div class="flex items-center justify-end px-12 h-10 mb-4">
+            <ToggleDiscordPopupButton />
             <ToggleThemeButton />
           </div>
 

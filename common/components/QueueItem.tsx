@@ -216,7 +216,7 @@ export async function QueueItem({
                       hookElement.classList.remove("fly-in-animation");
                       await sleep(1000);
                       toggleLike(code, updatedItem.id);
-                      updateLikeButton(updatedItem, code);
+                      updateLikeButton(item, code);
                     }
                   }
                   

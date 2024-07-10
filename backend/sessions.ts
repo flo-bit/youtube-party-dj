@@ -23,6 +23,7 @@ export interface SessionData {
   clientIds: Set<string>;
   clients: Record<string, Client>;
   queue: Item[];
+  recommendedQueue: Item[];
   currentlyPlaying: Item | null;
 };
 
@@ -146,6 +147,7 @@ const createSession = (userId: string) => {
     clientIds: new Set() as Set<string>,
     clients: {},
     queue: [] as Item[],
+    recommendedQueue: [] as Item[],
     currentlyPlaying: null as Item | null,
   };
   sessions[code] = session;
@@ -179,5 +181,16 @@ export const getSortedQueue = (code: string) => {
       if (a.added < b.added) return -1;
       return 0;
     });
+  });
+}
+
+export const getRecommendedQueue = (code: string) => {
+  const session = sessions[code];
+  if (!session) {
+    console.log("no session!")
+    return $$([])
+  }
+  return always(() => {
+    return session.recommendedQueue
   });
 }

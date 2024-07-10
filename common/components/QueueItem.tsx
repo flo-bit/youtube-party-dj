@@ -1,6 +1,7 @@
 import { ObjectRef } from "datex-core-legacy/runtime/pointers.ts";
 import { QueueType } from "./Queue.tsx";
 import { addItemToQueue, getSessionWithCode, getUser, Item, toggleLike } from "backend/sessions.ts";
+import { getRecommendations, updateRecommendations  } from "backend/data.tsx"
 
 const userId = (await getUser()).userId;
 
@@ -150,7 +151,8 @@ export async function QueueItem({
           onclick={async () => {
             await handleButtonClick();
             await sleep(250);
-            const session = await getSessionWithCode(code);
+            const clickCode = code.length ? code : code.val
+            const session = await getSessionWithCode(clickCode);
             if (!session) return;
 
             if ((session.queue.some((v) => v.id == item.id) || session.currentlyPlaying?.id == item.id)) {
@@ -158,6 +160,8 @@ export async function QueueItem({
             }
             addItemToQueue(code, item);
             toggleLike(code, item.id);
+
+            await updateRecommendations(session, code);
           }}
           id={`button-${item.id}`}
           class="queueframe bg-white dark:bg-white/5 border border-black dark:border-white/10 rounded-full w-10 h-10 flex items-center justify-center overflow-hidden "

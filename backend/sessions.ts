@@ -11,11 +11,19 @@ export type Item = {
   added: number;
 };
 
+export interface Client {
+	id: string;
+	name: string;
+}
+
+// TO ADD: In the session, clientName should also be saved together with clientId
 export interface SessionData {
   code: string;
   hostId: string;
   clientIds: Set<string>;
+  clients: Record<string, Client>;
   queue: Item[];
+  recommendedQueue: Item[];
   currentlyPlaying: Item | null;
 };
 
@@ -64,13 +72,31 @@ export const getSessionUserHosts = () => {
   return session;
 }
 
-export const addClientToSession = (code: string) => {
+
+export const updateUser = (code: string) => {
   const client = getUser();
   const session = sessions[code];
   if (!session) {
     return;
   }
   session.clientIds.add(client.userId);
+
+  console.log(session);
+  
+  return session;
+}
+
+export const addClientsInfo = (code: string, nick: string) => {
+  const client = getUser();
+  const session = sessions[code];
+  if (!session) {
+    return;
+  }
+
+  session.clients[client.userId] = {
+    id: client.userId,
+    name: nick
+  };
 
   return session;
 }
@@ -94,7 +120,7 @@ export const toggleLike = (code: string, videoId: string) => {
     }
 
     // this breaks shit
-    //sortVideos(session.queue);
+    // sortVideos(session.queue);
 
     return video;
   } catch (error) {
@@ -143,7 +169,9 @@ const createSession = (userId: string) => {
     code,
     hostId: userId,
     clientIds: new Set() as Set<string>,
+    clients: {},
     queue: [] as Item[],
+    recommendedQueue: [] as Item[],
     currentlyPlaying: null as Item | null,
   };
   sessions[code] = session;
@@ -195,4 +223,15 @@ export const addItemToQueue = (code: string, item: Item) => {
   }
 
   return session;
+}
+
+export const getRecommendedQueue = (code: string) => {
+  const session = sessions[code];
+  if (!session) {
+    console.log("no session!")
+    return $$([])
+  }
+  return always(() => {
+    return session.recommendedQueue
+  });
 }

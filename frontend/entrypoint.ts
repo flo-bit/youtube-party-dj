@@ -11,10 +11,11 @@ export default {
 		const App = await import("../common/page.tsx");
 		return App.default();
 	},
-	'/client/([A-Z0-9]{4})': async (ctx: Context) => {
+	'/client/([A-Z0-9]{4})': async (ctx: Context) => { 
 		const App = await import("../common/client.tsx");
 		return App.default(ctx);
 	},
-
+	"/welcome": import("../common/welcome.tsx"),
+	
 	"/": import("../common/home.tsx"),
 }

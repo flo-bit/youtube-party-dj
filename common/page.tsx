@@ -4,7 +4,9 @@ import { Queue } from "./components/Queue.tsx";
 import { QueueItem } from "./components/QueueItem.tsx";
 
 import QRCodeOverlay from "./components/QRCodeOverlay.tsx";
+import UserDisplay from "./components/UserDisplay.tsx";
 import { getSessionUserHosts, getSortedQueue, getRecommendedQueue } from "backend/sessions.ts";
+
 import { NowPlaying } from "./components/NowPlaying.tsx";
 import addDurations from "./helper.tsx";
 
@@ -15,8 +17,14 @@ import { Item } from "../backend/sessions.ts";
 
 export default async function App() {
   const session = await getSessionUserHosts();
-
+  
   const code = $$(session.code);
+
+  const arr = Array.from(session.clientIds);
+  const num = arr.length;
+  console.log(arr);
+	const users = Object.values(session.clients).map(client => client.name);
+	console.log(users);
 
   const current = always(() => {
     if (session.currentlyPlaying) {
@@ -46,6 +54,7 @@ export default async function App() {
 
   loadInitialTheme();
 
+
   const Recommendations = () => {
 
     // console.log('session', session)
@@ -69,12 +78,25 @@ export default async function App() {
   return (
     <main class="w-screen h-screen relative bg-gray-50 dark:bg-gray-950">
       <div class="mx-auto grid md:grid-cols-2 h-screen">
-        <div class="h-screen hidden md:flex items-center flex-col justify-center p-8">
-          <QRCode code={code} />
-          <div class="text-black dark:text-white text-3xl font-semibold mt-4">
-            Party code: <a target="_blank" href={window.location.origin + '/client/' + code}>{code}</a>
+        
+        <div class="flex flex-col h-screen hidden md:flex items-center justify-start p-8">
+          
+          <div class="w-full max-w-lg mx-auto mt-6 mb-12">
+            <QRCode code={code}/>
+            <div class="text-black dark:text-white text-3xl font-semibold mt-4 text-center">
+              Party code: <a target="_blank" href={`${window.location.origin}/welcome?code=${encodeURIComponent(code)}`}>{code}</a>
+            </div>
           </div>
+  
+          <div class="w-full flex justify-center mt-4">
+            {/* <div class="text-xl text-white dark:text-white font-semibold">
+                {num} 
+            </div> */}
+            <UserDisplay names={users} />
+          </div>
+
         </div>
+        
         <div class="flex flex-col overflow-y-hidden h-screen bg-white dark:bg-white/5 border border-black dark:border-white/10 rounded-xl">
           <div class="flex px-8 mx-0 mt-8 mb-4">
             <VideoPlayer queue={session.queue} code={code} />

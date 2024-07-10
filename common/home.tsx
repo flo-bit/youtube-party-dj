@@ -1,11 +1,24 @@
+
 export default function App() {
+
+  const typed_code = $$("");
+
+  const navigateToWelcome = () => {
+    const code = typed_code.val.trim() === "" ? "XXXX" : typed_code.val;
+    window.location.href = `/welcome?code=${encodeURIComponent(code)}`;
+  };
+
   return (
-    <main class="w-screen h-screen relative text-white bg-gray-950">
+    <main class="w-screen h-screen absolute inset-0 text-white bg-gray-950">
+      
       <div class="absolute w-full bg-[#1f1f26] py-8 px-12">
         <img src="./rsc/logo_white.svg" alt="Logo" class="h-12"></img>
       </div>
+
       <div class="w-full h-full md:flex md:flex-row pt-32">
-        <div class="md:h-full w-full md:w-1/2 flex flex-col place-content-center place-items-center gap-6 p-12">
+
+        <div class="md:h-full w-full md:w-1/2 flex flex-col place-content-center place-items-center gap-6 p-12 bg-gray-950">
+
           <h1
             class="w-full font-semibold text-rose-200 leading-tight"
             style="font-size: 3em;"
@@ -13,6 +26,7 @@ export default function App() {
             Like YouTube<br></br>but
             <span class="text-rose-500 font-bold"> with friends.</span>
           </h1>
+
           <div class="w-full">
             <p class="max-w-[34rem] text-rose-200 text-lg">
               Take the hassle out of starting a watch party. Just let your
@@ -20,9 +34,13 @@ export default function App() {
               autopilot.
             </p>
           </div>
-          <div class="min-w-full">
+
+          <div class="min-w-full flex flex-col gap-10 justify-center">
+
+            <div class="w-full h-px bg-gray-400 my-1 md:my-1"></div>
+
             <a href="/player">
-              <button class="bg-rose-500 hover:bg-rose-600 w-fit text-white font-medium gap-2 rounded-full font-lg py-3 px-6 flex items-center">
+              <button class="bg-rose-500 hover:bg-rose-600 w-full text-white font-medium rounded-full text-2xl py-6 px-10 flex items-center justify-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -35,11 +53,35 @@ export default function App() {
                     clip-rule="evenodd"
                   />
                 </svg>
-                Get started
+                Start your own party !
               </button>
             </a>
+
+            <div class="w-full h-px bg-gray-400 my-1 md:my-1"></div>
+
+            <div class="flex flex-col items-center justify-center gap-4 w-full md:w-1/2r">
+              <input 
+                type="text" 
+                placeholder="Enter 4-digit code" 
+                value={typed_code}
+                onchange={() => {
+                  typed_code.val = typed_code;
+                }}
+                class="text-black font-bold rounded-lg py-3 w-full text-center text-2xl"
+              />
+              <a rel="noopener noreferrer">
+                <button 
+                  class="bg-rose-500 hover:bg-rose-600 text-white font-medium rounded-full py-6 px-10 w-full text-2xl"
+                  onclick={navigateToWelcome} 
+                >
+                  Join the party 
+                </button>
+              </a>
+            </div>
+
           </div>
         </div>
+
         <div class="md:h-full w-full md:w-1/2 flex items-center justify-center pt-12 md:pt-0">
           <div class="absolute w-80 h-80 bg-rose-300 rounded-full z-[-5]"></div>
           <img

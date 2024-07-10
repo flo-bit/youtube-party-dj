@@ -11,10 +11,17 @@ export type Item = {
   added: number;
 };
 
+export interface Client {
+	id: string;
+	name: string;
+}
+
+// TO ADD: In the session, clientName should also be saved together with clientId
 export interface SessionData {
   code: string;
   hostId: string;
   clientIds: Set<string>;
+  clients: Record<string, Client>;
   queue: Item[];
   recommendedQueue: Item[];
   currentlyPlaying: Item | null;
@@ -57,7 +64,8 @@ export const getSessionUserHosts = async () => {
   return session;
 }
 
-export const addClientToSession = async (code: string) => {
+
+export const updateUser = async (code: string) => {
   const client = await getUserId();
   const session = sessions[code];
   if (!session) {
@@ -66,6 +74,21 @@ export const addClientToSession = async (code: string) => {
   session.clientIds.add(client.userId);
 
   console.log(session);
+  
+  return session;
+}
+
+export const addClientsInfo = async (code: string, nick: string) => {
+  const client = await getUserId();
+  const session = sessions[code];
+  if (!session) {
+    return;
+  }
+
+  session.clients[client.userId] = {
+    id: client.userId,
+    name: nick
+  };
 
   return session;
 }
@@ -93,7 +116,7 @@ export const toggleLike = async (code: string, videoId: string) => {
     }
 
     // this breaks shit
-    //sortVideos(session.queue);
+    // sortVideos(session.queue);
 
     return video;
   } catch (error) {
@@ -122,6 +145,7 @@ const createSession = (userId: string) => {
     code,
     hostId: userId,
     clientIds: new Set() as Set<string>,
+    clients: {},
     queue: [] as Item[],
     recommendedQueue: [] as Item[],
     currentlyPlaying: null as Item | null,

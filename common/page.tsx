@@ -4,7 +4,7 @@ import { Queue } from "./components/Queue.tsx";
 import { QueueItem } from "./components/QueueItem.tsx";
 
 import QRCodeOverlay from "./components/QRCodeOverlay.tsx";
-import { getSessionUserHosts, getSortedQueue } from "backend/sessions.ts";
+import { getSessionUserHosts, getSortedQueue, getRecommendedQueue } from "backend/sessions.ts";
 import { NowPlaying } from "./components/NowPlaying.tsx";
 import addDurations from "./helper.tsx";
 
@@ -34,6 +34,7 @@ export default async function App() {
   });
 
 	const sorted = await getSortedQueue(code);
+  const recommended = await getRecommendedQueue(code);
 
   const timeLeft = always(() => {
     let timeCounter = "0:00";
@@ -44,6 +45,26 @@ export default async function App() {
   });
 
   loadInitialTheme();
+
+  const Recommendations = () => {
+
+    // console.log('session', session)
+    if (recommended.$.length === 0) {
+      return null
+    }
+
+    return (
+      <div class="flex flex-col gap-3 mt-5">
+        <div class="text-white">RECOMMENDED:</div>
+        <div class="space-y-4">{
+          recommended.$.map(item => {
+            return <QueueItem item={item} type={'search'} code={code}></QueueItem>
+          })}
+        </div>
+      </div>
+    )
+
+	}
 
   return (
     <main class="w-screen h-screen relative bg-gray-50 dark:bg-gray-950">
@@ -82,6 +103,7 @@ export default async function App() {
           return <QueueItem item={item} type={'player'} code={code}></QueueItem>
         })}
       </div>
+      <Recommendations  />
           </div>
         </div>
       </div>

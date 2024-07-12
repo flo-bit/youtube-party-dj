@@ -79,21 +79,15 @@ export default async function App() {
     <main class="w-screen h-screen relative bg-gray-50 dark:bg-gray-950">
       <div class="mx-auto grid md:grid-cols-2 h-screen">
         
-        <div class="flex flex-col h-screen hidden md:flex items-center justify-start p-8">
-          
-          <div class="w-full max-w-lg mx-auto mt-6 mb-12">
-            <QRCode code={code}/>
-            <div class="text-black dark:text-white text-3xl font-semibold mt-4 text-center">
-              Party code: <a target="_blank" href={`${window.location.origin}/welcome?code=${encodeURIComponent(code)}`}>{code}</a>
-            </div>
+        <div class="flex flex-col h-screen hidden md:flex items-center justify-center p-8">
+          <QRCode code={code}/>
+          <div class="text-black dark:text-white text-3xl font-semibold mt-4 text-center">
+            Party code: <a target="_blank" href={`${window.location.origin}/welcome?code=${encodeURIComponent(code)}`}>{code}</a>
           </div>
-  
-          <div class="w-full flex justify-center mt-4">
-            {/* <div class="text-xl text-white dark:text-white font-semibold">
-                {num} 
-            </div> */}
-            <UserDisplay names={users} />
-          </div>
+          {/* <div class="text-xl text-white dark:text-white font-semibold">
+              {num} 
+          </div> */}
+          <UserDisplay names={users} />
 
         </div>
         

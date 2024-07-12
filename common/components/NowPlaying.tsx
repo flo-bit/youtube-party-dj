@@ -3,7 +3,7 @@ import { Item } from "backend/sessions.ts"
 export function NowPlaying({ item }: Readonly<{ item: Item }>) {
 
   const shouldShowAddedBy = () => {
-    return item.addedBy && item.addedBy.toLowerCase() !== "anon";
+    return item.addedBy && item.addedBy.toLowerCase() !== "";
   };
 
   

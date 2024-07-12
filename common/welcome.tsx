@@ -17,7 +17,7 @@ export default function Welcome(ctx: Context) {
     };
 
 	const handleAnonym = () => {
-		addClientsInfo(code, "anon");
+		addClientsInfo(code, "");
         const url = `/client/${encodeURIComponent(code)}`;  
     	redirect(url);
     };

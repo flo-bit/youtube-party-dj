@@ -54,7 +54,7 @@ export async function QueueItem({
   }
 
   const shouldShowAddedBy = () => {
-    return type !== "search" && item.addedBy.toLowerCase() !== "anon";
+    return type !== "search" && item.addedBy.toLowerCase() !== "";
   };
 
   const renderAddedBy = () => {

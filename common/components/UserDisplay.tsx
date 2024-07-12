@@ -1,6 +1,6 @@
 export default function UserDisplay({ names }: Readonly<{ names: string[] }>) {
 	// Filter out any names that are "anon" before rendering
-	const filteredNames = names.filter(name => name.toLowerCase() !== "anon");
+	const filteredNames = names.filter(name => name.toLowerCase() !== "");
   
 	return (
 	  <div class="flex flex-wrap justify-start items-center gap-4 p-4">

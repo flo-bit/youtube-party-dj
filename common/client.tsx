@@ -9,9 +9,6 @@ import NavMenu from "./components/nav/NavMenu.tsx";
 export default async function App(ctx: Context) {
   const code = ctx.urlPattern?.pathname.groups[0] ?? "XXXX";
 
-  //get the nick of the user from sessiondata
-  //const nick = (ctx.searchParams.get('nick') ?? "anon");
-  
 	const session = await updateUser(code);
   
   if (!session) {

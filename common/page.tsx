@@ -5,7 +5,7 @@ import { QueueItem } from "./components/QueueItem.tsx";
 
 import QRCodeOverlay from "./components/QRCodeOverlay.tsx";
 import UserDisplay from "./components/UserDisplay.tsx";
-import { getSessionUserHosts, getSortedQueue } from "backend/sessions.ts";
+import { getSessionUserHosts, getSortedQueue, getUserNames } from "backend/sessions.ts";
 import { NowPlaying } from "./components/NowPlaying.tsx";
 import addDurations from "./helper.tsx";
 
@@ -18,12 +18,6 @@ export default async function App() {
   const session = await getSessionUserHosts();
   
   const code = $$(session.code);
-
-  const arr = Array.from(session.clientIds);
-  const num = arr.length;
-  console.log(arr);
-	const users = Object.values(session.clients).map(client => client.name);
-	console.log(users);
 
   const current = always(() => {
     if (session.currentlyPlaying) {
@@ -41,6 +35,7 @@ export default async function App() {
   });
 
 	const sorted = await getSortedQueue(code);
+  const users = await getUserNames(code);
 
   const timeLeft = always(() => {
     let timeCounter = "0:00";

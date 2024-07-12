@@ -93,6 +93,19 @@ export const addClientsInfo = async (code: string, nick: string) => {
   return session;
 }
 
+export const getUserNames = (code: string) => {
+  const session = sessions[code];
+  if (!session) {
+    console.log("no session,no user names!")
+    return $$([])
+  }
+  return always(() => {
+    const users = Object.values(session.clients).map(client => client.name);
+    return users;
+  })
+}
+
+
 export const toggleLike = async (code: string, videoId: string) => {
   try {
     const user = await getUserId();

@@ -5,8 +5,6 @@ import { getRecommendations, updateRecommendations  } from "backend/data.tsx"
 
 const userId = (await getUserId()).userId;
 
-const userId = (await getUserId()).userId;
-
 export async function QueueItem({
   item,
   type,

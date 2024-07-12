@@ -1,11 +1,12 @@
 import { Innertube } from "https://deno.land/x/youtubei@v10.0.0-deno/deno.ts";
+import { Item } from "backend/sessions.ts";
 import uniqBy from 'https://cdn.skypack.dev/lodash/uniqBy';
 import shuffle from 'https://cdn.skypack.dev/lodash/shuffle';
 import take from 'https://cdn.skypack.dev/lodash/take';
 
 const youtube = await Innertube.create();
 
-export async function search(q: string) {
+export async function searchYoutube(q: string) {
   try {
 
     const result = await youtube.search(q, {type: 'video', sort_by: 'relevance'})
@@ -21,6 +22,38 @@ export async function search(q: string) {
   }
 }
 
+
+export async function searchSpotify(q:string, access_token: string){
+  try{
+  const url = 'https://api.spotify.com/v1/search?q='+ q + '&type=track&market=DE&limit=10';
+  const response = await fetch(url,
+    {        
+      headers: {
+       Authorization: 'Bearer ' + access_token,
+      }
+    }
+  );
+      
+  const result = await response.json();
+  //@ts-ignore item type
+  return result.tracks.items.map((item) => {
+
+  return {
+      title: item.name ?? 'Untitled', 
+      thumbnail: item.album.images[0].url,
+      id: item.id,
+      likes: new Set<string>(),
+      added: Date.now(),
+      duration: Math.floor(item.duration_ms/1000),
+      type: 'spotify' 
+    } as Item;
+  });
+}  catch (error) {
+  console.error(error);
+  return [];
+}
+}
+
 const normalizeVideo = (video: any) => {
   console.log(video);
   return {
@@ -32,8 +65,9 @@ const normalizeVideo = (video: any) => {
     likes: new Set<string>(),
     added: Date.now(),
     // @ts-ignore - no type for duration
-    duration: video.duration?.text ?? '-',
-  }
+    duration: video.duration?.seconds ?? 0,
+    type: 'youtube',
+  } as Item
 }
 
 async function getRelatedVideos(videoId: string) {

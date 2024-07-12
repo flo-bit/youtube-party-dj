@@ -1,6 +1,6 @@
 import { QueueItem } from "./components/QueueItem.tsx";
 import SearchBar from "./components/SearchBar.tsx";
-import { search } from "backend/data.tsx";
+import { searchSpotify, searchYoutube } from "backend/data.tsx";
 import { updateUser, getSortedQueue, Item } from "backend/sessions.ts";
 import { Context } from "uix/routing/context.ts";
 import { loadInitialTheme } from "./components/ToggleThemeButton.tsx";
@@ -33,7 +33,14 @@ export default async function App(ctx: Context) {
     showSearch.val = true;
 
     searchResults.splice(0, searchResults.length);
-    searchResults.push(...(await search(value)));
+
+    if(session.spotifyUnlocked && session.spotifyInformation.accessToken!=' ') {
+			console.log("searched spotify" + session.spotifyInformation.accessToken);
+			searchResults.push(...await searchSpotify(value, session.spotifyInformation.accessToken));
+				
+		}
+
+    searchResults.push(...(await searchYoutube(value)));
   };
 
   const menu = always(() => {

@@ -5,7 +5,6 @@ import { getRecommendations, updateRecommendations  } from "backend/data.tsx"
 
 const userId = (await getUserId()).userId;
 
-const userId = (await getUserId()).userId;
 
 export async function QueueItem({
   item,
@@ -13,8 +12,9 @@ export async function QueueItem({
   code
 }: Readonly<{ item: ObjectRef<Item>; type: QueueType; code: string }>) {
 
+  const session = await getSessionWithCode(code);
   async function renderIcon() {
-    const session = await getSessionWithCode(code);
+    
     if (!session) return null;
 
     if (session.queue.some((v) => v.id == item.id) || session.currentlyPlaying?.id == item.id) {
@@ -174,6 +174,15 @@ export async function QueueItem({
     }
   }
 
+  function parseTime (inputSeconds:number) {
+    const minutes = Math.floor(inputSeconds / 60).toString();
+    const seconds = inputSeconds % 60;
+    let printseconds = seconds.toString();
+    if(seconds < 10) printseconds = "0"+seconds.toString(); 
+    return minutes + ":" + printseconds;
+  }
+
+  const showType = $$(session.spotifyUnlocked);
   return (
     <div class="queueframe w-full rounded-xl bg-white dark:bg-white/5 border border-black dark:border-white/10 h-20 overflow-hidden mb-2 ">
       <div class="queueitem text-black dark:text-white flex items-left h-full">
@@ -181,11 +190,13 @@ export async function QueueItem({
         <div class="flex flex-1 flex-grow justify-between">
           <div class="pl-4 justify-center flex flex-col h-full">
             <p class="line-clamp-2 font-bold text-md leading-6">{item.title}</p>
-            <p class="text-xs">{item.duration} minutes</p>
+            <p class="text-xs">{parseTime(item.duration)} minutes</p>
+            {toggle(showType,<p class="text-xs">{item.type}</p>) }
           </div>
           <div class="queueicon2 flex h-full justify-center items-center stroke-black dark:stroke-white px-2">
             {await getAction()}
           </div>
+
         </div>
       </div>
     </div>

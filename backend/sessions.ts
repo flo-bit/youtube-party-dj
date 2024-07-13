@@ -1,5 +1,7 @@
 import { ObjectRef } from "datex-core-legacy/runtime/pointers.ts";
-import { GuildData, play, playerInstances } from "backend/integrations/discord/Client.ts";
+import { play, playerInstances } from "backend/integrations/discord/Client.ts";
+import { datexClassType } from "unyt_core/datex_all.ts";
+import { UserData } from "common/components/integrations/discord/Definitions.ts";
 
 export type Item = {
   title: string;
@@ -128,17 +130,7 @@ export const toggleLike = (code: string, videoId: string) => {
   }
 }
 
-interface Discord {
-  bearer: string;
-  guilds?: GuildData[];
-}
-
-interface UserData {
-  userId: string,
-  discord?: Discord
-}
-
-const users = eternalVar("users") ?? $$({} as Record<string, UserData>)
+const users = eternalVar("users") ?? $$({} as Record<string, datexClassType<ObjectRef<typeof UserData>>>)
 
 export const getUser = (endpoint?: string) => {
   /**
@@ -149,9 +141,7 @@ export const getUser = (endpoint?: string) => {
    */
   const user = endpoint ? endpoint : datex.meta.caller.main.toString();
   if (!(user in users)) {
-    users[user] = $$({
-      userId: crypto.randomUUID()
-    })
+    users[user] = new UserData();
   }
   return users[user];
 }

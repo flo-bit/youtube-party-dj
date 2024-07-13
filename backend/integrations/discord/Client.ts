@@ -65,13 +65,8 @@ export const auth = async (code: string, origin: string) => {
     const data = await result.json();
     if (data.access_token) {
         const user = getUser(endpoint);
-        if (!user.discord) {
-            user.discord = {
-                bearer: data.access_token
-            }
-        } else {
-            user.discord.bearer = data.access_token;
-        }
+        user.discord.bearer = data.access_token;
+        user.discord.isLoggedIn = true;
         return true;
     }
     return false;

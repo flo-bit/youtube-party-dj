@@ -32,7 +32,11 @@ export default {
 			if (!(await auth(ctx.searchParams.get("code")!, globalThis.location.origin))) {
 				return "Failed to authenticate with Discord. Please try again."
 			}
-		}	
-		return provideRedirect("/player");
+			return provideRedirect("/integration/discord/auth");
+		}
+		const user = await (await import("backend/sessions.ts")).getUser();
+		if (user.discord.isLoggedIn) {
+			return "Authenticated with Discord. You may close this tab now."
+		}
 	}
 }

@@ -1,8 +1,8 @@
 import { Client as DClient, ClientOptions, GatewayIntentBits, Events } from "npm:discord.js";
 import { Shoukaku, Connectors, Player, Track } from "npm:shoukaku";
 import { getUser } from "backend/sessions.ts";
-import { Context } from "uix/routing/context.ts";
 import config from "backend/integrations/discord/config.ts";
+import { Pointer } from "datex-core-legacy/datex_all.ts";
 
 class Client extends DClient {
     shoukaku!: Shoukaku;
@@ -178,6 +178,7 @@ export interface VoiceChannelData extends ChannelData {
     bitrate: number;
     user_limit: number;
     rtc_region: string;
+    botUser: Pointer<string> & string;
 }
 
 interface TextChannelData extends ChannelData {
@@ -203,53 +204,172 @@ const getChannelsOfGuild = async (guildId: string) => {
     return await result.json() as (VoiceChannelData | TextChannelData)[];
 }
 
+const voiceChannelsDB: {
+    channels: Record<channelId, VoiceChannelData>,
+    lastUpdate: number
+} = {
+    channels: {},
+    lastUpdate: 0
+};
+
 export const getVoiceChannels = async (guildId: string) => {
-    const channels = await getChannelsOfGuild(guildId);
-    if (!channels) {
-        return 0;
+    if (Date.now() - voiceChannelsDB.lastUpdate > 60000) {
+        const channels = await getChannelsOfGuild(guildId);
+        voiceChannelsDB.lastUpdate = Date.now();
+        if (!channels) {
+            console.log("Failed to get channels");
+            return 0;
+        }
+        const voiceChannels = (channels.filter((channel: (VoiceChannelData | TextChannelData)) => channel.type === 2) as VoiceChannelData[]).reduce((acc, channel) => {
+            acc[channel.id] = channel;
+            return acc;
+        }, {} as Record<channelId, VoiceChannelData>);
+
+        for (const channelId in voiceChannels) {
+            if (channelId in voiceChannelsDB) {
+                voiceChannels[channelId] = voiceChannelsDB.channels[channelId];
+            } else {
+                voiceChannels[channelId].botUser = $$(playerInstances[voiceChannels[channelId].guild_id] ? playerInstances[voiceChannels[channelId].guild_id].userId : "");
+                voiceChannelsDB.channels[channelId] = voiceChannels[channelId];
+            }
+        }
+
+        return Object.values(voiceChannels);
+    } else {
+        // filter out channels that don't belong to the guild
+        return Object.values(voiceChannelsDB.channels).filter(channel => channel.guild_id === guildId);
     }
-    return channels.filter((channel: (VoiceChannelData | TextChannelData)) => channel.type === 2) as VoiceChannelData[];
 }
 
 type userId = string;
 type guildId = string;
-export const playerInstances: Record<userId, Record<guildId, Player>> = {};
+type channelId = string;
 
-export const joinVoiceChannel = async (data: { guildId: string, channelId: string }) => {
+type PlayerInstance = {
+    userId: userId,
+    channelId: channelId,
+    player?: Player
+};
+type PlayerInstances = Record<guildId, PlayerInstance>;
+
+export const playerInstances: PlayerInstances = {};
+
+type JoinVoiceChannelStatus = {
+    status: 0 | 1 | 2 | 3,
+    channelId: channelId
+}
+export const joinVoiceChannel = async (data: { guildId: string, channelId: string }): Promise<JoinVoiceChannelStatus> => {
     const user = getUser();
-    for (const userId in playerInstances) {
-        if (userId === user.userId) continue;
-        for (const guildId in playerInstances[userId]) {
-            if (guildId === data.guildId) {
-                console.warn("This guild already has a player instance.");
-                return false;
+
+    // check if the guild already has a player instance
+    if (data.guildId in playerInstances) {
+        // check if the user has a player instance in the guild
+        if (playerInstances[data.guildId].userId === user.userId) {
+            // check if the user is trying to join the bot the same channel
+            if (playerInstances[data.guildId].channelId === data.channelId) {
+                // leave the channel
+                await client.shoukaku.leaveVoiceChannel(data.guildId);
+
+                // delete the player instance
+                delete playerInstances[data.guildId];
+
+                // set botUser to empty string
+                voiceChannelsDB.channels[data.channelId].botUser.val = "";
+
+                // return 2 to indicate that the bot has left the channel
+                return {
+                    status: 2,
+                    channelId: data.channelId
+                }
             }
+
+            // leave the channel and join the new one
+            await client.shoukaku.leaveVoiceChannel(data.guildId);
+            const player = await client.shoukaku.joinVoiceChannel({
+                guildId: data.guildId,
+                channelId: data.channelId,
+                shardId: 0
+            });
+
+            // check if the bot successfully joined the new channel
+            if (!player) {
+                // return 0 to indicate that the bot failed to join the new channel
+                return {
+                    status: 0,
+                    channelId: playerInstances[data.guildId].channelId
+                };
+            }
+
+            // set botUser of old channel to empty string
+            voiceChannelsDB.channels[playerInstances[data.guildId].channelId].botUser.val = "";
+
+            // update channel id because bot has joined a new channel
+            playerInstances[data.guildId].channelId = data.channelId;
+
+            // set botUser to the user's id
+            voiceChannelsDB.channels[data.channelId].botUser.val = user.userId;
+
+            // return 1 to indicate that the bot has joined the new channel
+            return {
+                status: 1,
+                channelId: data.channelId
+            };
         }
+
+        // return 0 to indicate that the guild already has a player instance
+        return {
+            status: 3,
+            channelId: playerInstances[data.guildId].channelId
+        };
     }
-    if (!user.discord || !user.discord.bearer) {
+
+    // check if the user has a discord token
+    if (!user.discord.bearer) {
         throw status.NO_DISCORD_TOKEN;
     }
-    if (!(user.userId in playerInstances)) {
-        playerInstances[user.userId] = {};
-    }
-    const userPlayers = playerInstances[user.userId];
-    if (data.guildId in userPlayers) {
-        await client.shoukaku.leaveVoiceChannel(data.guildId);
-        delete userPlayers[data.guildId];
-    }
-    const player = userPlayers[data.guildId] = (await client.shoukaku.joinVoiceChannel({
+
+    // because the guild doesn't have a player instance, create one
+    playerInstances[data.guildId] = {
+        userId: user.userId,
+        channelId: data.channelId
+    };
+
+    // join the voice channel and create a player instance
+    const player = await client.shoukaku.joinVoiceChannel({
         guildId: data.guildId,
         channelId: data.channelId,
         shardId: 0
-    }));
-    return !!player;
+    });
+
+    // check if the bot successfully joined the channel
+    if (player) {
+        // save the player instance
+        playerInstances[data.guildId].player = player;
+        // set botUser to the user's id
+        voiceChannelsDB.channels[data.channelId].botUser.val = user.userId;
+        // return 1 to indicate that the bot has joined the channel
+        return {
+            status: 1,
+            channelId: data.channelId
+        };
+    }
+    
+    // return 0 to indicate that the bot failed to join the channel
+    return {
+        status: 0,
+        channelId: ""
+    };
 }
 
-export const play = async (players: Record<guildId, Player>, data: { track: string }, queue: () => void = () => {}) => {
+export const play = async (playerInstances: PlayerInstance[], data: { track: string }, queue: () => void = () => {}) => {
     let track;
 
-    for (const guildId in players) {
-        const player = players[guildId];
+    for (const playerInstance of playerInstances) {
+        const player = playerInstance.player;
+        if (!player) {
+            continue;
+        }
+
         if (!track) {
             const result = await player.node.rest.resolve(data.track);
             if (!result || result.loadType == 'empty') return;
@@ -265,34 +385,26 @@ export const play = async (players: Record<guildId, Player>, data: { track: stri
     }
 }
 
+export const getUserPlayerInstances = (user?: string) => {
+    const userId = user ? user : getUser().userId;
+    return Object.values(playerInstances).filter(player => player.userId === userId);
+}
+
 export const playDiscord = (data: { track: string }) => {
-    const user = getUser();
-    const players = playerInstances[user.userId];
-    play(players, data);
+    play(getUserPlayerInstances(), data);
 }
 
 export const pauseDiscord = async () => {
-    const user = getUser();
-    const players = playerInstances[user.userId];
-    for (const guildId in players) {
-        await players[guildId].setPaused(true);
+    for (const playerInstance of getUserPlayerInstances()) {
+        await playerInstance.player?.setPaused(true);
     }
 }
 
 export const resumeDiscord = async (data?: { track: string }) => {
-    const user = getUser();
-    const players = playerInstances[user.userId];
-    for (const guildId in players) {
-        if (players[guildId].paused) {
-            await players[guildId].setPaused(false);
-        } else if (data) {
-            const filteredPlayers: Record<guildId, Player> = {};
-            for (const guildId in players) {
-                if (!players[guildId].paused) {
-                    filteredPlayers[guildId] = players[guildId];
-                }
-            }
-            await play(filteredPlayers, { track: data.track });
+    for (const playerInstance of getUserPlayerInstances()) {
+        if (!playerInstance.player) continue;
+        if (playerInstance.player.paused) {
+            await playerInstance.player.setPaused(false);
         }
     }
 }

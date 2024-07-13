@@ -1,5 +1,5 @@
 import { ObjectRef } from "datex-core-legacy/runtime/pointers.ts";
-import { play, playerInstances } from "backend/integrations/discord/Client.ts";
+import { getUserPlayerInstances, play } from "backend/integrations/discord/Client.ts";
 import { datexClassType } from "unyt_core/datex_all.ts";
 import { UserData } from "common/components/integrations/discord/Definitions.ts";
 
@@ -41,9 +41,10 @@ export const getAndRemoveNextVideoFromSession = (code: string) => {
   const video = session.queue.shift();
   if (video) {
     session.currentlyPlaying = video;
-    if (playerInstances[session.hostId])
+    const playerInstances = getUserPlayerInstances(session.hostId);
+    if (playerInstances)
       play(
-        playerInstances[session.hostId],
+        playerInstances,
         {
           track: video.id,
         },
@@ -159,7 +160,7 @@ const createSession = (userId: string) => {
     code,
     hostId: userId,
     clientIds: new Set() as Set<string>,
-    clients: {},
+    clients: {} as Record<string, Client>,
     queue: [] as Item[],
     recommendedQueue: [] as Item[],
     currentlyPlaying: null as Item | null,
@@ -207,7 +208,7 @@ export const addItemToQueue = (code: string, item: Item) => {
 
   console.log("session", session);
   if (!session.currentlyPlaying) {
-    if (playerInstances[session.hostId]) {
+    if (getUserPlayerInstances(session.hostId).length > 0) {
       getAndRemoveNextVideoFromSession(code);
     }
   }

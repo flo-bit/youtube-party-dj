@@ -4,7 +4,7 @@ import GuildItem from "common/components/integrations/discord/GuildItem.tsx";
 export default function GuildList({ guilds }: { guilds: GuildData[] }) {
     return (
         <div>
-            <ul>
+            <ul class="discord guild list">
                 {guilds.map(guild => (
                     <GuildItem guild={guild} />
                 ))}

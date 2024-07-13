@@ -1,11 +1,11 @@
-export function ToggleDiscordPopupButton() {
+export function ToggleDiscordControls({ togglePointer }: { togglePointer: () => void }) {
     const onClick = () => {
         globalThis.open("/integration/discord", "_blank", 'location=yes,height=300,width=200,scrollbars=yes,status=yes');
     }
 
     return (
         <div>
-            <button class="cursor-pointer" onclick={onClick}>
+            <button class="cursor-pointer" onclick={togglePointer}>
                 <div class="flex items-center justify-center w-10">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36" fill="currentColor" class="rounded-lg size-6 active:size-5 hidden dark:block fill-white">
                         <g id="图层_2" data-name="图层 2">

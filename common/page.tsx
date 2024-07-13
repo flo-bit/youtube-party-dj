@@ -14,7 +14,9 @@ import ToggleThemeButton, {
   loadInitialTheme,
 } from "./components/ToggleThemeButton.tsx";
 import { Item } from "../backend/sessions.ts";
-import { ToggleDiscordPopupButton } from "common/components/integrations/discord/DiscordPopup.tsx";
+
+import { ToggleDiscordControls } from "common/components/integrations/discord/DiscordPopup.tsx";
+import Discord from "common/components/integrations/discord/Discord.tsx";
 
 export default async function App() {
   const session = await getSessionUserHosts();
@@ -26,6 +28,13 @@ export default async function App() {
   console.log(arr);
 	const users = Object.values(session.clients).map(client => client.name);
 	console.log(users);
+
+  // discord controls toggle
+  const showDiscordControls = $$(false);
+
+  const toggleDiscordControls = () => {
+    showDiscordControls.val = !showDiscordControls.val;
+  }
 
   const current = always(() => {
     if (session.currentlyPlaying) {
@@ -76,6 +85,23 @@ export default async function App() {
 
 	}
 
+  // assign video player component to a variable, so it can be rendered conditionally
+  const videoPlayer = always(() => {
+    return <VideoPlayer queue={session.queue} code={code} />;
+  });
+
+  // assign discord component to a variable, so it doesn't rerender on every state change
+  const discord = always(() => <Discord />);
+
+  // show discord or video controls based on the state of showDiscordControls
+  const showDiscordOrVideoControls = always(() => {
+    if (showDiscordControls.val) {
+      return discord;
+    } else {
+      return videoPlayer;
+    }
+  });
+
   return (
     <main class="w-screen h-screen relative bg-gray-50 dark:bg-gray-950">
       <div class="mx-auto grid md:grid-cols-2 h-screen">
@@ -94,10 +120,12 @@ export default async function App() {
         
         <div class="flex flex-col overflow-y-hidden h-screen bg-white dark:bg-white/5 border border-black dark:border-white/10 rounded-xl">
           <div class="flex px-8 mx-0 mt-8 mb-4">
-            <VideoPlayer queue={session.queue} code={code} />
+            <div class="relative aspect-video bg-white dark:bg-white/5 border border-black dark:border-white/10 w-full overflow-hidden object-cover rounded-xl">
+              {showDiscordOrVideoControls}
+            </div>
           </div>
           <div class="flex items-center justify-end px-12 h-10 mb-4">
-            <ToggleDiscordPopupButton />
+            <ToggleDiscordControls togglePointer={toggleDiscordControls} />
             <ToggleThemeButton />
           </div>
 

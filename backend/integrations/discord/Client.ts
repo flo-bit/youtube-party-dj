@@ -1,8 +1,9 @@
 import { Client as DClient, ClientOptions, GatewayIntentBits, Events } from "npm:discord.js";
 import { Shoukaku, Connectors, Player, Track } from "npm:shoukaku";
-import { getUser } from "backend/sessions.ts";
+import { getUser, sessions } from "backend/sessions.ts";
 import config from "backend/integrations/discord/config.ts";
-import { Pointer } from "datex-core-legacy/datex_all.ts";
+import { ObjectRef, Pointer, datexClassType } from "datex-core-legacy/datex_all.ts";
+import { UserData } from "common/components/integrations/discord/Definitions.ts";
 
 class Client extends DClient {
     shoukaku!: Shoukaku;
@@ -39,6 +40,17 @@ export const init = () => {
 
     // If you want shoukaku to be available on client, then bind it to it, here is one example of it
     client.shoukaku = shoukaku;
+
+    // where discord.active is true, clean up everything
+    for (const session of Object.values(sessions)) {
+        const user = session.host as datexClassType<ObjectRef<typeof UserData>>;
+        if (user.discord.active) {
+            user.discord.active = false;
+            user.discord.playing = false;
+            // @ts-ignore - what is this error?
+            session.currentlyPlaying = null;
+        }
+    }
 }
 
 export const auth = async (code: string, origin: string) => {

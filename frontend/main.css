@@ -218,16 +218,16 @@
       }
     }
   }
+}
 
-  &.join-bot {
-    transition: 100ms all ease;
-  }
+.discord a {
+  transition: 100ms all ease;
+}
 
-  &.join-bot:hover {
-    color: #000;
-  }
+.discord a:hover {
+  color: #000;
+}
 
-  .dark &.join-bot:hover {
-    color: #fff;
-  }
+.dark .discord a:hover {
+  color: #fff;
 }

@@ -1717,13 +1717,13 @@ select {
       }
     }
   }
-  .join-bot {
+  &.join-bot {
     transition: 100ms all ease;
   }
-  .join-bot:hover {
+  &.join-bot:hover {
     color: #000;
   }
-  .dark .join-bot:hover {
+  .dark &.join-bot:hover {
     color: #fff;
   }
 }

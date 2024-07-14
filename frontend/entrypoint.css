@@ -1717,15 +1717,18 @@ select {
       }
     }
   }
-  &.join-bot {
-    transition: 100ms all ease;
-  }
-  &.join-bot:hover {
-    color: #000;
-  }
-  .dark &.join-bot:hover {
-    color: #fff;
-  }
+}
+
+.discord a {
+  transition: 100ms all ease;
+}
+
+.discord a:hover {
+  color: #000;
+}
+
+.dark .discord a:hover {
+  color: #fff;
 }
 
 .placeholder\:text-black::-moz-placeholder {

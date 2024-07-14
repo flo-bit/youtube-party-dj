@@ -23,7 +23,7 @@ export default async function GuildItem({ guild }: { guild: GuildData }){
 
   const channelList = always(() => {
     if (channels === 0) {
-      return <div class="empty">Failed to get voicechannels</div>;
+      return <div class="empty">Failed to get voice channels</div>;
     }
     if (channels.length === 0) {
       return <div class="empty">No voicechannels</div>;

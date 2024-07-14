@@ -22,6 +22,7 @@ export interface Client {
 export interface SessionData {
   code: string;
   hostId: string;
+  host: datexClassType<ObjectRef<typeof UserData>>;
   clientIds: Set<string>;
   clients: Record<string, Client>;
   queue: Item[];
@@ -50,7 +51,11 @@ export const getAndRemoveNextVideoFromSession = (code: string) => {
         },
         () => getAndRemoveNextVideoFromSession(code)
       );
+      session.host.discord.playing = true;
+      session.host.discord.active = true;
   } else {
+    session.host.discord.active = false;
+    session.host.discord.playing = false;
     session.currentlyPlaying = null;
   }
   return video;
@@ -159,6 +164,7 @@ const createSession = (userId: string) => {
   const session = {
     code,
     hostId: userId,
+    host: getUser(),
     clientIds: new Set() as Set<string>,
     clients: {} as Record<string, Client>,
     queue: [] as Item[],
@@ -209,6 +215,8 @@ export const addItemToQueue = (code: string, item: Item) => {
   console.log("session", session);
   if (!session.currentlyPlaying) {
     if (getUserPlayerInstances(session.hostId).length > 0) {
+      session.host.discord.playing = true;
+      session.host.discord.active = true;
       getAndRemoveNextVideoFromSession(code);
     }
   }

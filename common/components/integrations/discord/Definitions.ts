@@ -6,6 +6,8 @@ export const Discord = struct("Discord",
     @property isLoggedIn: boolean = false;
     @property bearer?: string;
     @property guilds?: GuildData[];
+    @property playing: boolean = false;
+    @property active: boolean = false;
 
     @property setBearer = (bearer: string) => {
       this.bearer = bearer;

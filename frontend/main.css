@@ -85,6 +85,42 @@
 .discord {
   font-family: 'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Symbols';
   color: color-mix( in oklab, hsl( 214 calc( 1 * 8.1%) 61.2% / 1) 100%, black 0% );
+
+  > .controls {
+    .playPause {
+      border: 0;
+      background: transparent;
+      box-sizing: border-box;
+      width: 0;
+      height: 74px;
+      cursor: not-allowed;
+    
+      border-color: transparent transparent transparent color-mix( in oklab, hsl( 214 calc( 1 * 8.1%) 61.2% / 1) 100%, black 0% );
+      transition: 100ms all ease;
+      cursor: pointer;
+    
+      border-style: solid;
+      border-width: 37px 0 37px 60px;
+
+      &.active {
+        cursor: pointer;
+      }
+    
+      &.paused {
+        border-style: double;
+        border-width: 0px 0 0px 60px;
+      }
+
+      &:hover {
+        border-color: transparent transparent transparent #000;
+      }
+    
+      .dark &:hover {
+        border-color: transparent transparent transparent #fff;
+      }
+    }
+  }
+
   &.guild {
     &.list {
       margin: .5rem;
@@ -129,7 +165,7 @@
             button {
               padding: .3rem .5rem;
               cursor: pointer;
-              border-radius: .75rem;
+              border-radius: .4rem;
               transition: background-color 0.1s ease-in-out;
               width: 100%;
               text-align: left;
@@ -181,5 +217,17 @@
         }
       }
     }
+  }
+
+  .join-bot {
+    transition: 100ms all ease;
+  }
+
+  .join-bot:hover {
+    color: #000;
+  }
+
+  .dark .join-bot:hover {
+    color: #fff;
   }
 }

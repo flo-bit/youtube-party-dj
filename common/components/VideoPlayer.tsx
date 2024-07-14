@@ -77,11 +77,13 @@ export default function VideoPlayer({ queue, code }: Readonly<{ queue: Item[], c
   })
 
   return (
-    <div
-      id="player"
-      class="w-full h-full flex items-center justify-center dark:text-white text-black font-semibold"
-    >
-      {text}
+  <div class="relative aspect-video bg-white dark:bg-white/5 border border-black dark:border-white/10 w-full overflow-hidden object-cover rounded-xl">
+      <div
+        id="player"
+        class="w-full h-full flex items-center justify-center dark:text-white text-black font-semibold"
+      >
+        {text}
+      </div>
     </div>
   );
 }

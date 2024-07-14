@@ -91,10 +91,17 @@ export default async function App() {
   });
 
   // assign discord component to a variable, so it doesn't rerender on every state change
-  const discord = always(() => <Discord />);
+  const discord = always(() => <Discord code={code} />);
+
+  // load from local storage
+  if (localStorage.getItem('showDiscordControls') !== showDiscordControls.val.toString()) {
+    showDiscordControls.val = localStorage.getItem('showDiscordControls') === 'true';
+  }
 
   // show discord or video controls based on the state of showDiscordControls
   const showDiscordOrVideoControls = always(() => {
+    // save in local storage
+    localStorage.setItem('showDiscordControls', showDiscordControls.val.toString());
     if (showDiscordControls.val) {
       return discord;
     } else {

@@ -1,6 +1,5 @@
 import QRCode from "./components/QR.tsx";
 import VideoPlayer from "./components/VideoPlayer.tsx";
-import { Queue } from "./components/Queue.tsx";
 import { QueueItem } from "./components/QueueItem.tsx";
 
 import QRCodeOverlay from "./components/QRCodeOverlay.tsx";
@@ -26,7 +25,7 @@ export default async function App() {
   const arr = Array.from(session.clientIds);
   const num = arr.length;
   console.log(arr);
-	const users = Object.values(session.clients).map(client => client.name);
+	const users = always(() => Object.values(session.clients).map(client => client.name));
 	console.log(users);
 
   // discord controls toggle
@@ -68,8 +67,8 @@ export default async function App() {
   const Recommendations = () => {
 
     // console.log('session', session)
-    if (recommended.$.length === 0) {
-      return null
+    if (recommended.length === 0) {
+      return <></>
     }
 
     return (
@@ -127,9 +126,7 @@ export default async function App() {
         
         <div class="flex flex-col overflow-y-hidden h-screen bg-white dark:bg-white/5 border border-black dark:border-white/10 rounded-xl">
           <div class="flex px-8 mx-0 mt-8 mb-4">
-            <div class="relative aspect-video bg-white dark:bg-white/5 border border-black dark:border-white/10 w-full overflow-hidden object-cover rounded-xl">
               {showDiscordOrVideoControls}
-            </div>
           </div>
           <div class="flex items-center justify-end px-12 h-10 mb-4">
             <ToggleDiscordControls togglePointer={toggleDiscordControls} />

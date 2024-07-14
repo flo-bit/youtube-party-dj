@@ -47,7 +47,7 @@ export default async function Discord({ code }: Readonly<{ code: string }>) {
           {data}
         </div>
         <div class="flex items-center justify-center">
-          <a class="join-bot" target="_blank" href={`https://discord.com/oauth2/authorize?client_id=${clientId}&permissions=3146752&redirect_uri=${encodeURIComponent(new URL(window.location.href).origin)}%2Fintegration%2Fdiscord%2Fauth&integration_type=0&scope=bot`}>Add the Bot to your Server</a>
+          <a class="discord join-bot" target="_blank" href={`https://discord.com/oauth2/authorize?client_id=${clientId}&permissions=3146752&redirect_uri=${encodeURIComponent(new URL(window.location.href).origin)}%2Fintegration%2Fdiscord%2Fauth&integration_type=0&scope=bot`}>Add the Bot to your Server</a>
         </div>
       </div>
     </div>

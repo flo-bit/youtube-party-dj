@@ -1,9 +1,26 @@
 import { Client as DClient, ClientOptions, GatewayIntentBits, Events } from "npm:discord.js";
 import { Shoukaku, Connectors, Player, Track } from "npm:shoukaku";
 import { getUser, sessions } from "backend/sessions.ts";
-import config from "backend/integrations/discord/config.ts";
 import { ObjectRef, Pointer, datexClassType } from "datex-core-legacy/datex_all.ts";
 import { UserData } from "common/components/integrations/discord/Definitions.ts";
+
+// fallback config
+let config = {
+    BOT_TOKEN: "",
+    CLIENT_ID: "",
+    CLIENT_SECRET: "",
+    LAVA_HOST: "",
+    LAVA_PORT: 0,
+    LAVA_PASS: ""
+}
+
+// try to get config from the file
+try {
+    const tryGetConfig = await import("backend/integrations/discord/config.ts");
+    config = tryGetConfig.default;
+} catch (e) {
+    console.error(e);
+}
 
 class Client extends DClient {
     shoukaku!: Shoukaku;
@@ -12,6 +29,11 @@ class Client extends DClient {
 export let client: Client;
 
 export const init = () => {
+    // if any of the config values are empty, prevent the client from initializing
+    if (config.BOT_TOKEN === "" || config.CLIENT_ID === "" || config.CLIENT_SECRET === "" || config.LAVA_HOST === "" || config.LAVA_PORT === 0 || config.LAVA_PASS === "") {
+        return;
+    };
+
     const nodes = [
         {
             name: "default",

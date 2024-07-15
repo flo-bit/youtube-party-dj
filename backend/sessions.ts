@@ -40,6 +40,8 @@ export const getAndRemoveNextVideoFromSession = (code: string) => {
   const video = session.queue.shift();
   if (video) {
     session.currentlyPlaying = video;
+  } else {
+    session.currentlyPlaying = null;
   }
   return video;
 }

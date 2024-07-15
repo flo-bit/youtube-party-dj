@@ -400,6 +400,7 @@ export type PlayData = { track: string };
 export const play = async (playerInstances: PlayerInstance[], data: PlayData, queue: () => void = () => {}) => {
     let track;
 
+    let firstPlayer = true;
     for (const playerInstance of playerInstances) {
         const player = playerInstance.player;
         if (!player) {
@@ -415,9 +416,12 @@ export const play = async (playerInstances: PlayerInstance[], data: PlayData, qu
         // play the searched track
         await player.playTrack({ track: track.encoded });
         // wait for track to end
-        player.once('end', () => {
-            queue();
-        });
+        if (firstPlayer) {
+            firstPlayer = false;
+            player.on("end", () => {
+                queue();
+            });
+        }
     }
 }
 

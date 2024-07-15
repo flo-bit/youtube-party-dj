@@ -93,7 +93,7 @@ export default async function App() {
         
         <div class="flex flex-col overflow-y-hidden h-screen bg-white dark:bg-white/5 border border-black dark:border-white/10 rounded-xl">
           <div class="flex px-8 mx-0 mt-8 mb-4">
-            <VideoPlayer queue={session.queue} code={code} />
+            <VideoPlayer queue={sorted} session={session} />
           </div>
           <div class="flex items-center justify-end px-12 h-10 mb-4">
             <ToggleThemeButton />

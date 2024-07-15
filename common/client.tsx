@@ -110,13 +110,13 @@ export default async function App(ctx: Context) {
           <SearchBar onSearch={onSearch} />
         </div>
         <div class="px-4 py-4 border-t border-black dark:border-white/20 mx-0 overflow-y-scroll flex-grow">
-        
-          <div class="space-y-4 text-white" style={{display: showSearch}}>{
-              searchResults.$.map(item => {
-                return <QueueItem item={item} type={'search'} code={code}></QueueItem>
-              })}
+
+          <div class="space-y-4 text-white" style={{ display: showSearch }}>{
+            searchResults.$.map(item => {
+              return <QueueItem item={item} type={'search'} code={code}></QueueItem>
+            })}
           </div>
-          <div class="space-y-4 text-white" style={{display: showQueue}}>{
+          <div class="space-y-4 text-white" style={{ display: showQueue }}>{
             sorted.$.map(item => {
               return <QueueItem item={item} type={'client'} code={code}></QueueItem>
             })}
@@ -124,25 +124,27 @@ export default async function App(ctx: Context) {
 
 
 
-          <div class="space-y-4 text-white" style={{display: showChat}}>
-          <div class="flex justify-between items-center mb-4">
-        <span class="text-lg font-medium">Chat Box</span>
-        <input type="checkbox" id="darkModeToggle" class="toggle-checkbox" onclick="toggleDarkMode()"></input>
-    </div>
+          <div class="space-y-4 text-white" style={{ display: showChat }}>Work in Progress
+{/*
+            <div class="flex justify-between items-center mb-4">
+              <span class="text-lg font-medium">Chat Box</span>
+              <input type="checkbox" id="darkModeToggle" class="toggle-checkbox" onclick="toggleDarkMode()"></input>
+            </div>
 
-    <div id="chatBox" class="h-64 bg-white dark:bg-gray-700 dark:text-white p-4 rounded overflow-y-auto shadow-md border border-gray-300 dark:border-gray-600">
-         Messages will be displayed here
-    </div>
+            <div id="chatBox" class="h-64 bg-white dark:bg-gray-700 dark:text-white p-4 rounded overflow-y-auto shadow-md border border-gray-300 dark:border-gray-600">
+              Messages will be displayed here
+            </div>
 
-    <div class="mt-4 flex">
-        <input type="text" id="messageInput" class="flex-1 p-2 rounded-l border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white" placeholder="Type a message..."></input>
-        <button onclick="sendMessage()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r">Send</button>
-    </div>
+            <div class="mt-4 flex">
+              <input type="text" id="messageInput" class="flex-1 p-2 rounded-l border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white" placeholder="Type a message..."></input>
+              <button onclick="sendMessage()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r">Send</button>
+            </div>
+*/}
           </div>
 
 
 
-          <div class="space-y-4 text-white" style={{display: showSettings}}>
+          <div class="space-y-4 text-white" style={{ display: showSettings }}>
             <label class="inline-flex items-center cursor-pointer">
               <input onclick={toggleTheme} type="checkbox" value="" class="sr-only peer"></input>
               <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>

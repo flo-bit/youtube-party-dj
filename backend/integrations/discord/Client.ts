@@ -395,7 +395,9 @@ export const joinVoiceChannel = async (data: { guildId: string, channelId: strin
     };
 }
 
-export const play = async (playerInstances: PlayerInstance[], data: { track: string }, queue: () => void = () => {}) => {
+export type PlayData = { track: string };
+
+export const play = async (playerInstances: PlayerInstance[], data: PlayData, queue: () => void = () => {}) => {
     let track;
 
     for (const playerInstance of playerInstances) {
@@ -424,7 +426,7 @@ export const getUserPlayerInstances = (user?: string) => {
     return Object.values(playerInstances).filter(player => player.userId === userId);
 }
 
-export const playDiscord = (data: { track: string }) => {
+export const playDiscord = (data: PlayData) => {
     play(getUserPlayerInstances(), data);
 }
 
@@ -434,7 +436,7 @@ export const pauseDiscord = async () => {
     }
 }
 
-export const resumeDiscord = async (data?: { track: string }) => {
+export const resumeDiscord = async (data?: PlayData) => {
     for (const playerInstance of getUserPlayerInstances()) {
         if (!playerInstance.player) continue;
         if (playerInstance.player.paused) {

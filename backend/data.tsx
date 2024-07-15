@@ -22,7 +22,6 @@ export async function search(q: string) {
 }
 
 const normalizeVideo = (video: any) => {
-  console.log(video);
   return {
     title: video.title.text ?? 'Untitled',
     // @ts-ignore - no type for thumbnails
@@ -68,7 +67,6 @@ export async function getRecommendations(queue: { id: string }[], maxRecommendat
 
   const finalRecommendations = take(shuffledRecommendations, maxRecommendations);
 
-  console.log("FINDAL RECOMMENDATIONS", finalRecommendations);
   return finalRecommendations;
 }
 

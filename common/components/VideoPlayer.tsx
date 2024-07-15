@@ -1,7 +1,7 @@
-import { getAndRemoveNextVideoFromSession, Item } from "backend/sessions.ts";
+import { getAndRemoveNextVideoFromSession, Item, SessionData } from "backend/sessions.ts";
 import { pauseDiscord, resumeDiscord } from "backend/integrations/discord/Client.ts";
 
-export default function VideoPlayer({ queue, code, access_token }: Readonly<{ queue: Item[], code: string , access_token : string}>) {
+export default function VideoPlayer({ queue, session, access_token }: Readonly<{ queue: Item[], session: SessionData , access_token : string}>) {
   // @ts-ignore - YouTube API
   let youtubePlayer;
   //@ts-ignore Spotify API
@@ -52,7 +52,7 @@ export default function VideoPlayer({ queue, code, access_token }: Readonly<{ qu
      // @ts-ignore - YouTube API
     //youtubePlayer.stopVideo()
 
-    const video = await getAndRemoveNextVideoFromSession(code);
+    const video = await getAndRemoveNextVideoFromSession(session.code);
       
     if (!video) return;
     
@@ -139,17 +139,28 @@ export default function VideoPlayer({ queue, code, access_token }: Readonly<{ qu
         
     if (state.paused && state.position === 0) {
       setTimeout(() => {
-        playNext(); 
+        queueActions(); 
       }, 200);}
   }
 
 
-  const text = always(() => {
-    if (queue.length === 0) {
-      return "Add a video to the queue!";
+  const queueActions = () => {
+    if (session.currentlyPlaying) {
+      playYoutube(session.currentlyPlaying.id);
+    } else {
+      playNext();
     }
-    return "Loading video...";
-  })
+  }
+
+  const text = always(() => {
+    console.log("queue updated");
+    if (queue.length === 0) {
+      return <span>Add a video to the queue!</span>;
+    }
+    if (!session.currentlyPlaying)
+      queueActions();
+    return <span>Loading video...</span>;
+  });
 
   return (
     <div class = "relative w-full">

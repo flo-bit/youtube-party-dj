@@ -5,7 +5,7 @@ export function ToggleDiscordControls({ togglePointer }: { togglePointer: () => 
 
     return (
         <div>
-            <button class="cursor-pointer" onclick={togglePointer}>
+            <button class="cursor-pointer" onclick={togglePointer} title="Toggle Discord mode">
                 <div class="flex items-center justify-center w-10">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36" fill="currentColor" class="rounded-lg size-6 active:size-5 hidden dark:block fill-white">
                         <g id="图层_2" data-name="图层 2">

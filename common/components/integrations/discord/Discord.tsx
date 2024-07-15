@@ -26,21 +26,19 @@ export default async function Discord({ code }: Readonly<{ code: string }>) {
     <div class="discord flex flex-row  gap-x-4 aspect-video w-full">
       <div class="flex-1 overflow-y-auto rounded-xl flex items-center justify-center controls">
         {/* discord controls */}
-        {always(() => <button class={{playPause: true, paused: user.discord.playing, active: user.discord.active}} onclick={async () => {
-              if (user.discord.active) {
-                if (user.discord.playing) {
-                  await pauseDiscord();
-                  user.discord.playing = false;
-                } else {
-                  await resumeDiscord();
-                  user.discord.playing = true;
-                }
+        <button class={{playPause: true, paused: always(() => user.discord.playing), active: always(() => user.discord.active)}} onclick={async () => {
+            if (user.discord.active) {
+              if (user.discord.playing) {
+                await pauseDiscord();
+                user.discord.playing = false;
               } else {
-                getAndRemoveNextVideoFromSession(code);
+                await resumeDiscord();
+                user.discord.playing = true;
               }
-            }}></button>
-          )
-        }
+            } else {
+              getAndRemoveNextVideoFromSession(code);
+            }
+          }}></button>
       </div>
       <div class="min-w-[25%] flex flex-col gap-y-4">
         <div class="flex-1 bg-white dark:bg-white/5 border border-black dark:border-white/10 overflow-y-auto rounded-xl">

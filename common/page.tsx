@@ -89,7 +89,7 @@ export default async function App() {
 
   // assign video player component to a variable, so it can be rendered conditionally
   const videoPlayer = always(() => {
-    return <VideoPlayer queue={session.queue} code={code} access_token={session.spotifyInformation.accessToken} />;
+    return <VideoPlayer queue={sorted} session={session} access_token={session.spotifyInformation.accessToken} />;
   });
 
   // assign discord component to a variable, so it doesn't rerender on every state change

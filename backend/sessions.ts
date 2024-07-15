@@ -46,7 +46,6 @@ export const getAndRemoveNextVideoFromSession = (code: string) => {
   if (!session) {
     return;
   }
-  console.log(session.queue);
   const video = session.queue.shift();
   if (video) {
     session.currentlyPlaying = video;
@@ -187,19 +186,9 @@ const createSession = (userId: string) => {
   };
   sessions[code] = session;
 
-  return session;
-}
+  console.log(session);
 
-const sortVideos = (videos: ObjectRef<Item[]>) => {
-  console.log("sorting", videos);
-  videos.sort((a, b) => {
-    if (a.likes.size > b.likes.size) return -1;
-    if (a.likes.size < b.likes.size) return 1;
-    if (a.added > b.added) return 1;
-    if (a.added < b.added) return -1;
-    return 0;
-  });
-  console.log("sorted", videos);
+  return session;
 }
 
 export const getSortedQueue = (code: string) => {
@@ -226,7 +215,6 @@ export const addItemToQueue = (code: string, item: Item) => {
   }
   session.queue.push(item);
 
-  console.log("session", session);
   if (!session.currentlyPlaying) {
     if (getUserPlayerInstances(session.hostId).length > 0) {
       session.host.discord.playing = true;

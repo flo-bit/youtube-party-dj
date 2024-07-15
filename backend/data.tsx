@@ -25,37 +25,36 @@ export async function searchYoutube(q: string) {
 
 export async function searchSpotify(q:string, access_token: string){
   try{
-  const url = 'https://api.spotify.com/v1/search?q='+ q + '&type=track&market=DE&limit=10';
-  const response = await fetch(url,
-    {        
-      headers: {
-       Authorization: 'Bearer ' + access_token,
+    const url = 'https://api.spotify.com/v1/search?q='+ q + '&type=track&market=DE&limit=10';
+    const response = await fetch(url,
+      {        
+        headers: {
+        Authorization: 'Bearer ' + access_token,
+        }
       }
-    }
-  );
-      
-  const result = await response.json();
-  //@ts-ignore item type
-  return result.tracks.items.map((item) => {
+    );
+        
+    const result = await response.json();
+    //@ts-ignore item type
+    return result.tracks.items.map((item) => {
 
-  return {
-      title: item.name ?? 'Untitled', 
-      thumbnail: item.album.images[0].url,
-      id: item.id,
-      likes: new Set<string>(),
-      added: Date.now(),
-      duration: Math.floor(item.duration_ms/1000),
-      type: 'spotify' 
-    } as Item;
-  });
-}  catch (error) {
-  console.error(error);
-  return [];
-}
+    return {
+        title: item.name ?? 'Untitled', 
+        thumbnail: item.album.images[0].url,
+        id: item.id,
+        likes: new Set<string>(),
+        added: Date.now(),
+        duration: Math.floor(item.duration_ms/1000),
+        type: 'spotify' 
+      } as Item;
+    });
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
 }
 
 const normalizeVideo = (video: any) => {
-  console.log(video);
   return {
     title: video.title.text ?? 'Untitled',
     // @ts-ignore - no type for thumbnails
@@ -102,7 +101,6 @@ export async function getRecommendations(queue: { id: string }[], maxRecommendat
 
   const finalRecommendations = take(shuffledRecommendations, maxRecommendations);
 
-  console.log("FINDAL RECOMMENDATIONS", finalRecommendations);
   return finalRecommendations;
 }
 

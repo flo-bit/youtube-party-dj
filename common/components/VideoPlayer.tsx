@@ -1,14 +1,14 @@
-import { getAndRemoveNextVideoFromSession, Item } from "backend/sessions.ts";
+import { getAndRemoveNextVideoFromSession, Item, SessionData } from "backend/sessions.ts";
 import { pauseDiscord, resumeDiscord } from "backend/integrations/discord/Client.ts";
 
-export default function VideoPlayer({ queue, code }: Readonly<{ queue: Item[], code: string }>) {
+export default function VideoPlayer({ queue, session }: Readonly<{ queue: Item[], session: SessionData }>) {
   // @ts-ignore - YouTube API
   let player;
 
   async function playNext() {
     // @ts-ignore - YouTube API
     if (!player || player.getPlayerState() !== YT.PlayerState.PLAYING) {
-      const video = await getAndRemoveNextVideoFromSession(code);
+      const video = await getAndRemoveNextVideoFromSession(session.code);
       if (video) {
         play(video.id);
       }
@@ -59,7 +59,7 @@ export default function VideoPlayer({ queue, code }: Readonly<{ queue: Item[], c
   }
 
   function onYouTubeIframeAPIReady() {
-    playNext();
+    queueActions();
   }
 
   const tag = document.createElement("script");
@@ -69,12 +69,23 @@ export default function VideoPlayer({ queue, code }: Readonly<{ queue: Item[], c
   // @ts-ignore - YouTube API
   globalThis.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
 
-  const text = always(() => {
-    if (queue.length === 0) {
-      return "Add a video to the queue!";
+  const queueActions = () => {
+    if (session.currentlyPlaying) {
+      play(session.currentlyPlaying.id);
+    } else {
+      playNext();
     }
-    return "Loading video...";
-  })
+  }
+
+  const text = always(() => {
+    console.log("queue updated");
+    if (queue.length === 0) {
+      return <span>Add a video to the queue!</span>;
+    }
+    if (!session.currentlyPlaying)
+      queueActions();
+    return <span>Loading video...</span>;
+  });
 
   return (
   <div class="relative aspect-video bg-white dark:bg-white/5 border border-black dark:border-white/10 w-full overflow-hidden object-cover rounded-xl">

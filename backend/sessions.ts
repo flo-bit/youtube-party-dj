@@ -6,11 +6,12 @@ import { UserData } from "common/components/integrations/discord/Definitions.ts"
 export type Item = {
   title: string;
   thumbnail: string;
-  duration: string;
+  duration: number;
   id: string;
   likes: Set<string>;
   liked?: boolean;
   added: number;
+  type : 'youtube' | 'spotify';
 };
 
 export interface Client {
@@ -28,7 +29,14 @@ export interface SessionData {
   queue: Item[];
   recommendedQueue: Item[];
   currentlyPlaying: Item | null;
+  spotifyUnlocked : boolean;
+  spotifyInformation : SpotifyInformation;
 };
+
+export type SpotifyInformation = {
+  codeVerifier : string;
+  accessToken: string;
+}
 
 // map of session codes to session data
 export const sessions = eternalVar('sessions-1234') ?? $$({} as Record<string, SessionData>);
@@ -170,6 +178,12 @@ const createSession = (userId: string) => {
     queue: [] as Item[],
     recommendedQueue: [] as Item[],
     currentlyPlaying: null as Item | null,
+    spotifyUnlocked :false,
+    spotifyInformation : {
+      codeVerifier : '',
+      accessToken: ' ',
+    } as SpotifyInformation
+
   };
   sessions[code] = session;
 

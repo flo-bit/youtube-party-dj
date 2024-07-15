@@ -98,12 +98,14 @@ export default async function App() {
   // load from local storage
   if (localStorage.getItem('showDiscordControls') !== showDiscordControls.val.toString()) {
     showDiscordControls.val = localStorage.getItem('showDiscordControls') === 'true';
+    session.mode = showDiscordControls.val ? 'discord' : 'video';
   }
 
   // show discord or video controls based on the state of showDiscordControls
   const showDiscordOrVideoControls = always(() => {
     // save in local storage
     localStorage.setItem('showDiscordControls', showDiscordControls.val.toString());
+    session.mode = showDiscordControls.val ? 'discord' : 'video';
     if (showDiscordControls.val) {
       return discord;
     } else {

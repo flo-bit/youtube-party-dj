@@ -34,7 +34,7 @@ export default async function App(ctx: Context) {
 
     searchResults.splice(0, searchResults.length);
 
-    if(session.spotifyUnlocked && session.spotifyInformation.accessToken!=' ') {
+    if(session.spotifyUnlocked && session.mode !== 'discord' && session.spotifyInformation.accessToken!=' ') {
 			console.log("searched spotify" + session.spotifyInformation.accessToken);
 			searchResults.push(...await searchSpotify(value, session.spotifyInformation.accessToken));
 				

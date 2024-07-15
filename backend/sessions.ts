@@ -31,6 +31,7 @@ export interface SessionData {
   currentlyPlaying: Item | null;
   spotifyUnlocked : boolean;
   spotifyInformation : SpotifyInformation;
+  mode: 'video' | 'discord';
 };
 
 export type SpotifyInformation = {
@@ -181,8 +182,8 @@ const createSession = (userId: string) => {
     spotifyInformation : {
       codeVerifier : '',
       accessToken: ' ',
-    } as SpotifyInformation
-
+    } as SpotifyInformation,
+    mode: 'video' as 'video' | 'discord',
   };
   sessions[code] = session;
 

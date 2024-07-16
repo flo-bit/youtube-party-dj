@@ -33,12 +33,20 @@ export interface SessionData {
 // map of session codes to session data
 export const sessions = eternalVar('sessions-1234') ?? $$({} as Record<string, SessionData>);
 
+const sorter = (a: Item, b: Item) => {
+  if (a.likes.size > b.likes.size) return -1;
+  if (a.likes.size < b.likes.size) return 1;
+  if (a.added > b.added) return 1;
+  if (a.added < b.added) return -1;
+  return 0;
+}
+
 export const getAndRemoveNextVideoFromSession = (code: string) => {
   const session = sessions[code];
   if (!session) {
     return;
   }
-  const video = session.queue.shift();
+  const video = session.queue.sort(sorter).shift();
   if (video) {
     session.currentlyPlaying = video;
     const playerInstances = getUserPlayerInstances(session.hostId);
@@ -184,13 +192,7 @@ export const getSortedQueue = (code: string) => {
     return $$([])
   }
   return always(() => {
-    return session.queue.toSorted((a, b) => {
-      if (a.likes.size > b.likes.size) return -1;
-      if (a.likes.size < b.likes.size) return 1;
-      if (a.added > b.added) return 1;
-      if (a.added < b.added) return -1;
-      return 0;
-    });
+    return session.queue.toSorted(sorter);
   });
 }
 

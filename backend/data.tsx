@@ -80,16 +80,19 @@ async function getRelatedVideos(videoId: string) {
   }
 }
 
-export async function getRecommendations(queue: { id: string }[], maxRecommendations = 5) {
+export async function getRecommendations(queue: Item[], maxRecommendations = 5) {
   let allRecommendations: string[] = [];
 
   for (const video of queue) {
-    try {
-      const relatedVideos = await getRelatedVideos(video.id);
-      allRecommendations.push(...relatedVideos.slice(0, maxRecommendations));
-    } catch (error) {
-      console.error(`Error processing video ID ${video.id}:`, error);
+    if(video.type == 'youtube'){
+      try {
+        const relatedVideos = await getRelatedVideos(video.id);
+        allRecommendations.push(...relatedVideos.slice(0, maxRecommendations));
+      } catch (error) {
+        console.error(`Error processing video ID ${video.id}:`, error);
+      }
     }
+    
   }
 
   // filter out duplicates that are in queue

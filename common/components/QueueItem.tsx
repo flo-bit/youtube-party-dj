@@ -2,6 +2,7 @@ import { ObjectRef } from "datex-core-legacy/runtime/pointers.ts";
 import { QueueType } from "./Queue.tsx";
 import { addItemToQueue, getSessionWithCode, getUser, Item, toggleLike } from "backend/sessions.ts";
 import { getRecommendations, updateRecommendations  } from "backend/data.tsx"
+import { parseTime } from "../helper.tsx";
 
 const userId = (await getUser()).userId;
 
@@ -173,13 +174,7 @@ export async function QueueItem({
     }
   }
 
-  function parseTime (inputSeconds:number) {
-    const minutes = Math.floor(inputSeconds / 60).toString();
-    const seconds = inputSeconds % 60;
-    let printseconds = seconds.toString();
-    if(seconds < 10) printseconds = "0"+seconds.toString(); 
-    return minutes + ":" + printseconds;
-  }
+  
 
   const showType = $$(session.spotifyUnlocked);
   return (

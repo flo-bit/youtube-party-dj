@@ -9,3 +9,11 @@ export default function addDurations(duration1: string, duration2: number) {
   const printSeconds = seconds < 10 ? "0" + seconds.toString() : seconds.toString();
   return minutes+ ":" + printSeconds;
 }
+
+export function parseTime (inputSeconds:number) {
+  const minutes = Math.floor(inputSeconds / 60).toString();
+  const seconds = inputSeconds % 60;
+  let printseconds = seconds.toString();
+  if(seconds < 10) printseconds = "0"+seconds.toString(); 
+  return minutes + ":" + printseconds;
+}

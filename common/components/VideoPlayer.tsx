@@ -66,7 +66,7 @@ export default function VideoPlayer({ queue, session, access_token }: Readonly<{
       isYoutubePlayer.val = false;
       playSpotify(video.id,video.thumbnail);
     }
-    
+   
   }
 
   function playYoutube(videoId: string) {
@@ -134,20 +134,42 @@ export default function VideoPlayer({ queue, session, access_token }: Readonly<{
     }
   }
 
+  let current_track_id = ""; 
+  
   //@ts-ignore Spotify API
   function onStateChangeSpotify(state) {
-        
-    if (state.paused && state.position === 0) {
+    console.log(state);
+    //console.log(current_track_id);
+    current_track_id = state.track_window.current_track.id;
+  
+    //track finishes playing. the state gets paused and the position is 0
+    //play new song.
+    //the state is changed to new song, it is still paused and pos 0, but not finished playing.
+
+    //for a new song, have counter, when it gets added the counter goes to 1, when it is done the counter goes to 2 and we can skip to next
+  
+    if (state.paused && state.position === 0 && !state.loading ) {
       setTimeout(() => {
-        queueActions(); 
+        playNext(); 
+      
       }, 200);}
-  }
+
+      
+    }
+      
+     
+  
 
 
   const queueActions = () => {
     if (session.currentlyPlaying) {
-      playYoutube(session.currentlyPlaying.id);
-    } else {
+      if(session.currentlyPlaying.type== 'youtube')
+        playYoutube(session.currentlyPlaying.id);
+      else 
+        playSpotify(session.currentlyPlaying.id, session.currentlyPlaying.thumbnail)
+    } 
+
+    else {
       playNext();
     }
   }
@@ -157,8 +179,12 @@ export default function VideoPlayer({ queue, session, access_token }: Readonly<{
     if (queue.length === 0) {
       return <span>Add a video to the queue!</span>;
     }
-    if (!session.currentlyPlaying)
+    if (!session.currentlyPlaying){
+      console.log("queueactions");
+      
       queueActions();
+    }
+      
     return <span>Loading video...</span>;
   });
 
@@ -171,7 +197,7 @@ export default function VideoPlayer({ queue, session, access_token }: Readonly<{
         >
           {text}
         </div>,
-        <div class="h-full w-full items-center justify-center object-cover">
+        <div class="h-full w-full flex items-center justify-center object-cover">
           <img id="spotifyImage" src={spotifyImage} alt="" />
         </div>
         )}

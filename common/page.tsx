@@ -87,6 +87,28 @@ export default async function App() {
 
 	}
 
+  const CLIENT_ID = '87684034f00b4534b87af30e3b582d09';
+	const CLIENT_REDIRECT = 'http://localhost/player';
+	
+  if (session.spotifyInformation.codeVerifier == '')  {
+		session.spotifyInformation.codeVerifier = generateRandomString(64);
+    
+	}
+  const hashed = await sha256(session.spotifyInformation.codeVerifier);
+	const codeChallenge = base64encode(hashed);
+
+  const urlParams = new URLSearchParams(window.location.search);
+	const spotify_code  = urlParams.get('code');
+	
+  if (spotify_code && !session.spotifyUnlocked){
+    session.spotifyInformation.accessToken = await getAccessToken(session.spotifyInformation.codeVerifier, spotify_code, CLIENT_ID,CLIENT_REDIRECT);
+    session.spotifyUnlocked = true;
+  }
+	console.log(session.spotifyInformation)
+	//session.spotifyInformation.codeVerifier ="";
+
+	const unlock = $$(session.spotifyUnlocked);
+
   // assign video player component to a variable, so it can be rendered conditionally
   const videoPlayer = always(() => {
     return <VideoPlayer queue={sorted} session={session} access_token={session.spotifyInformation.accessToken} />;
@@ -111,27 +133,6 @@ export default async function App() {
     }
   });
 
-  const CLIENT_ID = '87684034f00b4534b87af30e3b582d09';
-	const CLIENT_REDIRECT = 'http://localhost/player';
-	
-  if (session.spotifyInformation.codeVerifier == '')  {
-		session.spotifyInformation.codeVerifier = generateRandomString(64);
-    
-	}
-  const hashed = await sha256(session.spotifyInformation.codeVerifier);
-	const codeChallenge = base64encode(hashed);
-
-  const urlParams = new URLSearchParams(window.location.search);
-	const spotify_code  = urlParams.get('code');
-	
-  if (spotify_code && !session.spotifyUnlocked){
-    session.spotifyInformation.accessToken = await getAccessToken(session.spotifyInformation.codeVerifier, spotify_code, CLIENT_ID,CLIENT_REDIRECT);
-    session.spotifyUnlocked = true;
-  }
-	console.log(session.spotifyInformation)
-	//session.spotifyInformation.codeVerifier ="";
-
-	const unlock = $$(session.spotifyUnlocked);
   return (
     <main class="w-screen h-screen relative bg-gray-50 dark:bg-gray-950">
       <div class="mx-auto grid md:grid-cols-2 h-screen">

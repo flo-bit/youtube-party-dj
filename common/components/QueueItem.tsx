@@ -1,6 +1,7 @@
 import { ObjectRef } from "datex-core-legacy/runtime/pointers.ts";
 import { QueueType } from "./Queue.tsx";
 import { getSessionWithCode, getUserId, Item, toggleLike } from "backend/sessions.ts";
+import { getRecommendations, updateRecommendations  } from "backend/data.tsx"
 
 const userId = (await getUserId()).userId;
 
@@ -216,7 +217,7 @@ export async function QueueItem({
                       hookElement.classList.remove("fly-in-animation");
                       await sleep(1000);
                       toggleLike(code, updatedItem.id);
-                      updateLikeButton(item, code);
+                      updateLikeButton(item, code);            await updateRecommendations(session, code);
                     }
                   }
                   

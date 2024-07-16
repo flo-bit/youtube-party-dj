@@ -1,7 +1,7 @@
 import { QueueItem } from "./components/QueueItem.tsx";
 import SearchBar from "./components/SearchBar.tsx";
 import { search } from "backend/data.tsx";
-import { addClientToSession, getSortedQueue, Item } from "backend/sessions.ts";
+import { updateUser, getSortedQueue, Item } from "backend/sessions.ts";
 import { Context } from "uix/routing/context.ts";
 import { loadInitialTheme } from "./components/ToggleThemeButton.tsx";
 import NavMenu from "./components/nav/NavMenu.tsx";
@@ -9,7 +9,11 @@ import NavMenu from "./components/nav/NavMenu.tsx";
 export default async function App(ctx: Context) {
   const code = ctx.urlPattern?.pathname.groups[0] ?? "XXXX";
 
-  const session = await addClientToSession(code);
+  //get the nick of the user from sessiondata
+  //const nick = (ctx.searchParams.get('nick') ?? "anon");
+  
+	const session = await updateUser(code);
+
 
   if (!session) {
     return;

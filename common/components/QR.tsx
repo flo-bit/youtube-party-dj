@@ -19,7 +19,7 @@ export default function QRCode({ code }: { code: Pointer<string> & string }) {
 
       return <span style={{ color: "black" }}>{loadingText}</span>;
     } else {
-      const qrCodeSrc = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent([new URL(window.location.href).origin, "/client/", code].join(""))}&format=svg`
+      const qrCodeSrc = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(`${new URL(window.location.href).origin}/welcome?code=${encodeURIComponent(code)}`)}&format=svg`;
 
       return <img class="h-full" src={qrCodeSrc} alt="QR code" />;
     }

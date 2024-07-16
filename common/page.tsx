@@ -64,7 +64,7 @@ export default async function App() {
 
     return (
       <div class="flex flex-col gap-3 mt-5">
-        <div class="text-white">RECOMMENDED:</div>
+        <div class="text-black dark:text-white">RECOMMENDED:</div>
         <div class="space-y-4">{
           recommended.$.map(item => {
             return <QueueItem item={item} type={'search'} code={code}></QueueItem>

@@ -235,10 +235,7 @@ export async function QueueItem({
     const button = document.getElementById(`button-${item.id}`);
     if (button) {
       const likeButton = await renderLikeButton(item, code);
-      
-
       button.replaceChildren(likeButton);
-      await sleep(1100);
     }
   }
 

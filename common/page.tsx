@@ -1,6 +1,5 @@
 import QRCode from "./components/QR.tsx";
 import VideoPlayer from "./components/VideoPlayer.tsx";
-import { Queue } from "./components/Queue.tsx";
 import { QueueItem } from "./components/QueueItem.tsx";
 
 import QRCodeOverlay from "./components/QRCodeOverlay.tsx";
@@ -15,6 +14,9 @@ import ToggleThemeButton, {
 } from "./components/ToggleThemeButton.tsx";
 import { Item } from "../backend/sessions.ts";
 
+import { ToggleDiscordControls } from "common/components/integrations/discord/DiscordPopup.tsx";
+import Discord from "common/components/integrations/discord/Discord.tsx";
+
 export default async function App() {
   const session = await getSessionUserHosts();
   
@@ -23,8 +25,15 @@ export default async function App() {
   const arr = Array.from(session.clientIds);
   const num = arr.length;
   console.log(arr);
-	const users = Object.values(session.clients).map(client => client.name);
+	const users = always(() => Object.values(session.clients).map(client => client.name));
 	console.log(users);
+
+  // discord controls toggle
+  const showDiscordControls = $$(false);
+
+  const toggleDiscordControls = () => {
+    showDiscordControls.val = !showDiscordControls.val;
+  }
 
   const current = always(() => {
     if (session.currentlyPlaying) {
@@ -58,8 +67,8 @@ export default async function App() {
   const Recommendations = () => {
 
     // console.log('session', session)
-    if (recommended.$.length === 0) {
-      return null
+    if (recommended.length === 0) {
+      return <></>
     }
 
     return (
@@ -74,6 +83,30 @@ export default async function App() {
     )
 
 	}
+
+  // assign video player component to a variable, so it can be rendered conditionally
+  const videoPlayer = always(() => {
+    return <VideoPlayer queue={sorted} session={session} />;
+  });
+
+  // assign discord component to a variable, so it doesn't rerender on every state change
+  const discord = always(() => <Discord code={code} />);
+
+  // load from local storage
+  if (localStorage.getItem('showDiscordControls') !== showDiscordControls.val.toString()) {
+    showDiscordControls.val = localStorage.getItem('showDiscordControls') === 'true';
+  }
+
+  // show discord or video controls based on the state of showDiscordControls
+  const showDiscordOrVideoControls = always(() => {
+    // save in local storage
+    localStorage.setItem('showDiscordControls', showDiscordControls.val.toString());
+    if (showDiscordControls.val) {
+      return discord;
+    } else {
+      return videoPlayer;
+    }
+  });
 
   return (
     <main class="w-screen h-screen relative bg-gray-50 dark:bg-gray-950">
@@ -93,9 +126,10 @@ export default async function App() {
         
         <div class="flex flex-col overflow-y-hidden h-screen bg-white dark:bg-white/5 border border-black dark:border-white/10 rounded-xl">
           <div class="flex px-8 mx-0 mt-8 mb-4">
-            <VideoPlayer queue={sorted} session={session} />
+              {showDiscordOrVideoControls}
           </div>
           <div class="flex items-center justify-end px-12 h-10 mb-4">
+            <ToggleDiscordControls togglePointer={toggleDiscordControls} />
             <ToggleThemeButton />
           </div>
 

@@ -1,4 +1,5 @@
 import { getAndRemoveNextVideoFromSession, Item, SessionData } from "backend/sessions.ts";
+import { pauseDiscord, resumeDiscord } from "backend/integrations/discord/Client.ts";
 
 export default function VideoPlayer({ queue, session }: Readonly<{ queue: Item[], session: SessionData }>) {
   // @ts-ignore - YouTube API
@@ -48,6 +49,12 @@ export default function VideoPlayer({ queue, session }: Readonly<{ queue: Item[]
       setTimeout(() => {
         playNext();
       }, 200);
+    // @ts-ignore - YouTube API
+    } else if (event.data === window.YT.PlayerState.PAUSED) {
+      pauseDiscord();
+    // @ts-ignore - YouTube API
+    } else if (event.data === window.YT.PlayerState.PLAYING) {
+      resumeDiscord();
     }
   }
 
@@ -81,7 +88,7 @@ export default function VideoPlayer({ queue, session }: Readonly<{ queue: Item[]
   });
 
   return (
-    <div class="relative aspect-video bg-white dark:bg-white/5 border border-black dark:border-white/10 w-full overflow-hidden object-cover rounded-xl">
+  <div class="relative aspect-video bg-white dark:bg-white/5 border border-black dark:border-white/10 w-full overflow-hidden object-cover rounded-xl">
       <div
         id="player"
         class="w-full h-full flex items-center justify-center dark:text-white text-black font-semibold"

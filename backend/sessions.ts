@@ -1,5 +1,7 @@
-import { Context } from "uix/routing/context.ts";
 import { ObjectRef } from "datex-core-legacy/runtime/pointers.ts";
+import { getUserPlayerInstances, play } from "backend/integrations/discord/Client.ts";
+import { datexClassType } from "unyt_core/datex_all.ts";
+import { UserData } from "common/components/integrations/discord/Definitions.ts";
 
 export type Item = {
   title: string;
@@ -20,6 +22,7 @@ export interface Client {
 export interface SessionData {
   code: string;
   hostId: string;
+  host: datexClassType<ObjectRef<typeof UserData>>;
   clientIds: Set<string>;
   clients: Record<string, Client>;
   queue: Item[];
@@ -32,15 +35,26 @@ export const sessions = eternalVar('sessions-1234') ?? $$({} as Record<string, S
 
 export const getAndRemoveNextVideoFromSession = (code: string) => {
   const session = sessions[code];
-  console.log(session);
   if (!session) {
     return;
   }
-  console.log(session.queue);
   const video = session.queue.shift();
   if (video) {
     session.currentlyPlaying = video;
+    const playerInstances = getUserPlayerInstances(session.hostId);
+    if (playerInstances)
+      play(
+        playerInstances,
+        {
+          track: video.id,
+        },
+        () => getAndRemoveNextVideoFromSession(code)
+      );
+      session.host.discord.playing = true;
+      session.host.discord.active = true;
   } else {
+    session.host.discord.active = false;
+    session.host.discord.playing = false;
     session.currentlyPlaying = null;
   }
   return video;
@@ -50,12 +64,11 @@ export const getSessionWithCode = (code: string) => {
   return sessions[code];
 }
 
-export const getSessionUserHosts = async () => {
-  console.log('sessions', sessions)
-  const user = await getUserId();
+export const getSessionUserHosts = () => {
+  const user = getUser();
+
   for (const code of Object.keys(sessions)) {
     if (sessions[code].hostId === user.userId) {
-      console.log('found session', sessions[code]);
       return sessions[code];
     }
   }
@@ -67,8 +80,8 @@ export const getSessionUserHosts = async () => {
 }
 
 
-export const updateUser = async (code: string) => {
-  const client = await getUserId();
+export const updateUser = (code: string) => {
+  const client = getUser();
   const session = sessions[code];
   if (!session) {
     return;
@@ -80,8 +93,8 @@ export const updateUser = async (code: string) => {
   return session;
 }
 
-export const addClientsInfo = async (code: string, nick: string) => {
-  const client = await getUserId();
+export const addClientsInfo = (code: string, nick: string) => {
+  const client = getUser();
   const session = sessions[code];
   if (!session) {
     return;
@@ -95,25 +108,21 @@ export const addClientsInfo = async (code: string, nick: string) => {
   return session;
 }
 
-export const toggleLike = async (code: string, videoId: string) => {
+export const toggleLike = (code: string, videoId: string) => {
   try {
-    const user = await getUserId();
+    const user = getUser();
 
     const session = sessions[code];
-    console.log(session);
     if (!session) {
       return;
     }
     const video = session.queue.find((video) => video.id == videoId);
-    console.log(video);
     if (!video) {
       return;
     }
     if (video.likes.has(user.userId)) {
-      console.log('deleting like');
       video.likes.delete(user.userId);
     } else {
-      console.log('adding like');
       video.likes.add(user.userId);
     }
 
@@ -126,12 +135,20 @@ export const toggleLike = async (code: string, videoId: string) => {
   }
 }
 
-export const getUserId = async () => {
-  const privateData = (await Context.getPrivateData(datex.meta)) as { userId: string };
-  if (!privateData.userId) {
-    privateData.userId = crypto.randomUUID()
+const users = eternalVar("users") ?? $$({} as Record<string, datexClassType<ObjectRef<typeof UserData>>>)
+
+export const getUser = (endpoint?: string) => {
+  /**
+   * Returns an existing or a newly created user session.
+   * 
+   * @param endpoint - The endpoint must be passed as a parameter if the function is called from the backend
+   * @returns A new or existing user session
+   */
+  const user = endpoint ? endpoint : datex.meta.caller.main.toString();
+  if (!(user in users)) {
+    users[user] = new UserData();
   }
-  return privateData;
+  return users[user];
 }
 
 const createSession = (userId: string) => {
@@ -146,27 +163,18 @@ const createSession = (userId: string) => {
   const session = {
     code,
     hostId: userId,
+    host: getUser(),
     clientIds: new Set() as Set<string>,
-    clients: {},
+    clients: {} as Record<string, Client>,
     queue: [] as Item[],
     recommendedQueue: [] as Item[],
     currentlyPlaying: null as Item | null,
   };
   sessions[code] = session;
 
-  return session;
-}
+  console.log(session);
 
-const sortVideos = (videos: ObjectRef<Item[]>) => {
-  console.log("sorting", videos);
-  videos.sort((a, b) => {
-    if (a.likes.size > b.likes.size) return -1;
-    if (a.likes.size < b.likes.size) return 1;
-    if (a.added > b.added) return 1;
-    if (a.added < b.added) return -1;
-    return 0;
-  });
-  console.log("sorted", videos);
+  return session;
 }
 
 export const getSortedQueue = (code: string) => {
@@ -184,6 +192,24 @@ export const getSortedQueue = (code: string) => {
       return 0;
     });
   });
+}
+
+export const addItemToQueue = (code: string, item: Item) => {
+  const session = sessions[code];
+  if (!session) {
+    return;
+  }
+  session.queue.push(item);
+
+  if (!session.currentlyPlaying) {
+    if (getUserPlayerInstances(session.hostId).length > 0) {
+      session.host.discord.playing = true;
+      session.host.discord.active = true;
+      getAndRemoveNextVideoFromSession(code);
+    }
+  }
+
+  return session;
 }
 
 export const getRecommendedQueue = (code: string) => {

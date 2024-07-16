@@ -8,28 +8,42 @@ import NavMenu from "./components/nav/NavMenu.tsx";
 import { toggleTheme } from "./components/ToggleThemeButton.tsx";
 
 export default async function App(ctx: Context) {
-  const code = ctx.urlPattern?.pathname.groups[0] ?? "XXXX";
+  const code = (ctx.urlPattern?.pathname.groups[0] ?? "XXXX").toUpperCase();
 
   //get the nick of the user from sessiondata
   //const nick = (ctx.searchParams.get('nick') ?? "anon");
-  
-	const session = await updateUser(code);
 
+  const session = await updateUser(code);
+
+  loadInitialTheme();
 
   if (!session) {
-    return;
+    return (
+      <main class="bg-gray-50 dark:bg-gray-950">
+        <div class="flex items-center justify-center h-[100vh]">
+          <div class="flex flex-col items-center space-y-8">
+            <h1 class="text-3xl font-bold text-black dark:text-white">Session not found</h1>
+            <p class="text-gray-500 dark:text-gray-400">The session you are trying to join does not exist.</p>
+
+            <div>
+              <a href={"/welcome?code=" + code} class="flex w-full justify-center rounded-md bg-accent-600 dark:bg-accent-500 disabled:opacity-50 dark:hover:bg-accent-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-accent-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600">change code</a>
+            </div>
+          </div>
+        </div>
+      </main>
+    )
   }
 
-	const sorted = await getSortedQueue(code);
+  const sorted = await getSortedQueue(code);
 
   const searchResults = $$<Item[]>([]);
 
   const activeView = $$<"queue" | "search" | "chat" | "settings">("queue");
 
-	const showQueue = $$(false);
-	const showSearch = $$(false);
-	const showChat = $$(false);
-	const showSettings = $$(false);
+  const showQueue = $$(false);
+  const showSearch = $$(false);
+  const showChat = $$(false);
+  const showSettings = $$(false);
 
   const onSearch = async (value: string) => {
     activeView.val = "search";
@@ -101,8 +115,6 @@ export default async function App(ctx: Context) {
     );
   });
 
-  loadInitialTheme();
-
   return (
     <main class="bg-gray-50 dark:bg-gray-950">
       <div class="flex flex-col overflow-y-hidden h-[100dvh] rounded-xl mx-auto max-w-2xl">
@@ -125,7 +137,7 @@ export default async function App(ctx: Context) {
 
 
           <div class="space-y-4 text-white" style={{ display: showChat }}>Work in Progress
-{/*
+            {/*
             <div class="flex justify-between items-center mb-4">
               <span class="text-lg font-medium">Chat Box</span>
               <input type="checkbox" id="darkModeToggle" class="toggle-checkbox" onclick="toggleDarkMode()"></input>

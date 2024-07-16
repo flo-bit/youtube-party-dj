@@ -182,7 +182,7 @@ export async function QueueItem({
                   const session = await getSessionWithCode(code);
                   if (!session) return;
 
-                  if (!(session.queue.some((v) => v.id == item.id) || session.currentlyPlaying?.id !== item.id)) {
+                  if (!(session.queue.some((v) => v.id == item.id) && session.currentlyPlaying?.id !== item.id)) {
                     addItemToQueue(code, item);
                     
                   }

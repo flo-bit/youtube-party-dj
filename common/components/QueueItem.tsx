@@ -235,7 +235,10 @@ export async function QueueItem({
     const button = document.getElementById(`button-${item.id}`);
     if (button) {
       const likeButton = await renderLikeButton(item, code);
+      
+
       button.replaceChildren(likeButton);
+      await sleep(1100);
     }
   }
 
@@ -245,7 +248,11 @@ export async function QueueItem({
     
     const updatedItem = session.queue.find((queueItem) => queueItem.id === item.id) || item;
     const isLiked = updatedItem.likes.has(userId);
-
+    if (session?.currentlyPlaying?.id == item.id){
+      return (<button 
+                class="queueframe bg-white dark:bg-white/5 border border-black dark:border-white/10 rounded-full w-10 h-10 flex items-center justify-center overflow-hidden "           
+              > c. p.</button> ) 
+    } else
     return (
       <button onclick={ async () => {
           await toggleLike(code, item.id);

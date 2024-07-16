@@ -1,6 +1,8 @@
 let darkMode = false;
 
 export function loadInitialTheme() {
+    document.body.classList.add('h-full');
+    
     const savedTheme = localStorage.getItem('theme');
     if (savedTheme === 'dark') {
         toggleTheme();
@@ -16,9 +18,9 @@ export function loadInitialTheme() {
 export function toggleTheme() {
     darkMode = !darkMode
     if (darkMode) {
-        document.body.classList.add('dark');
+        document.body.classList.add('dark', 'dark:bg-gray-950');
     } else {
-        document.body.classList.remove('dark');
+        document.body.classList.remove('dark', 'dark:bg-gray-950');
     }
     localStorage.setItem('theme', darkMode ? 'dark' : 'light');
 };

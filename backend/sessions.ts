@@ -39,7 +39,7 @@ export type SpotifyInformation = {
 }
 
 // map of session codes to session data
-export const sessions = eternalVar('sessions-1234') ?? $$({} as Record<string, SessionData>);
+export const sessions = eternalVar('sessions-92753') ?? $$({} as Record<string, SessionData>);
 
 const sorter = (a: Item, b: Item) => {
   if (a.likes.size > b.likes.size) return -1;

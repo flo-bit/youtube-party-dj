@@ -73,18 +73,18 @@ export default async function App(ctx: Context) {
               showSettings.val = false;
             },
           },
-          {
-            label: "chat",
-            onClick: () => {
-              console.log("chat");
-              activeView.val = "chat";
+          // {
+          //   label: "chat",
+          //   onClick: () => {
+          //     console.log("chat");
+          //     activeView.val = "chat";
 
-              showQueue.val = false;
-              showSearch.val = false;
-              showChat.val = true;
-              showSettings.val = false;
-            },
-          },
+          //     showQueue.val = false;
+          //     showSearch.val = false;
+          //     showChat.val = true;
+          //     showSettings.val = false;
+          //   },
+          // },
           {
             label: "settings",
             onClick: () => {

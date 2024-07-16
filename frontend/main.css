@@ -62,6 +62,172 @@
 }
 
 
-  .fly-out-animation {
-    animation: fly-out 0.22s ease-out forwards;
+.fly-out-animation {
+  animation: fly-out 0.22s ease-out forwards;
+}
+
+.mb-12 {
+  margin-bottom: 3rem;
+}
+
+.mt-6 {
+  margin-top: 1.5rem;
+}
+
+.max-w-lg {
+  max-width: 32rem;
+}
+
+.gap-4 {
+  gap: 1rem;
+}
+
+.discord {
+  font-family: 'gg sans', 'Noto Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif, 'Apple Symbols';
+  color: color-mix( in oklab, hsl( 214 calc( 1 * 8.1%) 61.2% / 1) 100%, black 0% );
+
+  > .controls {
+    .playPause {
+      border: 0;
+      background: transparent;
+      box-sizing: border-box;
+      width: 0;
+      height: 74px;
+      cursor: not-allowed;
+    
+      border-color: transparent transparent transparent color-mix( in oklab, hsl( 214 calc( 1 * 8.1%) 61.2% / 1) 100%, black 0% );
+      transition: 100ms all ease;
+      cursor: pointer;
+    
+      border-style: solid;
+      border-width: 37px 0 37px 60px;
+
+      &.active {
+        cursor: pointer;
+      }
+    
+      &.paused {
+        border-style: double;
+        border-width: 0px 0 0px 60px;
+      }
+
+      &:hover {
+        border-color: transparent transparent transparent #000;
+      }
+    
+      .dark &:hover {
+        border-color: transparent transparent transparent #fff;
+      }
+    }
   }
+
+  &.guild {
+    &.list {
+      margin: .5rem;
+      
+      > .item {
+        padding: 0 .25rem 0 1rem;
+        
+        &:not(:last-child) {
+          margin-bottom: .5rem;
+        }
+  
+        .title {
+          text-transform: uppercase;
+          font-size: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          position: relative;
+          display: flex;
+          align-items: center;
+  
+          .name {
+            letter-spacing: .02em;
+            margin-left: .3em;
+          }
+  
+          .indicator {
+            transform: rotate(-90deg);
+            transition: transform 0.3s ease-in-out;
+            position: absolute;
+            left: -.75rem;
+            width: 12px;
+            height: 12px;
+          }
+        }
+  
+        .channel.list {
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.3s linear(0 0%, 0 1.8%, 0.01 3.6%, 0.03 6.35%, 0.07 9.1%, 0.13 11.4%, 0.19 13.4%, 0.27 15%, 0.34 16.1%, 0.54 18.35%, 0.66 20.6%, 0.72 22.4%, 0.77 24.6%, 0.81 27.3%, 0.85 30.4%, 0.88 35.1%, 0.92 40.6%, 0.94 47.2%, 0.96 55%, 0.98 64%, 0.99 74.4%, 1 86.4%, 1 100%);
+  
+          > .item {
+            button {
+              padding: .3rem .5rem;
+              cursor: pointer;
+              border-radius: .4rem;
+              transition: background-color 0.1s ease-in-out;
+              width: 100%;
+              text-align: left;
+              position: relative;
+              display: flex;
+              align-items: center;
+  
+              &:hover {
+                background-color: rgba(255, 255, 255, 0.2);
+              }
+
+              &.hasBot::after {
+                content: 'BOT';
+                font-size: 8px;
+                color: #fff;
+                background-color: #7289da;
+                padding: 0.1rem 0.3rem;
+                border-radius: 0.2rem;
+                margin-left: 0.5rem;
+                position: absolute;
+                right: .5rem;
+                font-weight: 600;
+              }
+
+              &.hasForeignBot::after {
+                content: 'BOT';
+                font-size: 8px;
+                color: #fff;
+                background-color: #ff7979;
+                padding: 0.1rem 0.3rem;
+                border-radius: 0.2rem;
+                margin-left: 0.5rem;
+                position: absolute;
+                right: .5rem;
+                font-weight: 600;
+              }
+            }
+          }
+        }
+  
+        &.open {
+          .indicator {
+            transform: rotate(0deg);
+          }
+  
+          .channel.list {
+            max-height: 100vh;
+          }
+        }
+      }
+    }
+  }
+}
+
+.discord a {
+  transition: 100ms all ease;
+}
+
+.discord a:hover {
+  color: #000;
+}
+
+.dark .discord a:hover {
+  color: #fff;
+}

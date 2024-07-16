@@ -1,9 +1,9 @@
 import { ObjectRef } from "datex-core-legacy/runtime/pointers.ts";
 import { QueueType } from "./Queue.tsx";
-import { getSessionWithCode, getUserId, Item, toggleLike } from "backend/sessions.ts";
-import { getRecommendations, updateRecommendations  } from "backend/data.tsx"
+import { addItemToQueue, getSessionWithCode, getUser, Item, toggleLike } from "backend/sessions.ts";
+import { updateRecommendations  } from "backend/data.tsx"
 
-const userId = (await getUserId()).userId;
+const userId = (await getUser()).userId;
 
 export async function QueueItem({
   item,
@@ -182,8 +182,8 @@ export async function QueueItem({
                   const session = await getSessionWithCode(code);
                   if (!session) return;
 
-                  if (!(session.queue.some((v) => v.id == item.id) || session.currentlyPlaying?.id == item.id)) {
-                    session?.queue.push(item);
+                  if (!(session.queue.some((v) => v.id == item.id) && session.currentlyPlaying?.id !== item.id)) {
+                    addItemToQueue(code, item);
                     
                   }
                   

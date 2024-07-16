@@ -9,6 +9,7 @@
 			"runtimeExecutable": "/home/vscode/.deno/bin/uix",
 			"attachSimplePort": 9229,
 			"args": [
+				"--port=4625",
 			],
 			"console": "integratedTerminal"
 		}

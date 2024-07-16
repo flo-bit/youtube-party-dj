@@ -15,9 +15,19 @@ export default async function App(ctx: Context) {
   
 	const session = await updateUser(code);
 
+  loadInitialTheme();
 
   if (!session) {
-    return;
+    return (
+      <main class="bg-gray-50 dark:bg-gray-950">
+        <div class="flex items-center justify-center h-[100vh]">
+          <div class="flex flex-col items-center">
+            <h1 class="text-2xl font-bold text-black dark:text-white">Session not found</h1>
+            <p class="text-gray-500 dark:text-gray-400">The session you are trying to join does not exist.</p>
+          </div>
+        </div>
+      </main>
+    )
   }
 
 	const sorted = await getSortedQueue(code);
@@ -100,8 +110,6 @@ export default async function App(ctx: Context) {
       />
     );
   });
-
-  loadInitialTheme();
 
   return (
     <main class="bg-gray-50 dark:bg-gray-950">

@@ -1,5 +1,5 @@
 import { Client as DClient, ClientOptions, GatewayIntentBits, Events } from "npm:discord.js";
-import { Shoukaku, Connectors, Player, Track } from "npm:shoukaku";
+import { Shoukaku, Connectors, Player, Track, NodeOption } from "npm:shoukaku";
 import { getUser, sessions } from "backend/sessions.ts";
 import { ObjectRef, Pointer, datexClassType } from "datex-core-legacy/datex_all.ts";
 import { UserData } from "common/components/integrations/discord/Definitions.ts";
@@ -11,7 +11,8 @@ let config = {
     CLIENT_SECRET: "",
     LAVA_HOST: "",
     LAVA_PORT: 0,
-    LAVA_PASS: ""
+    LAVA_PASS: "",
+    LAVA_SECURE: false
 }
 
 // try to get config from the file
@@ -34,10 +35,11 @@ export const init = () => {
         return;
     };
 
-    const nodes = [
+    const nodes: NodeOption[] = [
         {
             name: "default",
             url: `${config.LAVA_HOST}:${config.LAVA_PORT}`,
+            secure: config.LAVA_SECURE,
             auth: config.LAVA_PASS
         }
     ];
@@ -395,9 +397,12 @@ export const joinVoiceChannel = async (data: { guildId: string, channelId: strin
     };
 }
 
-export const play = async (playerInstances: PlayerInstance[], data: { track: string }, queue: () => void = () => {}) => {
+export type PlayData = { track: string };
+
+export const play = async (playerInstances: PlayerInstance[], data: PlayData, queue: () => void = () => {}) => {
     let track;
 
+    let firstPlayer = true;
     for (const playerInstance of playerInstances) {
         const player = playerInstance.player;
         if (!player) {
@@ -413,9 +418,12 @@ export const play = async (playerInstances: PlayerInstance[], data: { track: str
         // play the searched track
         await player.playTrack({ track: track.encoded });
         // wait for track to end
-        player.once('end', () => {
-            queue();
-        });
+        if (firstPlayer) {
+            firstPlayer = false;
+            player.on("end", () => {
+                queue();
+            });
+        }
     }
 }
 
@@ -424,7 +432,7 @@ export const getUserPlayerInstances = (user?: string) => {
     return Object.values(playerInstances).filter(player => player.userId === userId);
 }
 
-export const playDiscord = (data: { track: string }) => {
+export const playDiscord = (data: PlayData) => {
     play(getUserPlayerInstances(), data);
 }
 
@@ -434,7 +442,7 @@ export const pauseDiscord = async () => {
     }
 }
 
-export const resumeDiscord = async (data?: { track: string }) => {
+export const resumeDiscord = async (data?: PlayData) => {
     for (const playerInstance of getUserPlayerInstances()) {
         if (!playerInstance.player) continue;
         if (playerInstance.player.paused) {

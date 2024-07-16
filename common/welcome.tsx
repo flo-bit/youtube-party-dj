@@ -1,60 +1,71 @@
 import { redirect } from "uix/utils/window-apis.ts"
 import { Context } from "uix/routing/context.ts";
-import { addClientsInfo} from "backend/sessions.ts";
+import { addClientsInfo } from "backend/sessions.ts";
+import {
+	loadInitialTheme,
+} from "./components/ToggleThemeButton.tsx";
+
 
 export default function Welcome(ctx: Context) {
 
-    const user_name =  $$(""); 
-	const code = (ctx.searchParams.get('code') ?? "XXXX");
+	const user_name = $$("");
+	const code = $$(ctx.searchParams.get('code') ?? "");
 
-    const handleWithNick = () => {
-		if(!user_name.val){
+	const noCode = always(() => {
+		return !code.val;
+	})
+
+	const continueToParty = () => {
+		if(!code.val) {
+			console.error('No code provided');
 			return;
 		}
-		addClientsInfo(code, user_name.val);
-		const url = `/client/${encodeURIComponent(code)}`;
-    	redirect(url);
-    };
 
-	const handleAnonym = () => {
-		addClientsInfo(code, "anon");
-        const url = `/client/${encodeURIComponent(code)}`;  
-    	redirect(url);
-    };
-    
-    return (
-		<main class="w-screen h-screen absolute inset-0 text-white bg-gray-950 flex flex-col items-center justify-center">
-			
-				<h1 class="text-6xl text-rose-500 font-bold m-5 text-center p-8"> Welcome <br></br> to the Party </h1>
+		const name = user_name.val ?? 'anon';
+		const my_code = code.val.toUpperCase();
 
-				<div class="flex flex-col items-center w-full md:w-1/2 px-5">
+		addClientsInfo(code.val.toUpperCase(), name);
 
-					<input 
-						class="text-black font-bold rounded-lg py-3 w-full text-center text-2xl"
-						type="text" 
-						placeholder={"Type in your nick for the Party"}
-						value={user_name}
-						onchange={() => { 
-							user_name.val = user_name;
-						}}
-					/>
-				
-					<button
-						class="bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-full text-2xl py-4 px-8 m-5 w-full"
-						onclick={handleWithNick}
-					> Lets Gooo !
-					</button>
-						
-					<div class="w-full h-px bg-gray-400 my-1 md:my-1"></div>
+		const url = `/client/${encodeURIComponent(my_code)}`;
+		redirect(url);
+	}
 
-					<button
-						class="bg-rose-500 hover:bg-rose-600 text-white font-bold rounded-full text-2xl py-4 px-8 m-5 w-full"
-						onclick={handleAnonym}
-					> Continue anonymously :)
-					</button>
+	loadInitialTheme();
 
+	return (
+		<div class="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8 dark:bg-gray-950">
+			<div class="sm:mx-auto sm:w-full sm:max-w-sm">
+				<img class="mx-auto h-10 w-auto" src="./rsc/logo.svg" alt="Your Company" />
+				<h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-gray-50">Join the party</h2>
+			</div>
+
+			<div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+				<div class="space-y-6">
+					<div>
+						<label for="code" class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-50">Code</label>
+						<div class="mt-2">
+							<input id="code" name="code" value={code}
+								onchange={() => {
+									code.val = code;
+								}} required class="block w-full uppercase rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset dark:bg-white/5 ring-gray-300 dark:ring-white/10 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-accent-600 dark:focus:ring-accent-500 sm:text-sm sm:leading-6" />
+						</div>
+					</div>
+					
+					<div>
+						<label for="nickname" class="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-50">Nickname</label>
+						<div class="mt-2">
+							<input id="nickname" name="nickname" value={user_name}
+								onchange={() => {
+									user_name.val = user_name;
+								}} class="block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset dark:bg-white/5 ring-gray-300 dark:ring-white/10 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-accent-600 dark:focus:ring-accent-500 sm:text-sm sm:leading-6" />
+						</div>
+					</div>
+
+					<div>
+						<button disabled={noCode} onclick={continueToParty} class="flex w-full justify-center rounded-md bg-accent-600 dark:bg-accent-500 disabled:opacity-50 dark:hover:bg-accent-400 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-accent-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600">Join</button>
+					</div>
 				</div>
-				
-		</main>
-    );
+			</div>
+		</div>
+	);
 }

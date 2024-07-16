@@ -1,4 +1,4 @@
-import { getAndRemoveNextVideoFromSession, Item, SessionData } from "backend/sessions.ts";
+import { getAndRemoveNextVideoFromSession, Item, SessionData, SessionData } from "backend/sessions.ts";
 import { pauseDiscord, resumeDiscord } from "backend/integrations/discord/Client.ts";
 
 export default function VideoPlayer({ queue, session, access_token }: Readonly<{ queue: Item[], session: SessionData , access_token : string}>) {
@@ -175,6 +175,7 @@ export default function VideoPlayer({ queue, session, access_token }: Readonly<{
   }
 
   const text = always(() => {
+    console.log("queue updated");
     console.log("queue updated");
     if (queue.length === 0) {
       return <span>Add a video to the queue!</span>;

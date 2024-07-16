@@ -1,7 +1,7 @@
 import { ObjectRef } from "datex-core-legacy/runtime/pointers.ts";
 import { QueueType } from "./Queue.tsx";
 import { addItemToQueue, getSessionWithCode, getUser, Item, toggleLike } from "backend/sessions.ts";
-import { getRecommendations, updateRecommendations  } from "backend/data.tsx"
+import { updateRecommendations  } from "backend/data.tsx"
 
 const userId = (await getUser()).userId;
 

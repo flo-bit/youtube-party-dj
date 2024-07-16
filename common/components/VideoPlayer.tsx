@@ -55,7 +55,7 @@ export default function VideoPlayer({ queue, session, access_token }: Readonly<{
     const video = await getAndRemoveNextVideoFromSession(session.code);
       
     if (!video) return;
-    
+    session.currentlyPlaying = video;
     
     if (video.type == 'youtube') {
       isYoutubePlayer.val = true;   

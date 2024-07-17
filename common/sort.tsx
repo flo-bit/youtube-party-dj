@@ -14,7 +14,6 @@ export const getSortedQueue = (session: SessionData) => {
 		return $$([])
 	}
 	return always(() => {
-		console.warn("sort", [...session.queue])
 		return session.queue.toSorted(sorter);
 	});
 }

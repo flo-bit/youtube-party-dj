@@ -61,8 +61,6 @@ export default async function App() {
     return timeCounter;
   });
 
-  loadInitialTheme();
-
 
   const Recommendations = () => {
 

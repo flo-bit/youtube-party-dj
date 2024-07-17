@@ -15,8 +15,6 @@ export default async function App(ctx: Context) {
 
   const session = await updateUser(code);
 
-  loadInitialTheme();
-
   if (!session) {
     return (
       <main class="bg-gray-50 dark:bg-gray-950">

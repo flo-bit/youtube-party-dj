@@ -1,10 +1,6 @@
 import { redirect } from "uix/utils/window-apis.ts"
 import { Context } from "uix/routing/context.ts";
 import { addClientsInfo } from "backend/sessions.ts";
-import {
-	loadInitialTheme,
-} from "./components/ToggleThemeButton.tsx";
-
 
 export default function Welcome(ctx: Context) {
 
@@ -29,8 +25,6 @@ export default function Welcome(ctx: Context) {
 		const url = `/client/${encodeURIComponent(my_code)}`;
 		redirect(url);
 	}
-
-	loadInitialTheme();
 
 	return (
 		<div class="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8 dark:bg-gray-950">

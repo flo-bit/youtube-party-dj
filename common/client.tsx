@@ -40,7 +40,7 @@ export default async function App(ctx: Context) {
 
   const activeView = $$<"queue" | "search" | "chat" | "settings">("queue");
 
-  const showQueue = $$(false);
+  const showQueue = $$(true);
   const showSearch = $$(false);
   const showChat = $$(false);
   const showSettings = $$(false);

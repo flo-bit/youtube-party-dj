@@ -31,7 +31,7 @@ export interface SessionData {
 };
 
 // map of session codes to session data
-export const sessions = eternalVar('sessions-1234') ?? $$({} as Record<string, SessionData>);
+export const sessions = await lazyEternalVar('sessions-1234') ?? $$({} as Record<string, SessionData>);
 
 const sorter = (a: Item, b: Item) => {
   if (a.likes.size > b.likes.size) return -1;
@@ -143,7 +143,7 @@ export const toggleLike = (code: string, videoId: string) => {
   }
 }
 
-const users = eternalVar("users") ?? $$({} as Record<string, datexClassType<ObjectRef<typeof UserData>>>)
+const users = await lazyEternalVar("users") ?? $$({} as Record<string, datexClassType<ObjectRef<typeof UserData>>>)
 
 export const getUser = (endpoint?: string) => {
   /**

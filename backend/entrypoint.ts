@@ -12,4 +12,6 @@ try {
 	console.error(e);
 }
 
-export default {}
+export default {
+	"/": import("../common/home.tsx"),
+}

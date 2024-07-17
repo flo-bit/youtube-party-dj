@@ -7,6 +7,9 @@ import { Context } from "uix/routing/context.ts";
 import "../common/theme.tsx"
 import { auth } from "backend/integrations/discord/Client.ts";
 import { provideRedirect } from "uix/html/entrypoint-providers.tsx";
+import { loadInitialTheme } from "common/components/ToggleThemeButton.tsx";
+
+loadInitialTheme();
 
 // workaround for safari - import page.tsx before using it in the route
 const Page = await import("../common/page.tsx");
@@ -21,7 +24,7 @@ export default {
 	},
 	"/welcome": import("../common/welcome.tsx"),
 	
-	"/": import("../common/home.tsx"),
+	// "/": import("../common/home.tsx"),
 
 	// Temporary integration of the Discord component
 	"/integration/discord": async () => {

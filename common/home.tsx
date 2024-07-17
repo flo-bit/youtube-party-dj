@@ -1,10 +1,4 @@
-import {
-  loadInitialTheme,
-} from "./components/ToggleThemeButton.tsx";
-
 export default function App() {
-
-  loadInitialTheme();
 
   return (
     <div class="bg-white dark:bg-gray-950 min-h-screen">

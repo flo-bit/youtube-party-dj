@@ -46,8 +46,9 @@ export const getAndRemoveNextVideoFromSession = (code: string) => {
   if (!session) {
     return;
   }
-  const video = session.queue.sort(sorter).shift();
+  const video = session.queue.toSorted(sorter).at(0);
   if (video) {
+    session.queue.splice(session.queue.indexOf(video), 1);
     session.currentlyPlaying = video;
     const playerInstances = getUserPlayerInstances(session.hostId);
     if (playerInstances)

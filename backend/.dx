@@ -1,7 +1,7 @@
 use stage from #public.uix;
 
 endpoint: stage {
-	prod: @youtubeparty
+	prod: @ytparty
 },
 
 location: stage {

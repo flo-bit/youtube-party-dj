@@ -4,7 +4,7 @@ import { QueueItem } from "./components/QueueItem.tsx";
 
 import QRCodeOverlay from "./components/QRCodeOverlay.tsx";
 import UserDisplay from "./components/UserDisplay.tsx";
-import { getSessionUserHosts, getSortedQueue, getRecommendedQueue } from "backend/sessions.ts";
+import { getSessionUserHosts, getRecommendedQueue } from "backend/sessions.ts";
 
 import { NowPlaying } from "./components/NowPlaying.tsx";
 import addDurations from "./helper.tsx";
@@ -16,6 +16,7 @@ import { Item } from "../backend/sessions.ts";
 
 import { ToggleDiscordControls } from "common/components/integrations/discord/DiscordPopup.tsx";
 import Discord from "common/components/integrations/discord/Discord.tsx";
+import { getSortedQueue } from "common/sort.tsx";
 
 export default async function App() {
   const session = await getSessionUserHosts();
@@ -50,7 +51,7 @@ export default async function App() {
     }
   });
 
-	const sorted = await getSortedQueue(code);
+	const sorted = await getSortedQueue(session);
   const recommended = await getRecommendedQueue(code);
 
   const timeLeft = always(() => {

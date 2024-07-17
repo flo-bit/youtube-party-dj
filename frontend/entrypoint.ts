@@ -8,10 +8,12 @@ import "../common/theme.tsx"
 import { auth } from "backend/integrations/discord/Client.ts";
 import { provideRedirect } from "uix/html/entrypoint-providers.tsx";
 
+// workaround for safari - import page.tsx before using it in the route
+const Page = await import("../common/page.tsx");
+
 export default {
-	'/player': async () => {
-		const App = await import("../common/page.tsx");
-		return App.default();
+	'/player': () => {
+		return Page.default();
 	},
 	'/client/([A-Za-z0-9]+)': async (ctx: Context) => { 
 		const App = await import("../common/client.tsx");

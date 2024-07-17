@@ -1,0 +1,13 @@
+use stage from #public.uix;
+
+endpoint: stage {
+	prod: @ytparty
+},
+
+location: stage {
+	prod: @+unyt-host-1
+},
+
+domain: stage {
+	prod: "party.unyt.app"
+}

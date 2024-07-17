@@ -1,11 +1,12 @@
 import { QueueItem } from "./components/QueueItem.tsx";
 import SearchBar from "./components/SearchBar.tsx";
 import { search } from "backend/data.tsx";
-import { updateUser, getSortedQueue, Item } from "backend/sessions.ts";
+import { updateUser, Item } from "backend/sessions.ts";
 import { Context } from "uix/routing/context.ts";
 import { loadInitialTheme } from "./components/ToggleThemeButton.tsx";
 import NavMenu from "./components/nav/NavMenu.tsx";
 import { toggleTheme } from "./components/ToggleThemeButton.tsx";
+import { getSortedQueue } from "common/sort.tsx";
 
 export default async function App(ctx: Context) {
   const code = (ctx.urlPattern?.pathname.groups[0] ?? "XXXX").toUpperCase();
@@ -14,8 +15,6 @@ export default async function App(ctx: Context) {
   //const nick = (ctx.searchParams.get('nick') ?? "anon");
 
   const session = await updateUser(code);
-
-  loadInitialTheme();
 
   if (!session) {
     return (
@@ -34,13 +33,13 @@ export default async function App(ctx: Context) {
     )
   }
 
-  const sorted = await getSortedQueue(code);
+  const sorted = await getSortedQueue(session);
 
   const searchResults = $$<Item[]>([]);
 
   const activeView = $$<"queue" | "search" | "chat" | "settings">("queue");
 
-  const showQueue = $$(false);
+  const showQueue = $$(true);
   const showSearch = $$(false);
   const showChat = $$(false);
   const showSettings = $$(false);

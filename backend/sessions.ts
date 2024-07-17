@@ -31,7 +31,7 @@ export interface SessionData {
 };
 
 // map of session codes to session data
-export const sessions = eternalVar('sessions-1234') ?? $$({} as Record<string, SessionData>);
+export const sessions = await lazyEternalVar('sessions-1234') ?? $$({} as Record<string, SessionData>);
 
 const sorter = (a: Item, b: Item) => {
   if (a.likes.size > b.likes.size) return -1;
@@ -46,8 +46,9 @@ export const getAndRemoveNextVideoFromSession = (code: string) => {
   if (!session) {
     return;
   }
-  const video = session.queue.sort(sorter).shift();
+  const video = session.queue.toSorted(sorter).at(0);
   if (video) {
+    session.queue.splice(session.queue.indexOf(video), 1);
     session.currentlyPlaying = video;
     const playerInstances = getUserPlayerInstances(session.hostId);
     if (playerInstances)
@@ -143,7 +144,7 @@ export const toggleLike = (code: string, videoId: string) => {
   }
 }
 
-const users = eternalVar("users") ?? $$({} as Record<string, datexClassType<ObjectRef<typeof UserData>>>)
+const users = await lazyEternalVar("users") ?? $$({} as Record<string, datexClassType<ObjectRef<typeof UserData>>>)
 
 export const getUser = (endpoint?: string) => {
   /**

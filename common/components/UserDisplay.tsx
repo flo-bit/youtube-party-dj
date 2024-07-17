@@ -1,8 +1,7 @@
 export default function UserDisplay({ names }: Readonly<{ names: string[] }>) {
-	// Filter out any names that are "anon" before rendering
-	const filteredNames = names.filter(name => name.toLowerCase() !== "anon");
-
 	const userDisplay = always(() => {
+		// Filter out any names that are "anon" before rendering
+		const filteredNames = names.filter(name => name.toLowerCase() !== "anon");
 		if (filteredNames.length === 0) {
 			return <></>;
 		} else {

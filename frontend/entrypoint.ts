@@ -8,21 +8,21 @@ import "../common/theme.tsx"
 import { auth } from "backend/integrations/discord/Client.ts";
 import { provideRedirect } from "uix/html/entrypoint-providers.tsx";
 import { loadInitialTheme } from "common/components/ToggleThemeButton.tsx";
+import { Entrypoint } from "uix/html/entrypoints.ts";
 
 loadInitialTheme();
 
 // workaround for safari - import page.tsx before using it in the route
 const Page = await import("../common/page.tsx");
+const Welcome = await import("../common/welcome.tsx");
 
 export default {
-	'/player': () => {
-		return Page.default();
-	},
-	'/client/([A-Za-z0-9]+)': async (ctx: Context) => { 
+	'/player': () => Page.default(),
+	'/client/([A-Za-z0-9]+)': async ctx => { 
 		const App = await import("../common/client.tsx");
 		return App.default(ctx);
 	},
-	"/welcome": import("../common/welcome.tsx"),
+	"/welcome": ctx => Welcome.default(ctx),
 	
 	// "/": import("../common/home.tsx"),
 
@@ -32,7 +32,7 @@ export default {
 		return App.default();
 	},
 
-	"/integration/discord/auth": async (ctx: Context) => {
+	"/integration/discord/auth": async ctx => {
 		if (ctx.searchParams.has("code")) {
 			if (!(await auth(ctx.searchParams.get("code")!, globalThis.location.origin))) {
 				return "Failed to authenticate with Discord. Please try again."
@@ -44,4 +44,4 @@ export default {
 			return "Authenticated with Discord. You may close this tab now."
 		}
 	}
-}
+} satisfies Entrypoint;
